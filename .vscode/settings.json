@@ -1,6 +1,23 @@
 {
     "files.associations": {
         "ratio": "cpp",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "array": "cpp",
+        "deque": "cpp",
+        "forward_list": "cpp",
+        "list": "cpp",
+        "string": "cpp",
+        "unordered_map": "cpp",
+        "unordered_set": "cpp",
+        "vector": "cpp",
+        "initializer_list": "cpp",
+        "regex": "cpp",
+        "valarray": "cpp",
+        "iosfwd": "cpp",
+        "chrono": "cpp",
+        "ostream": "cpp",
+        "cmath": "cpp",
+        "*.tcc": "cpp",
+        "system_error": "cpp"
     }
 }
