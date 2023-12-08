@@ -19,5 +19,6 @@
         "cmath": "cpp",
         "*.tcc": "cpp",
         "system_error": "cpp"
-    }
+    },
+    "cmake.configureOnOpen": true
 }
