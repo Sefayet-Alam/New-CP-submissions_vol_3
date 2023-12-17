@@ -18,7 +18,9 @@
         "ostream": "cpp",
         "cmath": "cpp",
         "*.tcc": "cpp",
-        "system_error": "cpp"
+        "system_error": "cpp",
+        "cstdlib": "cpp",
+        "iomanip": "cpp"
     },
     "cmake.configureOnOpen": true
 }

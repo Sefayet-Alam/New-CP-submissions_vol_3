@@ -1,0 +1,1 @@
+{"name":"Local: ex","url":"e:\\GitHub\\New-CP-submissions_vol_3\\ex.c","tests":[{"id":1702391178461,"input":"5 4\n2 4 7 7 9\n7\n10\n4\n2","output":"2\n-1\n1\n0"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"e:\\GitHub\\New-CP-submissions_vol_3\\ex.c","group":"local","local":true}
