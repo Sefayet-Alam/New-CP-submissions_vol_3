@@ -121,14 +121,7 @@ namespace io{
     template <typename First, typename... Other> void print( First first, Other... other ) { if( sep ) cerr << " | "; sep = true; cerr << to_string( first ); print( other... ); }
     
 } using namespace io;
- 
 
-/*===================================================================//
-            
-        ░█▀▀▀█ ░█▀▀▀ ░█▀▀▀ ─█▀▀█ ░█──░█ ░█▀▀▀ ▀▀█▀▀ 
-        ─▀▀▀▄▄ ░█▀▀▀ ░█▀▀▀ ░█▄▄█ ░█▄▄▄█ ░█▀▀▀ ─░█── 
-        ░█▄▄▄█ ░█▄▄▄ ░█─── ░█─░█ ──░█── ░█▄▄▄ ─░█──
-//====================================================================*/
 
 void setIO(){
     #ifndef ONLINE_JUDGE
@@ -153,6 +146,43 @@ struct custom_hash {
     }
 };
 
+bool visit[N];
+vector <pll > g[N];
+ll n,m;
+int prims_mst (ll src) {
+   QP<pair<ll,pll>> pq;
+   memset (visit, 0, sizeof (visit));
+   visit[src] = 1;
+   for (auto child:g[src]) {
+      ll curr_v = child.first;
+      ll curr_w = child.second;
+      pq.push({curr_w,{src,curr_v}});
+   }
+   ll cnt = 0;
+   while (!pq.empty()) {
+      auto a = pq.top(); 
+      pq.pop();
+      ll from, to, w;
+      from = a.second.first; 
+      to = a.second.second; 
+      w = a.first;
+      //printf ("%d %d %d\n", u, v, w);
+      if (!visit[to]) {
+         visit[to] = 1;
+        //  cout<<from<<" "<<to<<nn; //prints added edges
+         cnt += w;
+         from = to;
+         for (auto child: g[from]) {
+            to = child.first;
+            w = child.second;
+            if (!visit[to]) pq.push({w,{from,to}});
+         }
+      }
+   }
+   return cnt;
+}
+
+
 int main()
 {
     fast;
@@ -163,7 +193,18 @@ int main()
     //cin>>t;
 
     while(t--){
-      
+      cin>>n>>m;
+      ll x,y,w;
+      for(ll i=0;i<m;i++){
+        cin>>x>>y>>w;
+        g[x].push_back({y,w});
+        g[y].push_back({x,w});
+      }
+
+      ll src;
+      cin>>src;
+      ll ans=prims_mst(src);
+      cout<<ans<<nn;
     }
 
 
