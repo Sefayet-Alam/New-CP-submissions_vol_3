@@ -57,7 +57,7 @@ using namespace __gnu_pbds;
 #define md                  10000007
 #define PI 3.1415926535897932384626
 const double EPS = 1e-9;
-const ll N = 2e6+10;
+const ll N = 2e5+10;
 const ll M = 1e9+7;
 
 
@@ -152,43 +152,7 @@ struct custom_hash {
         return splitmix64(x + FIXED_RANDOM);
     }
 };
-ll n;
-ll FM[N];
-int is_initialized = 0;
-ll factorialMod(ll n, ll x){
-    if (!is_initialized){
-        FM[0] = 1 % x;
-        for (int i = 1; i < N; i++)
-            FM[i] = (FM[i - 1] * i) % x;
-        is_initialized = 1;
-    }
-    return FM[n];
-}
 
-ll powerMod(ll x, ll y, ll p){
-    ll res = 1 % p;
-    x = x % p;
-    while (y > 0){
-        if (y & 1) res = (res * x) % p;
-        y = y >> 1;
-        x = (x * x) % p;
-    }
-    return res;
-}
-
-ll inverseMod(ll a, ll x){
-    return powerMod(a, x - 2, x);
-}
-
-ll nCrMod(ll n, ll r, ll x){
-    if (r == 0) return 1;
-    if (r > n) return 0;
-    ll res = factorialMod(n, x);
-    ll fr = factorialMod(r, x);
-    ll zr = factorialMod(n - r, x);
-    res = (res * inverseMod((fr * zr) % x, x)) % x;
-    return res;
-}
 int main()
 {
     fast;
@@ -199,19 +163,15 @@ int main()
     //cin>>t;
 
     while(t--){
-      cin>>n;
-      if(n==1){
-        cout<<0LL<<nn;
-        continue;
-      }
-     ll ans=0;
-     for(ll i=2;i<=n;i++){
-        ll ans1=(nCrMod(n,i,M)*(powerMod(2,i,M)-2LL))%M;
-        ll ans2=powerMod(8LL,n-i,M);
-        ll curr=(ans1*ans2)%M;
-        ans=(ans+curr)%M;
-     }
-     cout<<ans<<nn;
+        string s;
+        cin>>s;
+        ll n=s.size();
+        ll ans=0;
+        for(ll i=0;i<n/2;i++){
+            if(s[i]!=s[n-1-i]) ans++;
+        }
+        if(ans==1 || (n%2 && ans==0)) cout<<"YES"<<nn;
+        else cout<<"NO"<<nn;
     }
 
 

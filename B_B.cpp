@@ -160,20 +160,28 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    cin>>t;
+    //cin>>t;
 
     while(t--){
-      ll n;
-      cin>>n;
-      map<string,ll>mpp;
       string s;
-      for(ll i=0;i<n;i++){
-        cin>>s;
-        mpp[s]++;
+      getline(cin,s);
+      ll n=s.size();
+      ll k=0;
+      ll d=0;
+      for(ll i=0;i<n-1;i++){
+        if(s[i]==':' && s[i+1]==')'){
+            if(k==2) d=1;
+            k=1;
+        }
+        else if(s[i]==':' && s[i+1]=='('){
+            if(k==1) d=1;
+            k=2;
+        }
       }
-
-      ll ans=max(mpp["O"]+mpp["A"]+mpp["AB"],mpp["O"]+mpp["B"]+mpp["AB"]);
-      cout<<ans<<nn;
+      if(d) cout<<"double agent"<<nn;
+      else if(k==1) cout<<"alive"<<nn;
+      else if(k==2) cout<<"undead"<<nn;
+      else cout<<"machine"<<nn;
     }
 
 

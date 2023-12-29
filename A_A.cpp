@@ -163,26 +163,9 @@ int main()
     //cin>>t;
 
     while(t--){
-        string s;
-        cin>>s;
-        
-        ll n=s.size();
-        set<char>stt;
-        map<char,ll>mpp;
-        for(ll i=0;i<s.size();i++){
-            mpp[s[i]]++;
-        }
-        ll minm=n+1;
-        ll ans=0;
-        ll diff=0;
-        for(auto it:mpp){
-            minm=min(minm,it.second);
-            ans+=(it.second)*(it.second);
-            diff++;
-        }
-        if(diff==3){
-            ans+=minm*7;
-        }
+        ll n,m,x,y;
+        cin>>n>>m>>x>>y;
+        ll ans=n*x+m*y;
         cout<<ans<<nn;
     }
 

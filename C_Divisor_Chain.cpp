@@ -57,7 +57,7 @@ using namespace __gnu_pbds;
 #define md                  10000007
 #define PI 3.1415926535897932384626
 const double EPS = 1e-9;
-const ll N = 1e3+10;
+const ll N = 2e5+10;
 const ll M = 1e9+7;
 
 
@@ -152,20 +152,17 @@ struct custom_hash {
         return splitmix64(x + FIXED_RANDOM);
     }
 };
-vector<bool> Primes(N,1);
-vector<ll>primenos;
-void SieveOfEratosthenes(ll n)
-{
-    Primes[1]=0;
-    for (ll i=2;i*i<=n;i++) {
-    if(Primes[i]==1){     
-    for(ll j=i*i;j<=n;j+=i)
-        Primes[j]=0;
-        }
-    }
-    
+vector<ll>ans;
+void dunc(ll x){
+    if(x<=1) return;
+    ans.push_back(x);
+    // cout<<x<<nn;
+    if(x%2==0) dunc(x/2);
+    else dunc(x-1);
 }
-
+bool bit(int mask, int pos) {
+    return (mask >> pos) & 1;
+}
 int main()
 {
     fast;
@@ -174,44 +171,34 @@ int main()
      //ll tno=1;;
      t=1;
     cin>>t;
-    SieveOfEratosthenes(N);
+
     while(t--){
-     ll k;
-     cin>>k;
-     vector<ll>ans;
-     map<ll,ll>vis;
-     while(k>1){
-            ans.push_back(k);
-            if(Primes[k]){
-                k--;
-                vis[1]++;
-            }
-            else{
-                ll div;
-                for(ll i=2;i*i<=k;i++){
-                    if(k%i==0){
-                        div=k/i;
-                        if(k-div>3 && Primes[k-div]){
-                            if(!Primes[k-i] && vis[i]<2){
-                                k-=i;
-                                vis[i]++;
-                                break;
-                            }
-                        }
-                        else if(vis[div]<2){
-                            k-=div;
-                            vis[div]++;
-                            break;                                    
-                        }
-                    }
+    int x;
+        cin >> x;
+        int p;
+        vector<int> ans;
+        ans.pb(x);
+        for (int i = 0; ; ++i) {
+            if (bit(x, i)) {
+                if (x == (1 << i)) {
+                    p = i;
+                    break;
                 }
+                x -= (1 << i);
+                ans.pb(x);
             }
-     } 
-     ans.push_back(1);
-     cout<<ans.size()<<nn;
-     cout<<ans<<nn;
+        }
+        while (p > 0) {
+            x -= (1 << (p - 1));
+            ans.pb(x);
+            --p;
+        }
+        cout << (ans.size()) << "\n";
+        for (int y : ans) {
+            cout << y << " ";
+        }
+        cout << "\n";
+
     }
-
-
     return 0;
 }

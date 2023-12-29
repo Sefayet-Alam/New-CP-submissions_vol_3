@@ -160,42 +160,76 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    cin>>t;
+    //cin>>t;
 
     while(t--){
-      ll n,q;
-      cin>>n>>q;
-      string s;
-      cin>>s;
-      vector<ll>pos(n,0);
-      for(ll i=0;i<n-2;i++){
-        if(s[i]==s[i+1] || s[i]==s[i+2] || s[i+1]==s[i+2]){
-            pos[i]=1;
+      ll n;
+      cin>>n;
+      vector<ll>vec(n);
+      cin>>vec;
+      sort(all(vec));
+     
+      ll negs=-1;
+      ll pos=-1;
+      ll np=0;
+      ll ng=0;
+      vector<pll>alls;
+      for(ll i=0;i<n;i++){
+        if(vec[i]>=0) {pos=i;break;}
+      }
+      for(ll i=0;i<n;i++){
+        if(vec[i]>=0){np++;}
+        else {negs=i;ng++;}
+      }
+      vector<pll>ans;
+      if(negs==-1){
+        //all positive
+        ll tomin=vec[0];
+        ll toadd=vec[n-1];
+        for(ll i=1;i<n-1;i++){
+          ans.push_back({tomin,vec[i]});
+          tomin-=vec[i];
+        }
+        ans.push_back({toadd,tomin});
+        toadd-=tomin;
+        cout<<toadd<<nn;
+        for(auto it:ans){
+          cout<<it<<nn;
+        }
+        continue;
+      }
+      if(pos==-1){
+        //all negative
+        ll toadd=vec[n-1];
+        for(ll i=0;i<n-1;i++){
+          ans.push_back({toadd,vec[i]});
+          toadd-=vec[i];
+        }
+        cout<<toadd<<nn;
+        for(auto it:ans) cout<<it<<nn;
+        continue;
+      }
+      
+      ll tomin=-1;
+      if(np>1){
+        tomin=vec[0];
+        for(ll i=max(pos,1LL);i<n-1;i++){
+          ans.push_back({tomin,vec[i]});
+          tomin-=vec[i];
+          vec[0]=tomin;
         }
       }
-      vector<ll>pref(n,0);
-      pref[0]=pos[0];
-      for(ll i=1;i<n;i++){
-        pref[i]=pref[i-1]+pos[i];
+      ll toadd=vec[n-1];
+      for(ll i=0;i<=min(n-2,negs);i++){
+        ans.push_back({toadd,vec[i]});
+        toadd-=vec[i];
       }
-    //   cout<<pos<<nn;
-      ll l,r;
-      while(q--){
-        cin>>l>>r;
-        l--;
-        r--;
-        if(r-l+1<3){
-            cout<<"NO"<<nn;
-            continue;
-        }
-        ll curr=pref[r-2];
-        if(l) curr-=pref[l-1];
-        // cout<<curr<<nn;
-        if(r-l+1>=3 && curr>0) cout<<"YES"<<nn;
-        else cout<<"NO"<<nn;
+      cout<<toadd<<nn;
+      for(auto it:ans){
+        cout<<it<<nn;
       }
+
     }
-
-
     return 0;
 }
+
