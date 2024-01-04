@@ -57,7 +57,7 @@ using namespace __gnu_pbds;
 #define md                  10000007
 #define PI 3.1415926535897932384626
 const double EPS = 1e-9;
-const ll N = 100;
+const ll N = 2e5+10;
 const ll M = 1e9+7;
 
 
@@ -152,30 +152,10 @@ struct custom_hash {
         return splitmix64(x + FIXED_RANDOM);
     }
 };
-
-ll n,m,t=0;
-vector<string> g;
-vpll Move={ {1,0},{-1,0},{0,1},{0,-1} };
-
-bool vis[N][N];
-
-bool isValid(ll x,ll y){
-    return (x>=0 && y>=0 && x<n && y<m && vis[x][y]==0 && g[x][y]=='#');
-}
-ll dfs(pll vertex){
-   
-    vis[vertex.first][vertex.second]=true;
-    ll ret=1;
-
-    for(pll &child: Move){
-        ll x=child.first+vertex.first;
-        ll y=child.second+vertex.second;
-        if(!isValid(x,y)) continue;
-        ret+=dfs({x,y});
-    }
-    return ret;
-}
-
+int ans;
+const int Maxn = 1e3+20;
+string mat[Maxn];
+bool cmp[Maxn];
 int main()
 {
     fast;
@@ -186,31 +166,29 @@ int main()
     //cin>>t;
 
     while(t--){
-      
-      cin>>n>>m;
-      string s;
-      for(ll i=0;i<n;i++){
-        cin>>s;
-        g.push_back(s);
-      }
-      mem(vis,0);
-      bool f=0;
-      for(ll i=0;i<n;i++){
-        for(ll j=0;j<m;j++){
-          if(!vis[i][j] && g[i][j]=='#'){
-            ll cnt=0;
-            cnt=dfs({i,j});
-            // cout<<i<<" "<<j<<" "<<cnt<<" "<<g[i][j]<<nn;
-            if(cnt==1){
-              f=1;
-              break;
+        int n,m;
+    cin >> n >> m;
+    for(int i = 0; i < n;i++){
+        cin >> mat[i];
+    }
+    for(int j = 0; j < m;j++){
+        bool flag = 0;
+        for(int i = 1; i < n;i++){
+            if(!cmp[i-1] && mat[i][j] < mat[i-1][j]){
+                ans++;
+                flag = 1;
+                break;
             }
-          }
         }
-        if(f) break;
-      }
-      if(f) cout<<"No"<<nn;
-      else cout<<"Yes"<<nn;
+        if(flag)
+            continue;
+        for(int i = 1; i < n;i++){
+            if(mat[i][j] != mat[i-1][j])
+                cmp[i-1] = true;
+        }
+    }
+    cout << ans << endl;
+      
     }
 
 

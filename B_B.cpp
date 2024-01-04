@@ -160,28 +160,25 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    //cin>>t;
+    cin>>t;
 
     while(t--){
-      string s;
-      getline(cin,s);
-      ll n=s.size();
-      ll k=0;
-      ll d=0;
-      for(ll i=0;i<n-1;i++){
-        if(s[i]==':' && s[i+1]==')'){
-            if(k==2) d=1;
-            k=1;
+    ll n,k;
+    cin>>n>>k;
+    string s;
+    cin>>s;
+    bool f=0;
+    ll cnt=0;
+    ll maxm=0;
+    for(ll i=0;i<n;i++){
+        if(s[i]=='*'){
+            cnt++;
+            maxm=max(cnt,maxm);
         }
-        else if(s[i]==':' && s[i+1]=='('){
-            if(k==1) d=1;
-            k=2;
-        }
-      }
-      if(d) cout<<"double agent"<<nn;
-      else if(k==1) cout<<"alive"<<nn;
-      else if(k==2) cout<<"undead"<<nn;
-      else cout<<"machine"<<nn;
+        else cnt=0;
+    }  
+    if(maxm>=k) cout<<"YES"<<nn;
+    else cout<<"NO"<<nn;
     }
 
 

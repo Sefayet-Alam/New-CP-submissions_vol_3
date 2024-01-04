@@ -160,18 +160,18 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    //cin>>t;
+    cin>>t;
 
     while(t--){
-        string s;
-        cin>>s;
-        ll n=s.size();
-        ll ans=0;
-        for(ll i=0;i<n/2;i++){
-            if(s[i]!=s[n-1-i]) ans++;
-        }
-        if(ans==1 || (n%2 && ans==0)) cout<<"YES"<<nn;
-        else cout<<"NO"<<nn;
+      ll n;
+      cin>>n;
+      vector<ll>vec(n);
+      cin>>vec;
+      ll od=0;
+      for(ll i=0;i<n;i++){
+        if(vec[i]%2) od++;
+      }
+      cout<<od/2<<nn;
     }
 
 

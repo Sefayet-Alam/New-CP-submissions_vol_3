@@ -160,12 +160,14 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    //cin>>t;
+    cin>>t;
 
     while(t--){
-        ll n,m,x,y;
-        cin>>n>>m>>x>>y;
-        ll ans=n*x+m*y;
+        ll n;
+        cin>>n;
+        ll k=n;
+        n/=10;
+        ll ans=k-n*10;
         cout<<ans<<nn;
     }
 

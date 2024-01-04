@@ -57,7 +57,7 @@ using namespace __gnu_pbds;
 #define md                  10000007
 #define PI 3.1415926535897932384626
 const double EPS = 1e-9;
-const ll N = 100;
+const ll N = 2e5+10;
 const ll M = 1e9+7;
 
 
@@ -153,29 +153,6 @@ struct custom_hash {
     }
 };
 
-ll n,m,t=0;
-vector<string> g;
-vpll Move={ {1,0},{-1,0},{0,1},{0,-1} };
-
-bool vis[N][N];
-
-bool isValid(ll x,ll y){
-    return (x>=0 && y>=0 && x<n && y<m && vis[x][y]==0 && g[x][y]=='#');
-}
-ll dfs(pll vertex){
-   
-    vis[vertex.first][vertex.second]=true;
-    ll ret=1;
-
-    for(pll &child: Move){
-        ll x=child.first+vertex.first;
-        ll y=child.second+vertex.second;
-        if(!isValid(x,y)) continue;
-        ret+=dfs({x,y});
-    }
-    return ret;
-}
-
 int main()
 {
     fast;
@@ -186,34 +163,49 @@ int main()
     //cin>>t;
 
     while(t--){
-      
-      cin>>n>>m;
-      string s;
-      for(ll i=0;i<n;i++){
-        cin>>s;
-        g.push_back(s);
-      }
-      mem(vis,0);
-      bool f=0;
-      for(ll i=0;i<n;i++){
-        for(ll j=0;j<m;j++){
-          if(!vis[i][j] && g[i][j]=='#'){
-            ll cnt=0;
-            cnt=dfs({i,j});
-            // cout<<i<<" "<<j<<" "<<cnt<<" "<<g[i][j]<<nn;
-            if(cnt==1){
-              f=1;
-              break;
-            }
-          }
+        ll n;
+        cin>>n;
+        vector<ll>vec(n);
+        cin>>vec;
+        QP<ll>pqq;
+        map<ll,ll>mpp;
+        for(ll i=0;i<n;i++){
+           if(vec[i]!=0) mpp[vec[i]]=i+1;
         }
-        if(f) break;
-      }
-      if(f) cout<<"No"<<nn;
-      else cout<<"Yes"<<nn;
+        deque<ll>rems;
+        for(ll i=1;i<=n;i++){
+            if(!mpp[i]){
+                pqq.push(i);
+                rems.push_back(i);
+            }
+        }
+        sort(all(rems));
+        ll k=rems.back();
+        rems.pop_back();
+        rems.push_front(k);
+        ll idx=0;
+       
+        ll sz=rems.size();
+        for(ll i=0;i<n;i++){
+            if(vec[i]==0){
+                // cout<<idx<<" "<<rems[idx]<<" "<<rems[(idx+1)%n]<<nn;
+                if(i+1==rems[idx%sz]){
+                    // cout<<idx<<" "<<rems[idx]<<" "<<rems[(idx+1)%n]<<nn;
+                    swap(rems[idx],rems[(idx+1)%sz]);
+                }
+                idx++;
+            }
+        }
+       
+        for(ll i=0;i<n;i++){
+            if(vec[i]==0){
+                vec[i]=rems.front();
+                rems.pop_front();
+            }
+        }
+        cout<<vec<<nn;
     }
 
 
     return 0;
 }
-

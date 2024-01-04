@@ -152,7 +152,11 @@ struct custom_hash {
         return splitmix64(x + FIXED_RANDOM);
     }
 };
-
+const int maxn = 1e3 + 20;
+const long long inf = 1e18L + 20;
+int a[maxn];
+long long dist[maxn][maxn];
+vector<pair<int, int>> adj[maxn];
 int main()
 {
     fast;
@@ -160,13 +164,61 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    //cin>>t;
+    cin>>t;
 
-    while(t--){
-        priority_queue<ll>pqq;
+    while(t--)
+    {
+        int n, m;
+		cin >> n >> m;
+		for (int u = 1; u <= n; u++) {
+			adj[u].clear();
+		}
+		for (int i = 0; i < m; i++) {
+			int u, v, w;
+			cin >> u >> v >> w;
+			adj[u].emplace_back(v, w);
+			adj[v].emplace_back(u, w);
+		}
+		for (int u = 1; u <= n; u++) {
+			cin >> a[u];
+		}
+		for (int u = 1; u <= n; u++) {
+			for (int b = 1; b <= n; b++) {
+				dist[u][b] = inf;
+			}
+		}
+		dist[1][1] = 0;
+		priority_queue<pair<long long, pair<int, int>>, vector<pair<long long, pair<int, int>>>, greater<pair<long long, pair<int, int>>>> q;
+		q.emplace(0, make_pair(1, 1));
+		while (!q.empty()) {
+		
+            ll u = q.top().second.first;
+            ll b=q.top().second.second;
+			if (dist[u][b] != q.top().first) {
+				q.pop();
+				continue;
+			}
+			q.pop();
+			for (auto it: adj[u]) {
+                auto v=it.first;
+                auto w=it.second;
+				long long nxt_dist = dist[u][b] + a[b] * w;
+				int nxt_b = (a[v] < a[b] ? v : b);
+				if (nxt_dist < dist[v][nxt_b]) {
+					dist[v][nxt_b] = nxt_dist;
+					q.emplace(nxt_dist, make_pair(v, nxt_b));
+				}
+			}
+		}
+		long long res = inf;
+		for (int u = 1; u <= n; u++) {
+			res = min(res, dist[n][u]);
+		}
+		cout << res << '\n';
+
+      
     }
 
 
     return 0;
 }
-
