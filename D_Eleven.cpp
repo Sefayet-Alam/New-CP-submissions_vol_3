@@ -152,24 +152,42 @@ struct custom_hash {
         return splitmix64(x + FIXED_RANDOM);
     }
 };
-vector<bool> Primes(N,1);
-vector<ll>primenos;
-void SieveOfEratosthenes(ll n)
-{
-    Primes[1]=0;
-    for (ll i=2;i*i<=n;i++) {
-    if(Primes[i]==1){     
-    for(ll j=i*i;j<=n;j+=i)
-        Primes[j]=0;
-        }
+ll FM[N];
+int is_initialized = 0;
+ll factorialMod(ll n, ll x){
+    if (!is_initialized){
+        FM[0] = 1 % x;
+        for (int i = 1; i < N; i++)
+            FM[i] = (FM[i - 1] * i) % x;
+        is_initialized = 1;
     }
-    for(ll i=1;i<n;i++){
-        if(Primes[i]){
-            primenos.push_back(i);
-        }
-    }
+    return FM[n];
 }
 
+ll powerMod(ll x, ll y, ll p){
+    ll res = 1 % p;
+    x = x % p;
+    while (y > 0){
+        if (y & 1) res = (res * x) % p;
+        y = y >> 1;
+        x = (x * x) % p;
+    }
+    return res;
+}
+
+ll inverseMod(ll a, ll x){
+    return powerMod(a, x - 2, x);
+}
+
+ll nCrMod(ll n, ll r, ll x){
+    if (r == 0) return 1;
+    if (r > n) return 0;
+    ll res = factorialMod(n, x);
+    ll fr = factorialMod(r, x);
+    ll zr = factorialMod(n - r, x);
+    res = (res * inverseMod((fr * zr) % x, x)) % x;
+    return res;
+}
 int main()
 {
     fast;
@@ -178,36 +196,36 @@ int main()
      //ll tno=1;;
      t=1;
     //cin>>t;
-    SieveOfEratosthenes(105);
+
     while(t--){
-        ll n;
-        cin>>n;
-        map<ll,ll>mpp;
-        for(auto it:primenos){
-            if(it>n) break;
-            ll k=n;
-            ll div=it;
-            ll curr=0;
-            while(k>=div){
-                curr+=k/div;
-                div*=it;
-            }
-            mpp[it]=curr;
+      ll n;
+      cin>>n;
+      vector<ll>vec(n+1);
+      cin>>vec;
+      map<ll,ll>pos;
+      ll fal=-1;
+      ll fal2=-1;
+      for(ll i=1;i<=n+1;i++){
+        if(!pos[vec[i-1]]){
+            pos[vec[i-1]]=i;
         }
-        ll twofive = 0, three = 0, five = 0, sevfive = 0, fifteen = 0;
-        for(auto i:mpp){
-            if (i.second >= 74) sevfive++;
-            if (i.second >= 24) twofive++;
-            if (i.second >= 14) fifteen++;
-            if (i.second >= 4) five++;
-            if (i.second >= 2) three++;
+        else{
+            fal=pos[vec[i-1]]-1;
+            fal2=n+1-i;
         }
-        ll ans = 0;
-        ans += max((twofive)*(three-1),0LL);
-        ans += max((sevfive),0LL);
-        ans += max((fifteen) * (five-1),0LL);
-        ans += max((five) * (five - 1) * (three-2)/2,0LL);
-        cout << ans << endl;
+      }
+      ll total=fal+fal2;
+    //   cout<<fal<<" "<<fal2<<nn;
+      for(ll i=1;i<=n+1;i++){
+        if(i==1) cout<<n<<nn;
+        else{
+            ll tot=nCrMod(n+1,i,M);
+            ll tomin=nCrMod(total,i-1,M);
+            ll ans=(tot-tomin)%M;
+            if(ans<0) ans+=M;
+            cout<<ans<<nn;
+        }
+      }
     }
 
 

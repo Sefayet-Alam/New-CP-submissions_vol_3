@@ -152,23 +152,6 @@ struct custom_hash {
         return splitmix64(x + FIXED_RANDOM);
     }
 };
-vector<bool> Primes(N,1);
-vector<ll>primenos;
-void SieveOfEratosthenes(ll n)
-{
-    Primes[1]=0;
-    for (ll i=2;i*i<=n;i++) {
-    if(Primes[i]==1){     
-    for(ll j=i*i;j<=n;j+=i)
-        Primes[j]=0;
-        }
-    }
-    for(ll i=1;i<n;i++){
-        if(Primes[i]){
-            primenos.push_back(i);
-        }
-    }
-}
 
 int main()
 {
@@ -178,39 +161,30 @@ int main()
      //ll tno=1;;
      t=1;
     //cin>>t;
-    SieveOfEratosthenes(105);
+
     while(t--){
-        ll n;
-        cin>>n;
-        map<ll,ll>mpp;
-        for(auto it:primenos){
-            if(it>n) break;
-            ll k=n;
-            ll div=it;
-            ll curr=0;
-            while(k>=div){
-                curr+=k/div;
-                div*=it;
-            }
-            mpp[it]=curr;
+        ll n,m;
+        cin>>n>>m;
+        vector<ll>a(n),b(n);
+        cin>>a>>b;
+        ll maxm=LLONG_MAX;
+        sort(all(a));
+        sort(all(b));
+        for(ll i=0;i<n;i++){
+           
+           vl tmp;
+           ll avgmod=(m+b[i]-a[0])%m;
+           for(ll j=0;j<n;j++){
+                tmp.push_back((a[j]+avgmod)%m);
+           }
+           sort(all(tmp));
+           if(b==tmp){
+            maxm=min(maxm,avgmod);
+           }
         }
-        ll twofive = 0, three = 0, five = 0, sevfive = 0, fifteen = 0;
-        for(auto i:mpp){
-            if (i.second >= 74) sevfive++;
-            if (i.second >= 24) twofive++;
-            if (i.second >= 14) fifteen++;
-            if (i.second >= 4) five++;
-            if (i.second >= 2) three++;
-        }
-        ll ans = 0;
-        ans += max((twofive)*(three-1),0LL);
-        ans += max((sevfive),0LL);
-        ans += max((fifteen) * (five-1),0LL);
-        ans += max((five) * (five - 1) * (three-2)/2,0LL);
-        cout << ans << endl;
+        cout<<maxm<<nn;
     }
 
 
     return 0;
 }
-

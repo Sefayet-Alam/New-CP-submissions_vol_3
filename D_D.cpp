@@ -57,7 +57,7 @@ using namespace __gnu_pbds;
 #define md                  10000007
 #define PI 3.1415926535897932384626
 const double EPS = 1e-9;
-const ll N = 100;
+const ll N = 2e5+10;
 const ll M = 1e9+7;
 
 
@@ -153,29 +153,6 @@ struct custom_hash {
     }
 };
 
-ll n,m,t=0;
-vector<string> g;
-vpll Move={ {1,0},{-1,0},{0,1},{0,-1} };
-
-bool vis[N][N];
-
-bool isValid(ll x,ll y){
-    return (x>=0 && y>=0 && x<n && y<m && vis[x][y]==0 && g[x][y]=='#');
-}
-ll dfs(pll vertex){
-   
-    vis[vertex.first][vertex.second]=true;
-    ll ret=1;
-
-    for(pll &child: Move){
-        ll x=child.first+vertex.first;
-        ll y=child.second+vertex.second;
-        if(!isValid(x,y)) continue;
-        ret+=dfs({x,y});
-    }
-    return ret;
-}
-
 int main()
 {
     fast;
@@ -186,34 +163,27 @@ int main()
     //cin>>t;
 
     while(t--){
-      
-      cin>>n>>m;
-      string s;
+      double r,d;
+      cin>>r>>d;
+      r=r-d;
+      ll n;
+      cin>>n;
+      ll ans=0;
+      // cout<<r<<" "<<d<<" "<<r+d<<nn;
       for(ll i=0;i<n;i++){
-        cin>>s;
-        g.push_back(s);
-      }
-      mem(vis,0);
-      bool f=0;
-      for(ll i=0;i<n;i++){
-        for(ll j=0;j<m;j++){
-          if(!vis[i][j] && g[i][j]=='#'){
-            ll cnt=0;
-            cnt=dfs({i,j});
-            // cout<<i<<" "<<j<<" "<<cnt<<" "<<g[i][j]<<nn;
-            if(cnt==1){
-              f=1;
-              break;
-            }
-          }
+        double x,y,r2;
+        cin>>x>>y>>r2;
+        double frmcntr=sqrt(x*x+y*y);
+        double dist=1.00*(frmcntr+r2*1.00);
+        double dist2=1.00*(frmcntr-r2*1.00);
+        // Setpre(3)<<x<<" "<<y<<" "<<r2<<" "<<dist<<" "<<dist2<<nn;;
+        if(dist>=r*1.00 && dist<=(r+d)*1.00 && dist2>=r*1.00 && dist2<=(r+d)*1.00){
+          // cout<<x<<" "<<y<<" "<<r2<<nn;
+          ans++;
         }
-        if(f) break;
-      }
-      if(f) cout<<"No"<<nn;
-      else cout<<"Yes"<<nn;
+      }     
+      cout<<ans<<nn;
     }
-
-
     return 0;
 }
 

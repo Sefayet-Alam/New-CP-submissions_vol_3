@@ -57,7 +57,7 @@ using namespace __gnu_pbds;
 #define md                  10000007
 #define PI 3.1415926535897932384626
 const double EPS = 1e-9;
-const ll N = 2e5+10;
+const ll N = 2e3+10;
 const ll M = 1e9+7;
 
 
@@ -152,24 +152,31 @@ struct custom_hash {
         return splitmix64(x + FIXED_RANDOM);
     }
 };
-vector<bool> Primes(N,1);
-vector<ll>primenos;
-void SieveOfEratosthenes(ll n)
-{
-    Primes[1]=0;
-    for (ll i=2;i*i<=n;i++) {
-    if(Primes[i]==1){     
-    for(ll j=i*i;j<=n;j+=i)
-        Primes[j]=0;
-        }
-    }
-    for(ll i=1;i<n;i++){
-        if(Primes[i]){
-            primenos.push_back(i);
-        }
-    }
-}
 
+ll dp[N];
+ll n;
+vector<pll>vec;
+
+ll func(ll i){
+    if(i>=n-1) return 0;
+
+    if(dp[i]!=-1) return dp[i];
+    ll minm=INT_MAX;
+    bool f=0;
+    ll ans=func(i+1);
+    for(ll j=i+1;j<n;j++){
+        if(vec[j].first>vec[i].second) break;
+        else{
+            minm=min(minm,vec[j].second);
+            f=1;
+        }
+    }
+    ll p=i+1;
+    while(p<n && vec[p].first<=max(minm,vec[i].second)) p++;
+    if(f) ans=max(ans,2+func(p));
+
+    return dp[i]=ans;
+}
 int main()
 {
     fast;
@@ -177,37 +184,23 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    //cin>>t;
-    SieveOfEratosthenes(105);
+    cin>>t;
+
     while(t--){
-        ll n;
         cin>>n;
-        map<ll,ll>mpp;
-        for(auto it:primenos){
-            if(it>n) break;
-            ll k=n;
-            ll div=it;
-            ll curr=0;
-            while(k>=div){
-                curr+=k/div;
-                div*=it;
-            }
-            mpp[it]=curr;
+        mem(dp,-1);
+        vec.clear();
+        
+        for(ll i=0;i<n;i++){
+            ll l,r;
+            cin>>l>>r;
+            vec.push_back({l,r});
         }
-        ll twofive = 0, three = 0, five = 0, sevfive = 0, fifteen = 0;
-        for(auto i:mpp){
-            if (i.second >= 74) sevfive++;
-            if (i.second >= 24) twofive++;
-            if (i.second >= 14) fifteen++;
-            if (i.second >= 4) five++;
-            if (i.second >= 2) three++;
-        }
-        ll ans = 0;
-        ans += max((twofive)*(three-1),0LL);
-        ans += max((sevfive),0LL);
-        ans += max((fifteen) * (five-1),0LL);
-        ans += max((five) * (five - 1) * (three-2)/2,0LL);
-        cout << ans << endl;
+        sort(all(vec));
+      
+        ll totpars=func(0);
+        cout<<n-totpars<<nn;
+       
     }
 
 

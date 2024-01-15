@@ -163,18 +163,26 @@ int main()
     cin>>t;
 
     while(t--){
-      ll n;
-      cin>>n;
-      vector<ll>vec(n);
-      cin>>vec;
-      ll od=0;
-      for(ll i=0;i<n;i++){
-        if(vec[i]%2) od++;
-      }
-      cout<<od/2<<nn;
+    string s;
+    cin>>s;
+    ll n=s.size();
+    ll sz=0;
+    ll curr=0;
+    char fc=s[0];
+    char lc=s[n-1];
+    ll maxm=0;
+    for(ll i=0;i<n;i++){
+        if(s[i]==fc || s[i]==lc){
+            curr=0;
+        }
+        else{
+            curr++;
+            maxm=max(maxm,curr);
+        }
     }
-
-
+    if(maxm==0) cout<<-1<<nn;
+    else cout<<maxm<<nn;
+    }
     return 0;
 }
 

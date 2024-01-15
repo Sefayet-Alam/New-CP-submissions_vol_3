@@ -160,25 +160,41 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    cin>>t;
+    //cin>>t;
 
     while(t--){
-    ll n,k;
-    cin>>n>>k;
-    string s;
-    cin>>s;
-    bool f=0;
-    ll cnt=0;
-    ll maxm=0;
-    for(ll i=0;i<n;i++){
-        if(s[i]=='*'){
-            cnt++;
-            maxm=max(cnt,maxm);
+        ll n;
+        cin>>n;
+        ll up=0;
+        ll lo=0;
+        string s;
+        cin>>s;
+        for(ll i=0;i<n;i++){
+            if(s[i]=='X') up++;
+            else lo++;
         }
-        else cnt=0;
-    }  
-    if(maxm>=k) cout<<"YES"<<nn;
-    else cout<<"NO"<<nn;
+        ll ans=0;
+        for(ll i=0;i<n;i++){
+            if(s[i]=='x'){
+
+                if(lo>up){
+                    ans++;
+                    up++;
+                    lo--;
+                    s[i]='X';
+                }
+            }
+            else{
+                if(up>lo){
+                    ans++;
+                    lo++;
+                    up--;
+                    s[i]='x';
+                }
+            }
+        }
+        cout<<ans<<nn;
+        cout<<s<<nn;
     }
 
 

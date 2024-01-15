@@ -152,65 +152,43 @@ struct custom_hash {
         return splitmix64(x + FIXED_RANDOM);
     }
 };
-vector<bool> Primes(N,1);
-vector<ll>primenos;
-void SieveOfEratosthenes(ll n)
-{
-    Primes[1]=0;
-    for (ll i=2;i*i<=n;i++) {
-    if(Primes[i]==1){     
-    for(ll j=i*i;j<=n;j+=i)
-        Primes[j]=0;
-        }
+
+ll dp[100003][1003];
+ll n, z, x;
+vl a(100003);
+ll solve(ll pos, ll nx){
+    if(pos >= n){
+        if((nx + z) % x == 0) return (z+x-1)/x;
+        else return 1e17;
     }
-    for(ll i=1;i<n;i++){
-        if(Primes[i]){
-            primenos.push_back(i);
-        }
-    }
+    if(dp[pos][nx] != -1) return dp[pos][nx];
+    // ll val = 1e17;
+    // if(nx + a[pos] >= x){
+        return dp[pos][nx] = min((nx + a[pos])/x + solve(pos + 1, (nx + a[pos]) % x), solve(pos + 1, nx)) ;
+    // }
 }
+void solve(int ct) {
 
-int main()
-{
-    fast;
-     ll t;
-    //setIO();
-     //ll tno=1;;
-     t=1;
-    //cin>>t;
-    SieveOfEratosthenes(105);
-    while(t--){
-        ll n;
-        cin>>n;
-        map<ll,ll>mpp;
-        for(auto it:primenos){
-            if(it>n) break;
-            ll k=n;
-            ll div=it;
-            ll curr=0;
-            while(k>=div){
-                curr+=k/div;
-                div*=it;
-            }
-            mpp[it]=curr;
+    cin >> n >> x >> z;
+    for(ll i=0;i<n+1;i++){
+        for(ll j=0;j<x+1;j++){
+            dp[i][j]=-1;
         }
-        ll twofive = 0, three = 0, five = 0, sevfive = 0, fifteen = 0;
-        for(auto i:mpp){
-            if (i.second >= 74) sevfive++;
-            if (i.second >= 24) twofive++;
-            if (i.second >= 14) fifteen++;
-            if (i.second >= 4) five++;
-            if (i.second >= 2) three++;
-        }
-        ll ans = 0;
-        ans += max((twofive)*(three-1),0LL);
-        ans += max((sevfive),0LL);
-        ans += max((fifteen) * (five-1),0LL);
-        ans += max((five) * (five - 1) * (three-2)/2,0LL);
-        cout << ans << endl;
     }
+    // vi a(n);
+    a.resize(n);
+    cin>>a;
 
-
-    return 0;
+    ll ans = solve(0, 0);
+    if(ans == 1e17) cout << -1 << endl;
+    else cout << ans << endl;
+    // cout << cnt << endl;
 }
-
+int32_t main() {
+    ll t = 1;
+    cin >> t;
+    for (int ct = 1; ct <= t; ct++) {
+        solve(ct);
+    }
+    
+}

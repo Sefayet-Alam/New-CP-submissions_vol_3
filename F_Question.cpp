@@ -152,23 +152,6 @@ struct custom_hash {
         return splitmix64(x + FIXED_RANDOM);
     }
 };
-vector<bool> Primes(N,1);
-vector<ll>primenos;
-void SieveOfEratosthenes(ll n)
-{
-    Primes[1]=0;
-    for (ll i=2;i*i<=n;i++) {
-    if(Primes[i]==1){     
-    for(ll j=i*i;j<=n;j+=i)
-        Primes[j]=0;
-        }
-    }
-    for(ll i=1;i<n;i++){
-        if(Primes[i]){
-            primenos.push_back(i);
-        }
-    }
-}
 
 int main()
 {
@@ -178,36 +161,52 @@ int main()
      //ll tno=1;;
      t=1;
     //cin>>t;
-    SieveOfEratosthenes(105);
+
     while(t--){
-        ll n;
-        cin>>n;
-        map<ll,ll>mpp;
-        for(auto it:primenos){
-            if(it>n) break;
-            ll k=n;
-            ll div=it;
-            ll curr=0;
-            while(k>=div){
-                curr+=k/div;
-                div*=it;
+      ll n;
+      cin>>n;
+      vector<ll>vec(n);
+      cin>>vec;
+      vector<ll>ans,ans2;
+      set<ll>stt;
+      ordered_set<ll>os;
+      for(ll i=0;i<n;i++){
+        os.insert(vec[i]);
+        // cout<<vec[i]<<" "<<os.order_of_key(vec[i])<<nn;
+        if(os.order_of_key(vec[i])==os.size()-1){
+            ans.push_back(vec[i]);
+        }
+      }
+      os.clear();
+      for(ll i=n-1;i>=0;i--){
+        os.insert(vec[i]);
+        // cout<<vec[i]<<" "<<os.order_of_key(vec[i])<<nn;
+        if(os.order_of_key(vec[i])==0){
+            ans2.push_back(vec[i]);
+        }
+      }
+    
+      map<ll,ll>vis;
+      for(ll i=0;i<ans.size();i++){
+        vis[ans[i]]++;
+       
+      } 
+      for(ll i=0;i<ans2.size();i++){
+       
+        vis[ans2[i]]++;
+      } 
+      vector<ll>finl;
+      for(ll i=0;i<n;i++){
+        if(vis[vec[i]]==2) finl.push_back(vec[i]);
+      }
+        cout<<finl.size()<<" ";
+        if(finl.size()){
+            if(finl.size()>100){
+                for(ll i=0;i<100;i++) cout<<finl[i]<<" ";
+                cout<<nn;
             }
-            mpp[it]=curr;
+            else cout<<finl<<nn;
         }
-        ll twofive = 0, three = 0, five = 0, sevfive = 0, fifteen = 0;
-        for(auto i:mpp){
-            if (i.second >= 74) sevfive++;
-            if (i.second >= 24) twofive++;
-            if (i.second >= 14) fifteen++;
-            if (i.second >= 4) five++;
-            if (i.second >= 2) three++;
-        }
-        ll ans = 0;
-        ans += max((twofive)*(three-1),0LL);
-        ans += max((sevfive),0LL);
-        ans += max((fifteen) * (five-1),0LL);
-        ans += max((five) * (five - 1) * (three-2)/2,0LL);
-        cout << ans << endl;
     }
 
 

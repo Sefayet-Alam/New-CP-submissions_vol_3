@@ -163,12 +163,10 @@ int main()
     cin>>t;
 
     while(t--){
-        ll n;
-        cin>>n;
-        ll k=n;
-        n/=10;
-        ll ans=k-n*10;
-        cout<<ans<<nn;
+        ll x;
+        cin>>x;
+        if(x>98) cout<<"YES"<<nn;
+        else cout<<"NO"<<nn;
     }
 
 
