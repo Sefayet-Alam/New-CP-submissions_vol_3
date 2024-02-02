@@ -160,13 +160,24 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    cin>>t;
+    //cin>>t;
 
     while(t--){
-        vector<ll>vec(3);
-        cin>>vec;
-        sort(all(vec));
-        cout<<vec[1]<<nn;
+        string s;
+        cin>>s;
+        map<char,ll>freq;
+        for(ll i=0;i<s.size();i++){
+            freq[s[i]]++;
+        }
+        ll maxm=0;
+        char ans;
+        for(auto it:freq){
+            if(it.second>maxm){
+                maxm=it.second;
+                ans=it.first;
+            }
+        }
+        cout<<ans<<nn;
     }
 
 

@@ -160,13 +160,36 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    cin>>t;
+    //cin>>t;
 
     while(t--){
-        vector<ll>vec(3);
-        cin>>vec;
-        sort(all(vec));
-        cout<<vec[1]<<nn;
+        ll n;
+        cin>>n;
+        string s;
+        cin>>s;
+        set<char>stt;
+        ll ans=n;
+        for(ll i=0;i<n;i++) stt.insert(s[i]);
+        ll tot=stt.size();
+        // deb(tot);
+        stt.clear();
+        ll l=0,r=-1;
+        map<ll,ll>vis;
+        while(r<n){
+            if(stt.size()<tot){
+                r++;
+                stt.insert(s[r]);
+                vis[s[r]]++;
+            }
+            else if(stt.size()==tot){    
+                ans=min(ans,r-l+1);
+                vis[s[l]]--;
+                if(vis[s[l]]==0) stt.erase(s[l]);
+                l++;
+            }
+            //  cout<<l<<" "<<r<<" "<<stt.size()<<nn;
+        }
+        cout<<ans<<nn;
     }
 
 

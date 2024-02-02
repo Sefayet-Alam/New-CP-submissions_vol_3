@@ -160,16 +160,17 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    cin>>t;
+    //cin>>t;
 
     while(t--){
-        vector<ll>vec(3);
-        cin>>vec;
-        sort(all(vec));
-        cout<<vec[1]<<nn;
+        string s;
+        cin>>s;
+        ll n=s.size();
+        cout<<3<<nn;
+        cout<<"R"<<" "<<n-1<<nn;
+        cout<<"L"<<" "<<n<<nn;
+        cout<<"L"<<" "<<2<<nn;
     }
-
-
     return 0;
 }
 

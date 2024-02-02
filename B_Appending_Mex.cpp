@@ -160,13 +160,25 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    cin>>t;
+    //cin>>t;
 
     while(t--){
-        vector<ll>vec(3);
+        ll n;
+        cin>>n;
+        vector<ll>vec(n);
         cin>>vec;
-        sort(all(vec));
-        cout<<vec[1]<<nn;
+        ll ans=-1;
+        ll mex=0;
+        for(ll i=0;i<n;i++){
+            if(vec[i]==mex){
+                mex++;
+            }
+            else if(vec[i]>mex){
+                ans=i+1;
+                break;
+            }
+        }
+        cout<<ans<<nn;
     }
 
 

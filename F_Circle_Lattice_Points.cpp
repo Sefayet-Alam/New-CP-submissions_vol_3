@@ -67,8 +67,6 @@ inline ll LCM(ll a, ll b) { return a * b / GCD(a, b); }
 inline ll Ceil(ll p, ll q)  {return p < 0 ? p / q : p / q + !!(p % q);}
 inline ll Floor(ll p, ll q) {return p > 0 ? p / q : p / q - !!(p % q);}
 inline double logb(ll base,ll num){ return (double)log(num)/(double)log(base);}
-inline bool isPerfectSquare(long double x){ if (x >= 0) { long long sr = sqrt(x);return (sr * sr == x); }return false; }
-double euclidean_distance(ll x1,ll y1,ll x2,ll y2){double a=(x2-x1)*(x2-x1);double b=(y2-y1)*(y2-y1);double c=(double)sqrt(a+b);return c;}
 int popcount(ll x){return __builtin_popcountll(x);};
 int poplow(ll x){return __builtin_ctzll(x);};
 int pophigh(ll x){return 63 - __builtin_clzll(x);};
@@ -152,24 +150,60 @@ struct custom_hash {
         return splitmix64(x + FIXED_RANDOM);
     }
 };
-
+double yy;
+const ll mx=1e6;
+const long double eps=1e-8;
 int main()
 {
     fast;
-     ll t;
-    //setIO();
-     //ll tno=1;;
-     t=1;
-    cin>>t;
+    long double x,y,r;cin>>x>>y>>r;
+    ll xu=x+r+3;
+    ll xd=x-r-3;
+    ll ly=y;
+    ll ry=ly+1;
+    ll yy=ly;
+    ly--;
+    ll ans=0;
+    for(ll i=xd;i<=xu;i++){
+        ll L=ry,R=mx,res1=0,mid;
+        while(L<=R){
+            mid=(L+R)/2;
+            if(fabs(((i-x)*(i-x)+(mid-y)*(mid-y))-r*r)<eps){
+                res1=max(res1,mid-ry+1);
+                L=mid+1;
+            }
+            else if(((i-x)*(i-x)+(mid-y)*(mid-y))>r*r){
+                R=mid-1;
+            }
+            else{
+                res1=max(res1,mid-ry+1);
+                L=mid+1;
+            }
+        }
+        L=-mx,R=ly;
+        ll res2=0;
+        while(L<=R){
+            mid=(L+R)/2;
+            if(fabs(((i-x)*(i-x)+(mid-y)*(mid-y))-r*r)<eps){
+                res2=max(res2,ly-mid+1);
+                R=mid-1;
+            }
+            else if(((i-x)*(i-x)+(mid-y)*(mid-y))>r*r){
+                L=mid+1;
+            }
+            else{
+                res2=max(res2,ly-mid+1);
+                R=mid-1;
+            }
+        }
+        ans+=(res1+res2);
+        if(fabs(((i-x)*(i-x)+(yy-y)*(yy-y))-r*r)<eps){
+            ans++;
+        }
+        else if(((i-x)*(i-x)+(yy-y)*(yy-y))>r*r){
 
-    while(t--){
-        vector<ll>vec(3);
-        cin>>vec;
-        sort(all(vec));
-        cout<<vec[1]<<nn;
+        }
+        else ans++;
     }
-
-
-    return 0;
+    cout<<ans<<"\n";
 }
-

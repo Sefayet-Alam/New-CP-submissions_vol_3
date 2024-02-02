@@ -152,6 +152,24 @@ struct custom_hash {
         return splitmix64(x + FIXED_RANDOM);
     }
 };
+ll W,H,x,y;
+double area;
+double func(double mid){
+   
+    double rest=(area-mid)*1.00;
+    return mid<=rest;
+}
+
+double bs(double l,double r){
+    double eps=1e-9;          //set the error limit here
+    while(r-l>eps) {
+        double mid=l+(r-l)/2;
+        if (func(mid)) l=mid;
+        else r=mid;
+    }
+    return l;
+}
+
 
 int main()
 {
@@ -160,16 +178,21 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    cin>>t;
+    //cin>>t;
 
     while(t--){
-        vector<ll>vec(3);
-        cin>>vec;
-        sort(all(vec));
-        cout<<vec[1]<<nn;
+
+        cin>>W>>H>>x>>y;
+        area=W*H*1.00;
+
+        ll ansf=0;
+        if(H%2==0 && H/2==y && W%2==0 && W/2==x) ansf=1;
+
+
+        double ans=(H*W)/2.00;
+
+        Setpre(12)<<ans<<" "<<ansf<<nn;
     }
-
-
     return 0;
 }
 

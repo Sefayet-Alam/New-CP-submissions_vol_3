@@ -152,7 +152,39 @@ struct custom_hash {
         return splitmix64(x + FIXED_RANDOM);
     }
 };
+bool cmp(pll a,pll b){
+    if(a.second!=b.second) return a.first<b.first;
+    return a.second<b.second;
+}
+bool cmp2(pll a,pll b){
+    if(a.first!=b.first) return a.first>b.first;
+    return a.second>b.second;
+}
+bool cmp3(pll a,pll b){
+    if(a.second!=b.second) return a.second>b.second;
+    return a.first>b.first;
+}
 
+
+vector<pll>a,b;
+ll n;
+ll dp[305][305];
+ll func(ll i,ll j){
+    if(i>=n || j>=n) return 0;
+   
+    if(dp[i][j]!=-1) return dp[i][j];
+    ll tot=0;
+    if(a[i].first<b[j].first && a[i].second<b[j].second){
+        tot=max(tot,1+func(i+1,j+1));
+        
+    }
+    tot=max(tot,func(i+1,j+1));
+    tot=max(tot,func(i+1,j));
+    tot=max(tot,func(i,j+1));
+
+   
+    return dp[i][j]=tot;
+}
 int main()
 {
     fast;
@@ -160,16 +192,37 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    cin>>t;
+    //cin>>t;
 
     while(t--){
-        vector<ll>vec(3);
-        cin>>vec;
-        sort(all(vec));
-        cout<<vec[1]<<nn;
+     
+      cin>>n;
+      mem(dp,-1);
+      
+      a.clear();
+      b.clear();
+
+      ll x,y;
+      for(ll i=0;i<n;i++){
+        cin>>x>>y;
+        a.push_back({x,y});
+      }
+      for(ll i=0;i<n;i++){
+        cin>>x>>y;
+        b.push_back({x,y});
+      }
+      sort(all(a),cmp);
+      sort(all(b),cmp);
+      
+      for(auto it:a) cout<<it<<nn;
+      cout<<nn;
+      for(auto it:b) cout<<it<<nn;
+      
+      ll ans=func(0,0);
+      cout<<ans<<nn;
+      
     }
 
 
     return 0;
 }
-

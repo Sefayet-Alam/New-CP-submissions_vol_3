@@ -163,10 +163,18 @@ int main()
     cin>>t;
 
     while(t--){
-        vector<ll>vec(3);
-        cin>>vec;
-        sort(all(vec));
-        cout<<vec[1]<<nn;
+        ll x,n;
+        cin>>x>>n;
+        ll ans=1;
+        for(ll i=1;i*i<=x;i++){
+            if(x%i==0){
+                ll a=i;
+                ll b=x/i;
+                if(a>=n) ans=max(ans,b);
+                if(b>=n) ans=max(ans,a);
+            }
+        }
+        cout<<ans<<nn;
     }
 
 

@@ -163,10 +163,15 @@ int main()
     cin>>t;
 
     while(t--){
-        vector<ll>vec(3);
-        cin>>vec;
-        sort(all(vec));
-        cout<<vec[1]<<nn;
+    ll n,k;
+    cin>>n>>k;
+    string s="";
+    for(ll i=0;i<k;i++){
+        s+=char('a'+i);
+    }  
+    string p=s;
+    for(ll i=0;i<n-1;i++) s+=p;
+    cout<<s<<nn;
     }
 
 

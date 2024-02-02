@@ -160,13 +160,18 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    cin>>t;
+    //cin>>t;
 
     while(t--){
-        vector<ll>vec(3);
-        cin>>vec;
-        sort(all(vec));
-        cout<<vec[1]<<nn;
+      string s;
+      cin>>s;
+      bool f=0;
+      ll n=s.size();
+      for(ll i=1;i<n;i++){
+        if(s[i]>='A' && s[i]<='Z') f=1;
+      }
+      if(s[0]>='A' && s[0]<='Z' && !f) cout<<"Yes"<<nn;
+      else cout<<"No"<<nn;
     }
 
 

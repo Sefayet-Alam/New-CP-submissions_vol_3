@@ -160,41 +160,20 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    //cin>>t;
+    cin>>t;
 
     while(t--){
-        ll n;
-        cin>>n;
-        ll up=0;
-        ll lo=0;
         string s;
         cin>>s;
-        for(ll i=0;i<n;i++){
-            if(s[i]=='X') up++;
-            else lo++;
-        }
+        map<char,ll>vis;
+        for(ll i=0;i<s.size();i++) vis[s[i]]++;
+        string p;
+        cin>>p;
         ll ans=0;
-        for(ll i=0;i<n;i++){
-            if(s[i]=='x'){
-
-                if(lo>up){
-                    ans++;
-                    up++;
-                    lo--;
-                    s[i]='X';
-                }
-            }
-            else{
-                if(up>lo){
-                    ans++;
-                    lo++;
-                    up--;
-                    s[i]='x';
-                }
-            }
+        for(ll i=0;i<p.size();i++){
+            if(vis[p[i]]) ans++;
         }
         cout<<ans<<nn;
-        cout<<s<<nn;
     }
 
 

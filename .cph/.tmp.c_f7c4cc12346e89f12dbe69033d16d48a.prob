@@ -1,0 +1,1 @@
+{"name":"Local: tmp","url":"e:\\GitHub\\New-CP-submissions_vol_3\\tmp.c","tests":[{"id":1705492905476,"input":"10\n1 1 3 6 10 1 3 10 5 7","output":"1 3 6 10 5 7"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"e:\\GitHub\\New-CP-submissions_vol_3\\tmp.c","group":"local","local":true}

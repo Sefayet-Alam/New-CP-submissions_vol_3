@@ -160,13 +160,31 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    cin>>t;
+    //cin>>t;
 
     while(t--){
-        vector<ll>vec(3);
+        ll n,k;
+        cin>>n>>k;
+        vector<ll>vec(n);
         cin>>vec;
-        sort(all(vec));
-        cout<<vec[1]<<nn;
+        vector<ll>pref(n,0);
+        pref[0]=vec[0];
+        for(ll i=1;i<n;i++){
+            pref[i]+=vec[i];
+            pref[i]+=pref[i-1];
+        }
+        // cout<<pref<<nn;
+        while(k--){
+            ll x;
+            cin>>x;
+            ll pos=0;
+            if(x<=pref[n-1]) pos=(lower_bound(all(pref),x)-pref.begin());
+            else pos=n-1;
+            ll ans2=-1;
+            if(pos==0) ans2=x;
+            else ans2=x-pref[pos-1];
+            cout<<pos+1<<" "<<ans2<<nn;
+        }
     }
 
 

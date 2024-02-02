@@ -153,6 +153,7 @@ struct custom_hash {
     }
 };
 
+const double pi=acos(-1);
 int main()
 {
     fast;
@@ -160,13 +161,24 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    cin>>t;
+    //cin>>t;
 
     while(t--){
-        vector<ll>vec(3);
+        ll n;
+        cin>>n;
+        vector<ll>vec(n);
         cin>>vec;
         sort(all(vec));
-        cout<<vec[1]<<nn;
+        double ans=0.00;
+        ll par=(n-1)%2;
+        for(ll i=n-1;i>=0;i--){
+            double r2=vec[i]*vec[i];
+            if(i%2==par){
+                ans+=(pi*r2);
+            }
+            else ans-=(pi*r2);
+        }
+        Setpre(10)<<ans<<nn;
     }
 
 

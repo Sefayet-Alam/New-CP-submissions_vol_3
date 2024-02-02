@@ -163,10 +163,19 @@ int main()
     cin>>t;
 
     while(t--){
-        vector<ll>vec(3);
+        ll n;
+        cin>>n;
+        vector<ll>vec(n);
         cin>>vec;
-        sort(all(vec));
-        cout<<vec[1]<<nn;
+        vector<ll>ans(n);
+        ans[n-1]=1;
+        ll curr=1;
+        for(ll i=n-2;i>=0;i--){
+            if(vec[i]/abs(vec[i])!=(vec[i+1])/(abs(vec[i+1]))) curr++;
+            else curr=1;
+            ans[i]=curr;
+        }
+        cout<<ans<<nn;
     }
 
 

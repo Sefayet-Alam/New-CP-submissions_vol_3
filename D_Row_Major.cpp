@@ -163,10 +163,22 @@ int main()
     cin>>t;
 
     while(t--){
-        vector<ll>vec(3);
-        cin>>vec;
-        sort(all(vec));
-        cout<<vec[1]<<nn;
+        ll n;
+        cin>>n;
+        if(n==1){
+            cout<<"a"<<nn;
+            continue;
+        }
+        ll st=-1;
+        for(ll i=1;i<=n;i++){
+            st=i;
+            if(n%i) break;
+        }
+        for(ll i=1;i<=n;i++){
+            char c='a'+i%st;
+            cout<<c;
+        }
+        cout<<nn;
     }
 
 

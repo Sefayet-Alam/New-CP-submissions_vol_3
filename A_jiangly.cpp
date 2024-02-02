@@ -57,7 +57,7 @@ using namespace __gnu_pbds;
 #define md                  10000007
 #define PI 3.1415926535897932384626
 const double EPS = 1e-9;
-const ll N = 2e5+10;
+const ll N = 1LL<<19;
 const ll M = 1e9+7;
 
 
@@ -152,7 +152,22 @@ struct custom_hash {
         return splitmix64(x + FIXED_RANDOM);
     }
 };
-
+ll n,m,k;
+ll valu[20][20];
+ll val[20];
+ll dp[N][18];
+ll func(ll i,ll last){
+    if(popcount(i)==m) return 0;
+    
+    if(dp[i][last]!=-1) return dp[i][last];
+    ll ret=0;
+    for(ll j=1;j<=n;j++){
+        if((i & (1LL<<j))) continue;
+        ret=max(ret,val[j]+valu[last][j]+func(i|(1LL<<j),j));
+    }
+    
+    return dp[i][last]=ret;
+}
 int main()
 {
     fast;
@@ -160,13 +175,23 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    cin>>t;
+    //cin>>t;
 
     while(t--){
-        vector<ll>vec(3);
-        cin>>vec;
-        sort(all(vec));
-        cout<<vec[1]<<nn;
+        cin>>n>>m>>k;
+       
+        for(ll i=1;i<=n;i++){
+            cin>>val[i];
+        }
+        for(ll i=0;i<k;i++){
+        ll x,y,c;
+        cin>>x>>y>>c;
+        valu[x][y]=c;
+        }
+        mem(dp,-1);
+        ll ans=func(0,0);
+        
+        cout<<ans<<nn;
     }
 
 

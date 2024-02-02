@@ -160,13 +160,25 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    cin>>t;
+    //cin>>t;
 
     while(t--){
-        vector<ll>vec(3);
+        ll n;
+        cin>>n;
+        vector<ll>vec(n);
         cin>>vec;
-        sort(all(vec));
-        cout<<vec[1]<<nn;
+        map<ll,ll>ans;
+        ll toadd=0;
+        for(ll i=n;i>=1;i--){
+            ll rem=n-(toadd+vec[i-1])%n;
+            ans[i]=rem+i-1;
+            toadd+=rem+i-1;
+        }
+        cout<<n+1<<nn;
+        for(ll i=n;i>=1;i--){
+            cout<<1<<" "<<i<<" "<<ans[i]<<nn;
+        }
+        cout<<2<<" "<<n<<" "<<n<<nn;
     }
 
 

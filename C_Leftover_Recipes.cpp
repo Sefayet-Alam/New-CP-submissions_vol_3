@@ -160,16 +160,30 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    cin>>t;
+    //cin>>t;
 
     while(t--){
-        vector<ll>vec(3);
-        cin>>vec;
-        sort(all(vec));
-        cout<<vec[1]<<nn;
+        ll maxa=LLONG_MAX,maxb=LLONG_MAX;
+        ll n;
+        cin>>n;
+        vector<ll>q(n),a(n),b(n);
+        cin>>q>>a>>b;
+        for(ll i=0;i<n;i++){
+            if(a[i]!=0) maxa=min(q[i]/a[i],maxa);
+            if(b[i]!=0) maxb=min(maxb,q[i]/b[i]);
+        }
+        // cout<<maxa<<" "<<maxb<<nn;
+        ll ans=0;
+        for(ll i=0;i<=maxa;i++){
+            ll maxb2=LLONG_MAX;
+            for(ll j=0;j<n;j++){
+               if(b[j]!=0) maxb2=min(maxb2,(q[j]-i*a[j])/b[j]); 
+            }
+            ans=max(ans,i+maxb2);
+        }
+        
+        cout<<ans<<nn;
     }
-
-
     return 0;
 }
 

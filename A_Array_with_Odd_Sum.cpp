@@ -163,11 +163,22 @@ int main()
     cin>>t;
 
     while(t--){
-        vector<ll>vec(3);
+        ll n;
+        cin>>n;
+        vector<ll>vec(n);
         cin>>vec;
-        sort(all(vec));
-        cout<<vec[1]<<nn;
+        ll od=0,ev=0;
+        ll totsum=0;
+        for(ll i=0;i<n;i++){
+            if(vec[i]%2) od++;
+            else ev++;
+            totsum+=vec[i];
+        }
+        if(totsum%2) cout<<"YES"<<nn;
+        else if(od && ev) cout<<"YES"<<nn;
+        else cout<<"NO"<<nn;
     }
+
 
 
     return 0;

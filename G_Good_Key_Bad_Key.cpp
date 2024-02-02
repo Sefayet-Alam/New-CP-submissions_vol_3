@@ -152,7 +152,21 @@ struct custom_hash {
         return splitmix64(x + FIXED_RANDOM);
     }
 };
-
+ll n,k;
+vector<ll>vec(N);
+ll dp[N][64];
+ll func(ll i,ll p){
+    if(i==n){
+        return 0;
+    }
+    if(dp[i][p]!=-1) return dp[i][p];
+    ll ans=0;
+    ll currdiv=(1LL<<p);
+    if(p<60) ans=max(ans,vec[i]/(currdiv*2)+func(i+1,p+1));
+    else ans=max(ans,vec[i]/(currdiv*2)+func(i+1,p));
+    ans=max(ans,vec[i]/currdiv-k+func(i+1,p));
+    return dp[i][p]=ans;
+}
 int main()
 {
     fast;
@@ -163,10 +177,14 @@ int main()
     cin>>t;
 
     while(t--){
-        vector<ll>vec(3);
+        cin>>n>>k;
+        vec.resize(n);
+        for(ll i=0;i<=n;i++){
+            for(ll j=0;j<64;j++) dp[i][j]=-1;
+        }
         cin>>vec;
-        sort(all(vec));
-        cout<<vec[1]<<nn;
+        ll ans=func(0,0);
+        cout<<ans<<nn;
     }
 
 

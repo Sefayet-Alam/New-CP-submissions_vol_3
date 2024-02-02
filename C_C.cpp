@@ -160,29 +160,31 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    cin>>t;
+    //cin>>t;
 
     while(t--){
-    string s;
-    cin>>s;
-    ll n=s.size();
-    ll sz=0;
-    ll curr=0;
-    char fc=s[0];
-    char lc=s[n-1];
-    ll maxm=0;
-    for(ll i=0;i<n;i++){
-        if(s[i]==fc || s[i]==lc){
-            curr=0;
+      string s;
+      cin>>s;
+      ll n=s.size();
+      bool f=0;
+      ll op=0;
+      for(ll i=0;i<n;i++){
+        if(s[i]=='a'){
+            if(f) break;
         }
         else{
-            curr++;
-            maxm=max(maxm,curr);
+            s[i]=s[i]-1;
+            f=1;
+            op++;
         }
+      }
+      if(op==0){
+        s[n-1]='z';
+      }
+      cout<<s<<nn;
     }
-    if(maxm==0) cout<<-1<<nn;
-    else cout<<maxm<<nn;
-    }
+
+
     return 0;
 }
 

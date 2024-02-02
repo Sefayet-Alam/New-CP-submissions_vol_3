@@ -163,10 +163,16 @@ int main()
     cin>>t;
 
     while(t--){
-        vector<ll>vec(3);
+        ll n;
+        cin>>n;
+        vector<ll>vec(n);
         cin>>vec;
-        sort(all(vec));
-        cout<<vec[1]<<nn;
+        ll xr=0;
+        for(ll i=0;i<n;i++){
+            xr=(xr^vec[i]);
+        }
+        if(xr==0) cout<<"second"<<nn;
+        else cout<<"first"<<nn;
     }
 
 

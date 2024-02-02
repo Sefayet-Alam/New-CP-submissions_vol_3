@@ -160,13 +160,19 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    cin>>t;
+    //cin>>t;
 
     while(t--){
-        vector<ll>vec(3);
-        cin>>vec;
-        sort(all(vec));
-        cout<<vec[1]<<nn;
+        ll n,a,b;
+        cin>>n>>a>>b;
+        ll s=a+b;
+        ll ans=-1;
+        for(ll i=1;i<=n;i++){
+            ll x;
+            cin>>x;
+            if(x==s) ans=i;
+        }
+        cout<<ans<<nn;
     }
 
 

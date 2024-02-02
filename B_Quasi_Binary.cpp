@@ -153,6 +153,7 @@ struct custom_hash {
     }
 };
 
+
 int main()
 {
     fast;
@@ -160,16 +161,24 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    cin>>t;
+    //cin>>t;
 
     while(t--){
-        vector<ll>vec(3);
-        cin>>vec;
-        sort(all(vec));
-        cout<<vec[1]<<nn;
+       ll n;
+       cin>>n;
+       vector<ll>ans;
+       while(n){
+         ll tmp=n,m=0,p=1;
+         while(tmp){
+            if(tmp%10) m+=p;
+            tmp/=10;
+            p*=10; 
+         }
+         ans.push_back(m);
+         n-=m;
+       }
+       cout<<ans.size()<<nn;
+       cout<<ans<<nn;
     }
-
-
     return 0;
 }
-

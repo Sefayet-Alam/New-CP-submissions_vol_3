@@ -160,13 +160,30 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    cin>>t;
+    //cin>>t;
 
     while(t--){
-        vector<ll>vec(3);
-        cin>>vec;
-        sort(all(vec));
-        cout<<vec[1]<<nn;
+        ll n,m;
+        cin>>n>>m;
+        vector<pll>vec;
+        ll x,y;
+        // vec.push_back({0,0});
+        for(ll i=0;i<m;i++){
+            cin>>x>>y;
+            vec.push_back({x,y});
+        }
+        ll ans=max(( vec[0].ss + (vec[0].ff-1) ) , ( ( vec.back() ).ss + ( n - vec.back().ff) ));
+        bool f=0;
+        for(ll i=1;i<m;i++){
+            ll rem=(vec[i].first-vec[i-1].first);
+            ll maxm=max(vec[i].second,vec[i-1].second);
+            ll minm=min(vec[i].second,vec[i-1].second);
+            if(rem<maxm-minm){f=1;break;}
+            ll ex=rem-(maxm-minm);
+            ans=max(ans,maxm+(ex)/2);
+        }
+        if(f) cout<<"IMPOSSIBLE"<<nn;
+        else cout<<ans<<nn;
     }
 
 

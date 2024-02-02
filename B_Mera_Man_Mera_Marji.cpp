@@ -57,7 +57,7 @@ using namespace __gnu_pbds;
 #define md                  10000007
 #define PI 3.1415926535897932384626
 const double EPS = 1e-9;
-const ll N = 2e5+10;
+const ll N = 4e5+10;
 const ll M = 1e9+7;
 
 
@@ -152,6 +152,17 @@ struct custom_hash {
         return splitmix64(x + FIXED_RANDOM);
     }
 };
+ll dp[N];
+ll m;
+ll func(ll k){
+    if(k==m) return 0;
+    if(k<m) return M;
+    // cout<<k<<nn;
+    if(dp[k]!=-1) return dp[k];
+    ll ans=1+func(k-1);
+    if(k%2==0) ans=min(ans,1+func(k/2));
+    return dp[k]=ans;
+}
 
 int main()
 {
@@ -160,16 +171,42 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    cin>>t;
+    //cin>>t;
+    // mem(dp,-1);
 
     while(t--){
-        vector<ll>vec(3);
-        cin>>vec;
-        sort(all(vec));
-        cout<<vec[1]<<nn;
+      ll n;
+      cin>>n;
+      vector<ll>vec(n);
+      cin>>vec;
+      ll ans=0;
+      ll k=32768;
+      for(ll i=0;i<n;i++){
+        if(vec[i]==0){
+            cout<<0<<" ";
+            continue;
+        }
+        
+        ll ans1=k-vec[i];
+       
+
+        ll a=0;
+        while(a<=20){
+            ll ele=vec[i]+a;
+            ll tws=0;
+            while((ele)%2==0){
+            ele/=2;
+            tws++;
+            }
+            ll ans2=max(0LL,15LL-tws);
+            ans1=min(ans1,ans2+a);
+            a++;
+        }
+        cout<<ans1<<" ";
+      }
+      cout<<nn;
     }
 
 
     return 0;
 }
-

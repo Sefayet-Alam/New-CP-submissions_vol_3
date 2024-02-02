@@ -160,30 +160,33 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    //cin>>t;
+    cin>>t;
 
     while(t--){
-      double r,d;
-      cin>>r>>d;
-      r=r-d;
       ll n;
       cin>>n;
-      ll ans=0;
-      // cout<<r<<" "<<d<<" "<<r+d<<nn;
-      for(ll i=0;i<n;i++){
-        double x,y,r2;
-        cin>>x>>y>>r2;
-        double frmcntr=sqrt(x*x+y*y);
-        double dist=1.00*(frmcntr+r2*1.00);
-        double dist2=1.00*(frmcntr-r2*1.00);
-        // Setpre(3)<<x<<" "<<y<<" "<<r2<<" "<<dist<<" "<<dist2<<nn;;
-        if(dist>=r*1.00 && dist<=(r+d)*1.00 && dist2>=r*1.00 && dist2<=(r+d)*1.00){
-          // cout<<x<<" "<<y<<" "<<r2<<nn;
-          ans++;
-        }
-      }     
-      cout<<ans<<nn;
+      vector<ll>vec(n);
+      cin>>vec;
+      sort(all(vec));
+      ll tar=vec[n-1]+vec[n-2];
+      vector<ll>ans;
+      ll l=0,r=n-1;
+      while(l<r){
+        ans.push_back(vec[r]);
+        ans.push_back(vec[l]);
+        r--;
+        l++;
+      }
+      bool f=0;
+      if(l==r) ans.push_back(vec[l]);
+      for(ll i=0;i<n-1;i++){
+        if(ans[i]+ans[i+1]>=tar) f=1;
+      }
+      if(f) cout<<"NO"<<nn;
+      else cout<<"YES"<<nn;
     }
+
+
     return 0;
 }
 

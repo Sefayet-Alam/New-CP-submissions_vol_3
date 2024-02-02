@@ -152,6 +152,42 @@ struct custom_hash {
         return splitmix64(x + FIXED_RANDOM);
     }
 };
+void solve()
+{
+    ll n, m;
+    cin>>n>>m;
+
+    vector<ll> v(m);
+    for(auto &x: v) cin>>x;
+
+    vector<ll> dist(n+1,0);
+    ll sum=0;
+    for(ll i=0; i<m-1; i++)
+    {
+        ll d= abs(v[i]-v[i+1]), curr= 2*d-n;
+        ll mi= min(v[i], v[i+1]), ma= max(v[i], v[i+1]);
+        if(curr>0)
+        {
+            dist[1]+= curr;
+            dist[mi]-= curr;
+            dist[ma]+= curr;
+        }
+        else if(curr<0)
+        {
+            dist[mi]-=curr;
+            dist[ma]+= curr;
+        }
+        sum+= min(d, n-d);
+    }
+
+    ll diff=0, ans=LLONG_MAX;
+    for(ll i=1; i<=n; i++)
+    {
+        diff+= dist[i];
+        ans= min(ans, diff+sum);
+    }
+    cout<<ans<<"\n";
+}
 
 int main()
 {
@@ -160,16 +196,12 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    cin>>t;
+    //cin>>t;
 
     while(t--){
-        vector<ll>vec(3);
-        cin>>vec;
-        sort(all(vec));
-        cout<<vec[1]<<nn;
+        solve();
     }
 
 
     return 0;
 }
-

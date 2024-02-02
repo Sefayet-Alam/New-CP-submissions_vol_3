@@ -163,10 +163,23 @@ int main()
     cin>>t;
 
     while(t--){
-        vector<ll>vec(3);
+        ll n,k;
+        cin>>n>>k;
+        vector<ll>vec(n);
         cin>>vec;
         sort(all(vec));
-        cout<<vec[1]<<nn;
+        map<ll,ll>mpp;
+        bool f=0;
+        for(ll i=0;i<n;i++){
+            // cout<<k-vec[i]<<" ";
+            if(mpp.find(vec[i]-k)!=mpp.end()){
+                f=1;
+                break;
+            }
+            mpp[vec[i]]++;
+        }
+        if(f) cout<<"YES"<<nn;
+        else cout<<"NO"<<nn;
     }
 
 

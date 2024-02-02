@@ -160,13 +160,30 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    cin>>t;
+    //cin>>t;
 
     while(t--){
-        vector<ll>vec(3);
-        cin>>vec;
-        sort(all(vec));
-        cout<<vec[1]<<nn;
+        ll n;
+        cin>>n;
+
+        map<ll,ll>mpp;
+        map<pll,ll>vis;
+        for(ll i=0;i<n;i++){
+            ll x,y;
+            cin>>x>>y;
+            ll maxm=max(x,y);
+            ll minm=min(x,y);
+            mpp[minm]++;
+            mpp[maxm+1]--;
+            vis[{minm,maxm}]=1;
+        }
+        for(ll i=1;i<=2*n+5;i++) mpp[i]+=mpp[i-1];
+        bool f=0;
+        for(auto it:vis){
+            if(mpp[it.first.first]!=mpp[it.first.second]){f=1;break;}
+        }
+        if(f) cout<<"Yes"<<nn;
+        else cout<<"No"<<nn;
     }
 
 

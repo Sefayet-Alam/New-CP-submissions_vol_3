@@ -160,13 +160,22 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    cin>>t;
+    //cin>>t;
 
     while(t--){
-        vector<ll>vec(3);
-        cin>>vec;
-        sort(all(vec));
-        cout<<vec[1]<<nn;
+      ll n;
+      cin>>n;
+      map<ll,ll>vis;
+      vector<ll>ans;
+      ll x;
+      for(ll i=0;i<n;i++){
+        cin>>x;
+        if(!vis[x]){
+            ans.push_back(x);
+        }
+        vis[x]=1;
+      }
+      cout<<ans<<nn;
     }
 
 

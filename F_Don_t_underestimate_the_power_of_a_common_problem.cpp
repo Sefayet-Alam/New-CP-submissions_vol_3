@@ -160,13 +160,17 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    cin>>t;
+    //cin>>t;
 
     while(t--){
-        vector<ll>vec(3);
-        cin>>vec;
-        sort(all(vec));
-        cout<<vec[1]<<nn;
+        ll n;
+        cin>>n;
+        if(n%2 || n<4) cout<<0<<nn;
+        else{
+            ll ans=n/4;
+            if(n%4==0) ans--;
+            cout<<ans<<nn;
+        }
     }
 
 

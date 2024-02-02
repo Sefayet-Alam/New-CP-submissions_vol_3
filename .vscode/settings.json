@@ -20,7 +20,8 @@
         "*.tcc": "cpp",
         "system_error": "cpp",
         "cstdlib": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "climits": "cpp"
     },
     "cmake.configureOnOpen": true,
     "jupyter.interactiveWindow.textEditor.executeSelection": true

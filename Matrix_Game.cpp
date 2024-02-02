@@ -153,20 +153,37 @@ struct custom_hash {
     }
 };
 
+
 int main()
 {
     fast;
      ll t;
     //setIO();
-     //ll tno=1;;
+     ll tno=1;;
      t=1;
     cin>>t;
 
     while(t--){
-        vector<ll>vec(3);
-        cin>>vec;
-        sort(all(vec));
-        cout<<vec[1]<<nn;
+        cout<<"Case "<<tno++<<": ";
+        ll n,m;
+        cin>>n>>m;
+        vector<ll>vec;
+        ll curr=0;
+        for(ll i=0;i<n;i++){
+            curr=0;
+            for(ll j=0;j<m;j++){
+                ll x;
+                cin>>x;
+                curr+=x;
+            }
+            vec.push_back(curr);
+        }
+        ll xr=0;
+        for(ll i=0;i<vec.size();i++){
+            xr=(xr^vec[i]);
+        }
+        if(xr) cout<<"Alice"<<nn;
+        else cout<<"Bob"<<nn;
     }
 
 
