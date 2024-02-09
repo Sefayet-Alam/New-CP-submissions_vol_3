@@ -153,6 +153,10 @@ struct custom_hash {
     }
 };
 
+
+
+
+ 
 int main()
 {
     fast;
@@ -160,29 +164,36 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    //cin>>t;
+    cin>>t;
 
     while(t--){
-      ll n,m;
-      cin>>n>>m;
-      vector<ll>a(n),b(m);
-      cin>>a>>b;
       
-      ll maxa=0;
-      ll maxb=0;
-      
-      for(ll i=0;i<n;i++){
-        maxa+=a[i]+1;
-      }
-
-      for(ll i=0;i<m;i++){
-        maxb+=b[i]+1;
-      }
-      
-      if(maxa==maxb) cout<<"TIED"<<nn;
-      else if(maxa>maxb) cout<<"ALICE"<<nn;
-      else cout<<"BOB"<<nn;
-    
+       ll n;
+       cin>>n;
+        vector<ll>vec(n);
+        cin>>vec;
+        vector<ll>pref(n,0);
+        pref[0]=vec[0];
+        for(ll i=1;i<n;i++){
+            pref[i]+=vec[i];
+            pref[i]+=pref[i-1];
+        }
+        
+        unordered_map<ll,ll>ans;
+        
+        for(ll i=0;i<n;i++){
+            if(pref[i]<=n) ans[pref[i]]++;
+            for(ll j=i-1;j>=0;j--){
+                ll curr=pref[i]-pref[j];
+                // cout<<i<<" "<<j<<" "<<curr<<nn;
+                if(curr>n) break;
+                ans[curr]++;
+            }
+        }
+        for(ll i=1;i<=n;i++){
+            cout<<ans[i]<<" ";
+        }
+        cout<<nn;
     }
 
 

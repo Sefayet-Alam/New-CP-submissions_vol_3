@@ -160,29 +160,23 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    //cin>>t;
+    cin>>t;
 
     while(t--){
-      ll n,m;
-      cin>>n>>m;
-      vector<ll>a(n),b(m);
-      cin>>a>>b;
-      
-      ll maxa=0;
-      ll maxb=0;
-      
-      for(ll i=0;i<n;i++){
-        maxa+=a[i]+1;
-      }
-
-      for(ll i=0;i<m;i++){
-        maxb+=b[i]+1;
-      }
-      
-      if(maxa==maxb) cout<<"TIED"<<nn;
-      else if(maxa>maxb) cout<<"ALICE"<<nn;
-      else cout<<"BOB"<<nn;
-    
+        ll n;
+        cin>>n;
+        string s;
+        cin>>s;
+        ll st=-1,en=-1;
+        for(ll i=0;i<n;i++){
+            if(s[i]=='B'){
+            st=i;
+            break;
+            }
+        }
+        for(ll i=0;i<n;i++) if(s[i]=='B') en=i;
+        if(st==-1) cout<<0<<nn;
+        else cout<<(en-st+1)<<nn;
     }
 
 

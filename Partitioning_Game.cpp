@@ -153,36 +153,52 @@ struct custom_hash {
     }
 };
 
+
+
+ll dp[N];
+
+
+ll calculateMex(unordered_set<ll> &Set){
+    ll Mex = 0;
+    while (Set.find(Mex) != Set.end()) Mex++;
+    return Mex;
+}
+
+ll func(ll n){
+
+    
+    if(dp[n]!=-1) return dp[n];
+    unordered_set<ll>stt;
+    for(ll i=1;i<=n/2;i++){
+        if(i!=n-i){
+            stt.insert(func(i)^func(n-i));
+        }
+       
+    }
+    return dp[n]=calculateMex(stt);
+}
 int main()
 {
     fast;
      ll t;
     //setIO();
-     //ll tno=1;;
+     ll tno=1;;
      t=1;
-    //cin>>t;
-
+    cin>>t; 
+    mem(dp,-1);
     while(t--){
-      ll n,m;
-      cin>>n>>m;
-      vector<ll>a(n),b(m);
-      cin>>a>>b;
-      
-      ll maxa=0;
-      ll maxb=0;
-      
+      cout<<"Case "<<tno++<<": ";
+      ll n;
+      cin>>n;
+      ll xr=0;
       for(ll i=0;i<n;i++){
-        maxa+=a[i]+1;
+        ll x;
+        cin>>x;
+        ll k=func(x);
+        xr=(xr^k);
       }
-
-      for(ll i=0;i<m;i++){
-        maxb+=b[i]+1;
-      }
-      
-      if(maxa==maxb) cout<<"TIED"<<nn;
-      else if(maxa>maxb) cout<<"ALICE"<<nn;
-      else cout<<"BOB"<<nn;
-    
+      if(xr) cout<<"Alice"<<nn;
+      else cout<<"Bob"<<nn;
     }
 
 

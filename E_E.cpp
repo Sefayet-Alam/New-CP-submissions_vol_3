@@ -57,7 +57,7 @@ using namespace __gnu_pbds;
 #define md                  10000007
 #define PI 3.1415926535897932384626
 const double EPS = 1e-9;
-const ll N = 2e5+10;
+const ll N = 4e5+10;
 const ll M = 1e9+7;
 
 
@@ -152,9 +152,27 @@ struct custom_hash {
         return splitmix64(x + FIXED_RANDOM);
     }
 };
-bool cmp(pll a,pll b){
-    if(a.first!=b.first) return a.first>b.first;
-    
+ll n,m;
+vector<ll>g[N];
+bool vis[N];
+void dfs(ll vertex){
+    /*
+    take action on vertex after entering the vertex
+    */
+    vis[vertex]=true;
+    for(ll child: g[vertex]){
+        /*
+        take action on child before entering the child node
+        */
+        if(vis[child]) continue;
+        dfs(child);
+        /*
+        take action on child after entering the child node
+        */
+    }
+    /*
+    take action on vertex before exiting the vertex
+    */
 }
 int main()
 {
@@ -163,24 +181,27 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    cin>>t;
+    //cin>>t;
 
     while(t--){
-      map<ll,ll>mpp;
-      ll n;
-      cin>>n;
-      vector<ll>vec(n);
-      cin>>vec;
-      for(ll i=0;i<n;i++){
-        mpp[vec[i]]++;
-      }
-      ll ans=0;
-      for(auto it:mpp){
-        for(ll j=1;j<=it.second;j++){
-            if(mpp[j]>=it.first) ans++;
+        cin>>n>>m;
+        for(ll i=1;i<=n;i++){
+            ll x;
+            cin>>x;
+            for(ll j=0;j<x;j++){
+                ll y;
+                cin>>y;
+                g[i].push_back(n+y);
+                g[n+y].push_back(i);
+            }
         }
-      }
-      cout<<ans<<nn;
+        ll comps=0;
+        dfs(1);
+        for(ll i=1;i<=n;i++){
+            if(!vis[i]){comps++;}
+        }
+        if(comps==0) cout<<"YES"<<nn;
+        else cout<<"NO"<<nn;
     }
 
 

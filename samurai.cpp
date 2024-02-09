@@ -57,7 +57,6 @@ using namespace __gnu_pbds;
 #define md                  10000007
 #define PI 3.1415926535897932384626
 const double EPS = 1e-9;
-const ll N = 2e5+10;
 const ll M = 1e9+7;
 
 
@@ -152,40 +151,212 @@ struct custom_hash {
         return splitmix64(x + FIXED_RANDOM);
     }
 };
+const ll N = 100;
 
+vpll g[N];
+vl dist(N,LLONG_MAX);
+vl par(N,-1);
+
+vpll g2[N];
+vl par2(N,-1);
+vl cost(N,LLONG_MAX);
+
+void dijkstra(int source){
+    QP<pll> pq;
+    pq.push(mp(0,source));
+    dist[source]=0;
+    while(pq.size()){
+        ll v=pq.top().second;
+        ll v_dist=pq.top().first;
+        pq.pop();
+        if(dist[v]<v_dist) continue;
+        for(auto &child:g[v]){
+            ll child_v=child.first;
+            ll wt=child.second;
+            if(dist[v]+wt<dist[child_v]){
+                dist[child_v]=dist[v]+wt;
+                cost[child_v]=cost[v]+wt;
+                par[child_v]=v;
+                pq.push(mp(dist[child_v],child_v));
+            }
+        }
+    }
+}
+
+void dijkstra2(int source){
+    QP<pll> pq;
+    pq.push(mp(0,source));
+    cost[source]=0;
+    while(pq.size()){
+        ll v=pq.top().second;
+        ll v_dist=pq.top().first;
+        pq.pop();
+        if(cost[v]<v_dist) continue;
+        for(auto &child:g2[v]){
+            ll child_v=child.first;
+            ll wt=child.second;
+            if(cost[v]+wt<cost[child_v]){
+                cost[child_v]=cost[v]+wt;
+                
+                par2[child_v]=v;
+                pq.push(mp(cost[child_v],child_v));
+            }
+        }
+    }
+}
+
+void graph_create(){
+    int totst=5;
+    g[1].push_back({3,50});
+    g[3].push_back({1,50});
+    g2[1].push_back({3,100});
+    g2[3].push_back({1,100});
+
+     g[1].push_back({2,20});
+    g[2].push_back({1,20});
+    g2[1].push_back({2,500});
+    g2[2].push_back({1,500});
+
+
+     g[1].push_back({4,30});
+    g[4].push_back({1,30});
+    g2[1].push_back({4,100});
+    g2[4].push_back({1,100});
+
+
+ 
+     g[2].push_back({5,20});
+    g[5].push_back({2,20});
+    g2[2].push_back({5,500});
+    g2[5].push_back({2,500});
+
+     g[4].push_back({5,50});
+    g[5].push_back({4,50});
+    g2[4].push_back({5,100});
+    g2[5].push_back({4,100});
+}
+
+ll time(string s){
+    ll ret=((s[0]-'0')*10+(s[1]-'0'))*60+((s[3]-'0')*10+s[4]-'0');
+    return ret;
+}
+
+void reset(){
+    for(ll i=0;i<=N;i++){
+        par[i]=-1;
+        par2[i]=-1;
+        dist[i]=10000000;
+        cost[i]=10000000;
+    }
+}
+string tostr(ll n){
+    ll hrs=n/60;
+    string a=to_string(hrs);
+    if(a.size()==1){
+        a='0'+a;
+    }
+    string b=to_string(n%60);
+    if(b.size()==1){
+        b='0'+b;
+    }
+    string ret=a+":"+b;
+    return ret;
+}
+
+void optimize_by_cost(ll from,ll to,ll sttime){
+    //optimize by cost
+        cout<<"Optimize by cost"<<nn;
+        reset();
+        dijkstra2(from);
+        cout<<"Total cost= "<<cost[to]<<" Total dist: "<<dist[to]<<nn;
+        if(par2[to]==-1){
+        cout<<"no routes available from station:"<<from<<"to station: "<<to<<nn;
+        return;
+        }
+        vector<ll>path;
+        while(par2[to]!=-1){
+        path.push_back(to);
+        to=par2[to];
+        }
+        path.push_back(from);
+        reverse(all(path));
+        cout<<"Station no: "<<from<<nn;
+        cout<<"Trainid: "<<1+(rand()%4)<<nn;
+        cout<<"Arrival time: "<<tostr(sttime)<<nn;
+        cout<<"departure time: "<<tostr(sttime+1)<<nn;
+        ll last=sttime+1;
+        for(ll i=1;i<path.size();i++){
+            cout<<"Station no: "<<path[i]<<nn;
+            cout<<"Trainid: "<<1+(rand()%4)<<nn;
+            cout<<"Arrival time: "<<tostr(last+dist[path[i]]-dist[path[i-1]])<<nn;
+            cout<<"departure time: "<<tostr(last+dist[path[i]]-dist[path[i-1]]+1)<<nn;
+            last+=dist[path[i]]-dist[path[i-1]];
+        }
+}
+
+void optimize_by_dist(ll from,ll to,ll sttime){
+    cout<<"Optimize by dist"<<nn;
+
+        reset();
+        dijkstra(from);
+        cout<<"Total cost= "<<cost[to]<<" Total dist: "<<dist[to]<<nn;
+        
+        if(par[to]==-1){
+        cout<<"no routes available from station:"<<from<<"to station: "<<to<<nn;
+        return;
+        }
+        vector<ll>path;
+        while(par[to]!=-1){
+        path.push_back(to);
+        to=par[to];
+        }
+        path.push_back(from);
+        reverse(all(path));
+
+
+        cout<<"Station no: "<<from<<nn;
+        cout<<"Trainid: "<<1+(rand()%4)<<nn;
+        cout<<"Arrival time: "<<tostr(sttime)<<nn;
+        cout<<"departure time: "<<tostr(sttime+1)<<nn;
+        
+        ll last=sttime+1;
+        
+        for(ll i=1;i<path.size();i++){
+            cout<<"Station no: "<<path[i]<<nn;
+            cout<<"Trainid: "<<1+(rand()%4)<<nn;
+            cout<<"Arrival time: "<<tostr(last+dist[path[i]]-dist[path[i-1]])<<nn;
+            cout<<"departure time: "<<tostr(last+dist[path[i]]-dist[path[i-1]]+1)<<nn;
+            last+=dist[path[i]]-dist[path[i-1]];
+        }  
+}
 int main()
 {
-    fast;
+   
      ll t;
     //setIO();
      //ll tno=1;;
      t=1;
     //cin>>t;
 
-    while(t--){
-      ll n,m;
-      cin>>n>>m;
-      vector<ll>a(n),b(m);
-      cin>>a>>b;
-      
-      ll maxa=0;
-      ll maxb=0;
-      
-      for(ll i=0;i<n;i++){
-        maxa+=a[i]+1;
-      }
-
-      for(ll i=0;i<m;i++){
-        maxb+=b[i]+1;
-      }
-      
-      if(maxa==maxb) cout<<"TIED"<<nn;
-      else if(maxa>maxb) cout<<"ALICE"<<nn;
-      else cout<<"BOB"<<nn;
     
+    int from,to,walletid;
+    string starttime;
+    cout<<"from"<<" "<<"to "<<" "<<"starttime"<<nn;
+
+    cin>>from>>to>>starttime;
+    // bool f=transactiondone(walletid);
+    graph_create();
+    bool f=1;
+    ll sttime=time(starttime);
+    if(f){
+       //optimize by dist
+        optimize_by_dist(from,to,sttime);
+        //optimize by cost
+        optimize_by_cost(from,to,sttime);    
+
     }
 
-
+    
     return 0;
 }
 

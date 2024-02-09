@@ -34,7 +34,7 @@ using namespace __gnu_pbds;
 
 #define deb(x) cout << #x << "=" << x << endl
 #define deb2(x, y) cout << #x << "=" << x << "," << #y << "=" << y << endl
-#define nn '\n'
+#define nn endl
 #define pfl(x)              printf("%lld\n",x)
 #define pcas(i)                printf("Case %lld: ",i)
 #define Setpre(n) cout<<fixed<<setprecision(n)
@@ -160,29 +160,75 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    //cin>>t;
+    cin>>t;
 
     while(t--){
-      ll n,m;
-      cin>>n>>m;
-      vector<ll>a(n),b(m);
-      cin>>a>>b;
-      
-      ll maxa=0;
-      ll maxb=0;
-      
-      for(ll i=0;i<n;i++){
-        maxa+=a[i]+1;
+      ll n;
+      cin>>n;
+      if(n==1){
+        cout<<"!"<<" "<<1<<" "<<1<<nn;
+        continue;
       }
-
-      for(ll i=0;i<m;i++){
-        maxb+=b[i]+1;
+      vector<ll>big,sml;
+      for(ll i=1;i<n;i+=2){
+        cout<<"?"<<" "<<i<<" "<<i+1<<nn;
+        char c;
+        cin>>c;
+        if(c=='>' || c=='='){
+        big.push_back(i);
+        sml.push_back(i+1);
+        }
+        else{
+        sml.push_back(i);
+        big.push_back(i+1);
+        }
+      }
+      if(n%2){
+        cout<<"?"<<" "<<n-1<<" "<<n<<nn;
+        char c;
+        cin>>c;
+        if(c=='>' || c=='='){
+        sml.push_back(n);
+        }
+        else{
+        big.push_back(n);
+        }
+      }
+      ll maxm=-1,minm=-1;
+      if(big.size()==1){
+        maxm=big[0];
+      }
+      else{
+        maxm=big[0];
+        for(ll i=1;i<big.size();i++){
+            cout<<"?"<<" "<<maxm<<" "<<big[i]<<nn;
+            char c;
+            cin>>c;
+            if(c=='>' || c=='='){
+                continue;
+            }
+            else{
+                maxm=big[i];
+            }
+        }
       }
       
-      if(maxa==maxb) cout<<"TIED"<<nn;
-      else if(maxa>maxb) cout<<"ALICE"<<nn;
-      else cout<<"BOB"<<nn;
-    
+      if(sml.size()==1){minm=sml[0];}
+      else{
+        minm=sml[0];
+        for(ll i=1;i<sml.size();i++){
+            cout<<"?"<<" "<<minm<<" "<<sml[i]<<nn;
+            char c;
+            cin>>c;
+            if(c=='<' || c=='='){
+                continue;
+            }
+            else{
+                minm=sml[i];
+            }
+        }
+      }
+      cout<<"!"<<" "<<minm<<" "<<maxm<<nn;
     }
 
 

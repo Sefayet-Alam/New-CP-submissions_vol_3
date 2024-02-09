@@ -163,26 +163,58 @@ int main()
     //cin>>t;
 
     while(t--){
-      ll n,m;
-      cin>>n>>m;
-      vector<ll>a(n),b(m);
-      cin>>a>>b;
-      
-      ll maxa=0;
-      ll maxb=0;
-      
-      for(ll i=0;i<n;i++){
-        maxa+=a[i]+1;
-      }
+        ll n,q;
+        cin>>n>>q;
+        vector<string>vec;
+        for(ll i=0;i<n;i++){
+            string s;
+            cin>>s;
+            vec.push_back(s);
+        }
+        vector<ll>nums;
+        for(ll i=0;i<q;i++){
+            ll x;
+            cin>>x;
+            x--;
+            nums.push_back(x);
+        }
+       
+        string tmp=vec[nums[0]];
+        bool f=0;
+        for(ll i=1;i<q;i++){
+            string curr=vec[nums[i]];
+            // cout<<tmp<<" "<<curr<<nn;
+            if(vec[nums[i]].size()!=tmp.size()){
+                f=1;
+                break;
+            }
+            
+            for(ll j=0;j<tmp.size();j++){
+                if(tmp[j]=='?') continue;
+                if(tmp[j]!=curr[j]){
+                    tmp[j]='?';
+                }
+            }
+        }
+        ll matches=0;
+       for(ll i=0;i<n;i++){ 
+        string curr2=vec[i];
+        //  cout<<tmp<<" "<<curr2<<nn;
+        if(curr2.size()!=tmp.size()) continue;
+        bool r=1;
+        for(ll j=0;j<tmp.size();j++){
+            if(tmp[j]=='?' || tmp[j]==curr2[j]){}
+            else{r=0;break;}
+        }
+        if(r) matches++;
+       }
+      if(matches!=q) f=1;
+      if(f) cout<<"No"<<nn;
+      else{
+        cout<<"Yes"<<nn;
+        cout<<tmp<<nn;
 
-      for(ll i=0;i<m;i++){
-        maxb+=b[i]+1;
       }
-      
-      if(maxa==maxb) cout<<"TIED"<<nn;
-      else if(maxa>maxb) cout<<"ALICE"<<nn;
-      else cout<<"BOB"<<nn;
-    
     }
 
 

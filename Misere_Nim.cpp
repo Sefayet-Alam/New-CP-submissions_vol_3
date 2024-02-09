@@ -158,31 +158,29 @@ int main()
     fast;
      ll t;
     //setIO();
-     //ll tno=1;;
+     ll tno=1;;
      t=1;
-    //cin>>t;
+    cin>>t;
 
     while(t--){
-      ll n,m;
-      cin>>n>>m;
-      vector<ll>a(n),b(m);
-      cin>>a>>b;
-      
-      ll maxa=0;
-      ll maxb=0;
-      
+         cout<<"Case "<<tno++<<": ";
+      ll n;
+      cin>>n;
+      ll cnt=0;
+      vector<ll>vec(n);
+      cin>>vec;
+      ll xr=0;
       for(ll i=0;i<n;i++){
-        maxa+=a[i]+1;
+        if(vec[i]==1) cnt++;
+        xr=(xr^vec[i]);
       }
+      if(cnt==n){
+        if(cnt%2==0) cout<<"Alice"<<nn;
+        else cout<<"Bob"<<nn;
+      }
+      else if(xr) cout<<"Alice"<<nn;
+      else cout<<"Bob"<<nn;
 
-      for(ll i=0;i<m;i++){
-        maxb+=b[i]+1;
-      }
-      
-      if(maxa==maxb) cout<<"TIED"<<nn;
-      else if(maxa>maxb) cout<<"ALICE"<<nn;
-      else cout<<"BOB"<<nn;
-    
     }
 
 

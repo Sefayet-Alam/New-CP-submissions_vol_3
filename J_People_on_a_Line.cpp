@@ -152,7 +152,32 @@ struct custom_hash {
         return splitmix64(x + FIXED_RANDOM);
     }
 };
-
+vpll g[N];
+vl dist(N,-LLONG_MAX);
+vl par(N,-1);
+bool f;
+void dijkstra(int source){
+    QP<pll> pq;
+    pq.push(mp(0,source));
+    dist[source]=0;
+    while(pq.size()){
+        ll v=pq.top().second;
+        ll v_dist=pq.top().first;
+        pq.pop();
+        if(dist[v]<v_dist) continue;
+        for(auto &child:g[v]){
+            ll child_v=child.first;
+            ll wt=child.second;
+            if(dist[child_v]==-LLONG_MAX){
+                dist[child_v]=dist[v]+wt;
+                par[child_v]=v;
+                pq.push(mp(dist[child_v],child_v));
+            }
+            else if(dist[v]+wt==dist[child_v]) continue;
+            else f=1;
+        }
+    }
+}
 int main()
 {
     fast;
@@ -163,26 +188,24 @@ int main()
     //cin>>t;
 
     while(t--){
-      ll n,m;
-      cin>>n>>m;
-      vector<ll>a(n),b(m);
-      cin>>a>>b;
-      
-      ll maxa=0;
-      ll maxb=0;
-      
-      for(ll i=0;i<n;i++){
-        maxa+=a[i]+1;
-      }
-
-      for(ll i=0;i<m;i++){
-        maxb+=b[i]+1;
-      }
-      
-      if(maxa==maxb) cout<<"TIED"<<nn;
-      else if(maxa>maxb) cout<<"ALICE"<<nn;
-      else cout<<"BOB"<<nn;
+        ll n,m;
+        cin>>n>>m;
+        ll x,y,w;
+        map<ll,ll>pos;
     
+        for(ll i=0;i<m;i++){
+            ll x,y,w;
+            cin>>x>>y>>w;
+            g[x].push_back({y,w});
+            g[y].push_back({x,-w});
+        }
+        for(ll i=1;i<=n;i++){
+            if(dist[i]==-LLONG_MAX){
+                dijkstra(i);
+            }
+        }
+        if(f) cout<<"No"<<nn;
+        else cout<<"Yes"<<nn;
     }
 
 

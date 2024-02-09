@@ -153,6 +153,17 @@ struct custom_hash {
     }
 };
 
+
+
+ll dp[N];
+
+// A Function to calculate Mex of all the values in that set
+ll calculateMex(unordered_set<ll> Set){
+    ll Mex = 0;
+    while (Set.find(Mex) != Set.end()) Mex++;
+    return Mex;
+}
+
 int main()
 {
     fast;
@@ -160,29 +171,24 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    //cin>>t;
-
+    cin>>t;
+   
+    dp[0]=0;
+    dp[1]=0;
+    dp[2]=0;
+    for(ll i=3;i<=2000;i++){
+        unordered_set<ll>us;
+        for(ll j=1;2*j<=i;j++){
+            if(j!=i-j) us.insert(dp[i-j]^dp[j]);
+        }
+        dp[i]=calculateMex(us);
+    }
     while(t--){
-      ll n,m;
-      cin>>n>>m;
-      vector<ll>a(n),b(m);
-      cin>>a>>b;
-      
-      ll maxa=0;
-      ll maxb=0;
-      
-      for(ll i=0;i<n;i++){
-        maxa+=a[i]+1;
-      }
-
-      for(ll i=0;i<m;i++){
-        maxb+=b[i]+1;
-      }
-      
-      if(maxa==maxb) cout<<"TIED"<<nn;
-      else if(maxa>maxb) cout<<"ALICE"<<nn;
-      else cout<<"BOB"<<nn;
-    
+        ll n;
+        cin>>n;
+        if(n>=2000) cout<<"first"<<nn;
+        else if(dp[n]) cout<<"first"<<nn;
+        else cout<<"second"<<nn;
     }
 
 

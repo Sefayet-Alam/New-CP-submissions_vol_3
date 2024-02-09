@@ -160,29 +160,19 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    //cin>>t;
+    cin>>t;
 
     while(t--){
-      ll n,m;
-      cin>>n>>m;
-      vector<ll>a(n),b(m);
-      cin>>a>>b;
-      
-      ll maxa=0;
-      ll maxb=0;
-      
+      ll n;
+      cin>>n;
+      vector<ll>vec(n);
+      cin>>vec;
+      ll xr=0;
       for(ll i=0;i<n;i++){
-        maxa+=a[i]+1;
+        if(i%2) xr=(xr^vec[i]);
       }
-
-      for(ll i=0;i<m;i++){
-        maxb+=b[i]+1;
-      }
-      
-      if(maxa==maxb) cout<<"TIED"<<nn;
-      else if(maxa>maxb) cout<<"ALICE"<<nn;
-      else cout<<"BOB"<<nn;
-    
+      if(xr==0) cout<<"second"<<nn;
+      else cout<<"first"<<nn;
     }
 
 

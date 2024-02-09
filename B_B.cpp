@@ -163,18 +163,11 @@ int main()
     cin>>t;
 
     while(t--){
-        string s;
-        cin>>s;
-        map<char,ll>vis;
-        for(ll i=0;i<s.size();i++) vis[s[i]]++;
-        string p;
-        cin>>p;
-        ll ans=0;
-        for(ll i=0;i<p.size();i++){
-            if(vis[p[i]]) ans++;
-        }
+        ll a,n;
+        cin>>n>>a;
+        ll ans=min(a,n-a);
         cout<<ans<<nn;
-    }
+    }   
 
 
     return 0;

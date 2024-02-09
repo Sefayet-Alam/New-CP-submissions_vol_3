@@ -152,7 +152,8 @@ struct custom_hash {
         return splitmix64(x + FIXED_RANDOM);
     }
 };
-
+ll n,m,k;
+vector<ll>a(N),b(N);
 int main()
 {
     fast;
@@ -160,29 +161,26 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    //cin>>t;
-
+    cin>>t;
     while(t--){
-      ll n,m;
-      cin>>n>>m;
-      vector<ll>a(n),b(m);
+      
+      cin>>n>>m>>k;
+      a.resize(n);
+      b.resize(m);
       cin>>a>>b;
-      
-      ll maxa=0;
-      ll maxb=0;
-      
+      set<ll>sa,sb,alls;
       for(ll i=0;i<n;i++){
-        maxa+=a[i]+1;
+        if(a[i]>=1 && a[i]<=k) {sa.insert(a[i]); alls.insert(a[i]);}
       }
-
       for(ll i=0;i<m;i++){
-        maxb+=b[i]+1;
+        if(b[i]>=1 && b[i]<=k){alls.insert(b[i]); sb.insert(b[i]);}
+      }
+      if(sa.size()<k/2 || sb.size()<k/2) cout<<"NO"<<nn;
+      else{
+        if(alls.size()==k) cout<<"YES"<<nn;
+        else cout<<"NO"<<nn;
       }
       
-      if(maxa==maxb) cout<<"TIED"<<nn;
-      else if(maxa>maxb) cout<<"ALICE"<<nn;
-      else cout<<"BOB"<<nn;
-    
     }
 
 

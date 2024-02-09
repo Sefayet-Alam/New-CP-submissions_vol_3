@@ -21,7 +21,8 @@
         "system_error": "cpp",
         "cstdlib": "cpp",
         "iomanip": "cpp",
-        "climits": "cpp"
+        "climits": "cpp",
+        "bitset": "cpp"
     },
     "cmake.configureOnOpen": true,
     "jupyter.interactiveWindow.textEditor.executeSelection": true

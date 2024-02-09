@@ -153,20 +153,30 @@ struct custom_hash {
     }
 };
 
+
 int main()
 {
-    fast;
+    // fast;
      ll t;
     //setIO();
      //ll tno=1;;
      t=1;
-    cin>>t;
+    //cin>>t;
 
     while(t--){
-        vector<ll>vec(3);
-        cin>>vec;
-        sort(all(vec));
-        cout<<vec[1]<<nn;
+      string s,str;
+      cin>>s>>str;
+      ll n=s.size();
+      ll m=str.size();
+      ll ans=m;
+      for(ll i=0;i<=n-m;i++){
+        ll diff=0;
+        for(ll j=0;j<m;j++){
+            if(s[i+j]!=str[j]) diff++;
+        }
+        ans=min(ans,diff);
+      }
+      cout<<ans<<nn;
     }
 
 

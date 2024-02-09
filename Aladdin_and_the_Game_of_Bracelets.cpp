@@ -153,39 +153,60 @@ struct custom_hash {
     }
 };
 
+
+ll bruteforce(vl v,ll n,ll turn){
+    if(accumulate(all(v),0)==0){
+        return !turn;
+    }
+    ll ans=0;
+    if(!turn){
+        for(ll i=0;i<n;i++){
+            if(v[i]){
+                v[i]--;
+                ans&=bruteforce(v,n,turn^1);
+                v[i]++;
+            }
+        }
+        vl vv=v;
+        for(ll i=0;i<n;i++){
+            if(vv[i]) vv[i]--;
+            ans&=bruteforce(vv,n,turn^1); 
+        }
+    }
+    else{
+         for(ll i=0;i<n;i++){
+            if(v[i]){
+                v[i]--;
+                ans|=bruteforce(v,n,turn^1);
+                v[i]++;
+            }
+        }
+        vl vv=v;
+        for(ll i=0;i<n;i++){
+            if(vv[i]) vv[i]--;
+            ans|=bruteforce(vv,n,turn^1); 
+        }
+    }
+    return ans;
+}
+void run_bruteforce(){
+    ll n=3;
+    vl v={2,3,4};
+    ll x=bruteforce(v,n,0);
+    cout<<x<<nn;
+};
 int main()
 {
     fast;
      ll t;
     //setIO();
-     //ll tno=1;;
+     ll tno=1;;
      t=1;
-    //cin>>t;
-
+    // cin>>t; 
+ 
     while(t--){
-      ll n,m;
-      cin>>n>>m;
-      vector<ll>a(n),b(m);
-      cin>>a>>b;
       
-      ll maxa=0;
-      ll maxb=0;
-      
-      for(ll i=0;i<n;i++){
-        maxa+=a[i]+1;
-      }
-
-      for(ll i=0;i<m;i++){
-        maxb+=b[i]+1;
-      }
-      
-      if(maxa==maxb) cout<<"TIED"<<nn;
-      else if(maxa>maxb) cout<<"ALICE"<<nn;
-      else cout<<"BOB"<<nn;
-    
+     run_bruteforce();
+      cout<<100<<nn;
     }
-
-
-    return 0;
 }
-

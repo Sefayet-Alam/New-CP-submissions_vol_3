@@ -158,31 +158,28 @@ int main()
     fast;
      ll t;
     //setIO();
-     //ll tno=1;;
+     ll tno=1;;
      t=1;
-    //cin>>t;
+    cin>>t;
 
     while(t--){
+         cout<<"Case "<<tno++<<": ";
       ll n,m;
       cin>>n>>m;
-      vector<ll>a(n),b(m);
-      cin>>a>>b;
-      
-      ll maxa=0;
-      ll maxb=0;
-      
-      for(ll i=0;i<n;i++){
-        maxa+=a[i]+1;
+      ll cnt=0;
+      ll xr=0;
+      for(ll i=1;i<=n;i++){
+        for(ll j=1;j<=m;j++){
+            ll x;
+            cin>>x;
+            if((n-i)%2!=(m-j)%2){
+                xr=(xr^x);
+            }
+        }
       }
+      if(xr) cout<<"win"<<nn;
+      else cout<<"lose"<<nn;
 
-      for(ll i=0;i<m;i++){
-        maxb+=b[i]+1;
-      }
-      
-      if(maxa==maxb) cout<<"TIED"<<nn;
-      else if(maxa>maxb) cout<<"ALICE"<<nn;
-      else cout<<"BOB"<<nn;
-    
     }
 
 

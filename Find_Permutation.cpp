@@ -153,6 +153,10 @@ struct custom_hash {
     }
 };
 
+bool cmp(pll a,pll b){
+    if(a.first!=b.first) return a.first>b.first;
+    return a.second>b.second;
+}
 int main()
 {
     fast;
@@ -160,29 +164,45 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    //cin>>t;
+    cin>>t;
 
     while(t--){
-      ll n,m;
-      cin>>n>>m;
-      vector<ll>a(n),b(m);
-      cin>>a>>b;
-      
-      ll maxa=0;
-      ll maxb=0;
-      
-      for(ll i=0;i<n;i++){
-        maxa+=a[i]+1;
-      }
-
-      for(ll i=0;i<m;i++){
-        maxb+=b[i]+1;
-      }
-      
-      if(maxa==maxb) cout<<"TIED"<<nn;
-      else if(maxa>maxb) cout<<"ALICE"<<nn;
-      else cout<<"BOB"<<nn;
-    
+        ll n;
+        cin>>n;
+        vector<ll>vec(2*n);
+        cin>>vec;
+        map<ll,ll>vis;
+        // cout<<vec<<nn;
+        vector<ll>line(2*n+5,0);
+        for(ll i=0;i<2*n;i++){
+            if(!vis[vec[i]]){
+                line[i]++;
+                vis[vec[i]]++;
+            }
+            else{
+                line[i+1]--;
+            }
+        }
+        // cout<<line<<nn;
+       for(ll i=1;i<2*n;i++){
+        line[i]+=line[i-1];
+       }
+    //    cout<<line<<nn;
+       unordered_map<ll,ll>ansvis;
+       vector<pll>prior;
+       for(ll i=0;i<2*n;i++){
+        prior.push_back({line[i],i});
+       }
+       sort(all(prior));
+    //    for(ll i=0;i<2*n;i++) cout<<prior[i].first<<" ";
+    //    cout<<nn;
+       for(ll i=0;i<prior.size();i++){
+        if(!ansvis[vec[prior[i].second]]){
+            cout<<vec[prior[i].second]<<" ";
+            ansvis[vec[prior[i].second]]=1;
+        }
+       }
+       cout<<nn;
     }
 
 

@@ -13,7 +13,7 @@ using namespace __gnu_pbds;
 #define SZ(a) (int)a.size()
 #define UNIQUE(a) (a).erase(unique(all(a)),(a).end())
 #define eb emplace_back
-#define mp make_pair
+
 
 
 ///BIT MANIPULATION
@@ -153,6 +153,89 @@ struct custom_hash {
     }
 };
 
+
+const ll sz = 200009;//
+vector <ll> g[sz];
+vector<pair<ll,ll>>g2[sz];
+ll low[sz], start[sz], TM = 1, root = 1;
+ll n, k, a[sz], b[sz], c[sz], vis2[sz], mn;
+ll d, e;
+bool artPoint[sz], vis[sz];
+map<pair<ll,ll>,ll>mp;
+vector<ll>v;
+int got;
+
+void artdfs(ll u, ll p)
+{
+    low[u] = start[u] = TM++;
+    vis[u] = 1;
+    ll child = 0;       /// Counter of the children of u in dfs tree
+    for(ll i = 0; i < g[u].size(); i++) {
+        ll v = g[u][i];
+        if(v == p)
+            continue;
+ 
+        if(vis[v])
+            low[u] = min(low[u], start[v]);
+        else {
+            artdfs(v, u);
+            low[u] = min(low[u], low[v]);
+ 
+            if(start[u] < low[v]) {    /// For articulation bridge: if(start[u] < low[v])
+                artPoint[u] = true;  
+                                   /// the edge between u and v is an articulation bridge
+                mp[{u,v}]=1;
+            }
+            child++;
+        }
+    }
+ 
+}
+ 
+ 
+void dfs(int node){
+    vis2[node]=1;
+    for(pair<ll,ll>a : g2[node]){
+        if(a.ss<mn){
+            d=node, e=a.ff, mn=a.ss;
+        }
+        if(!vis2[a.ff]){
+            // dbg(node,a.ff,a.ss);
+            dfs(a.ff);
+        }
+    }
+}
+ 
+void dfs2(int node){
+    if(node==e){
+        got=1; return;
+    }
+    v.pb(node);
+    vis2[node]=1;
+    for(pair<ll,ll> a : g2[node]){
+        if(node==d && a.ff==e) continue;
+        if(got) return;
+        if(!vis2[a.ff]){
+            dfs2(a.ff);
+        }
+    }
+    if(got) return;
+    v.pop_back();
+}
+
+void reset(ll n,ll m){
+    mp.clear();
+    TM = 1, root = 1,got=0;
+
+    for(ll i=0;i<=n;i++){
+        g[i].clear();
+        g2[i].clear();
+        a[i]=b[i]=c[i]=0;
+        vis[i]=0;
+        vis2[i]=0;
+        low[i]=start[i]=0;
+    }
+}
 int main()
 {
     fast;
@@ -160,32 +243,46 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    //cin>>t;
+    cin>>t;
 
     while(t--){
-      ll n,m;
-      cin>>n>>m;
-      vector<ll>a(n),b(m);
-      cin>>a>>b;
-      
-      ll maxa=0;
-      ll maxb=0;
-      
-      for(ll i=0;i<n;i++){
-        maxa+=a[i]+1;
-      }
-
-      for(ll i=0;i<m;i++){
-        maxb+=b[i]+1;
-      }
-      
-      if(maxa==maxb) cout<<"TIED"<<nn;
-      else if(maxa>maxb) cout<<"ALICE"<<nn;
-      else cout<<"BOB"<<nn;
+        ll n,m;
+        cin>>n>>m;
+        reset(n,m);
+     
+        for(ll i=0;i<m;i++){
+            ll x,y,w;
+            cin>>x>>y>>w;
+            a[i]=x,b[i]=y,c[i]=w;
+            g[x].push_back(y);
+            g[y].push_back(x);
+          
+        }
+        for(ll i=1;i<=n;i++){
+            if(!vis[i]) artdfs(i,-1);
+        }
     
+        for(ll i=0;i<m;i++){
+            if(!mp[{a[i],b[i]}] && !mp[{b[i],a[i]}]){
+                g2[a[i]].push_back({b[i],c[i]});
+                g2[b[i]].push_back({a[i],c[i]});
+            }
+        }
+        mn=INT_MAX;
+        for(ll i=1;i<=n;i++){
+            if(!vis2[i]) dfs(i);
+        }
+        for(ll i=1;i<=n;i++){
+            vis2[i]=0;
+        }
+        v.clear();
+        v.push_back(e);
+        dfs2(d);
+        cout<<mn<<" "<<v.size()<<nn;
+        cout<<v<<nn;
+       
     }
 
 
     return 0;
 }
-

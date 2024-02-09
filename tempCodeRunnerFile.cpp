@@ -1,8 +1,4 @@
-cout<<"?"<<" ";
-        // if(maxi!=3) cout<<2<<" "<<maxi<<" "<<3<<endl;
-        // else{cout<<2<<" "<<maxi<<" "<<4<<endl;}
-        // cin>>k1;
-        // cout<<"?"<<" ";
-        // if(maxj!=3) cout<<2<<" "<<maxj<<" "<<3<<endl;
-        // else{cout<<2<<" "<<maxj<<" "<<4<<endl;}
-        // cin>>k2;
+ // if(par[to]==-1){
+        // cout<<"no routes available from station:"<<from<<"to station: "<<to<<nn;
+        // return 0;
+        // }

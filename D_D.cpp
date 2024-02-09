@@ -152,7 +152,7 @@ struct custom_hash {
         return splitmix64(x + FIXED_RANDOM);
     }
 };
-
+ll n;
 int main()
 {
     fast;
@@ -160,30 +160,23 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    cin>>t;
+    //cin>>t;
 
     while(t--){
-      ll n;
+      
       cin>>n;
-      vector<ll>vec(n);
-      cin>>vec;
-      sort(all(vec));
-      ll tar=vec[n-1]+vec[n-2];
-      vector<ll>ans;
-      ll l=0,r=n-1;
-      while(l<r){
-        ans.push_back(vec[r]);
-        ans.push_back(vec[l]);
-        r--;
-        l++;
+      set<ll>ans;
+      ll curr=0;
+      for(ll i=1;i<=n;i++){
+       if(curr>n) break;
+       curr+=i;
+       ans.insert(i);
       }
-      bool f=0;
-      if(l==r) ans.push_back(vec[l]);
-      for(ll i=0;i<n-1;i++){
-        if(ans[i]+ans[i+1]>=tar) f=1;
+      if(ans.find(curr-n)!=ans.end()) ans.erase(curr-n);
+      for(auto it:ans){
+        cout<<it<<nn;
       }
-      if(f) cout<<"NO"<<nn;
-      else cout<<"YES"<<nn;
+
     }
 
 
