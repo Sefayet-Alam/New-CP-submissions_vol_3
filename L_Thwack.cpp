@@ -1,3 +1,4 @@
+
 #include<bits/stdc++.h>
 #include<ext/pb_ds/assoc_container.hpp>
 #include<ext/pb_ds/tree_policy.hpp>
@@ -58,7 +59,7 @@ using namespace __gnu_pbds;
 #define PI 3.1415926535897932384626
 const double EPS = 1e-9;
 const ll N = 2e5+10;
-const ll M = 998244353;
+const ll M = 1e9+7;
 
 
 ///INLINE FUNCTIONS
@@ -153,44 +154,6 @@ struct custom_hash {
     }
 };
 
-ll n,k;
-
-ll FM[N];
-int is_initialized = 0;
-ll factorialMod(ll n, ll x){
-    if (!is_initialized){
-        FM[0] = 1 % x;
-        for (int i = 1; i < N; i++)
-            FM[i] = (FM[i - 1] * i) % x;
-        is_initialized = 1;
-    }
-    return FM[n];
-}
-
-ll powerMod(ll x, ll y, ll p){
-    ll res = 1 % p;
-    x = x % p;
-    while (y > 0){
-        if (y & 1) res = (res * x) % p;
-        y = y >> 1;
-        x = (x * x) % p;
-    }
-    return res;
-}
-
-ll inverseMod(ll a, ll x){
-    return powerMod(a, x - 2, x);
-}
-
-ll nCrMod(ll n, ll r, ll x){
-    if (r == 0) return 1;
-    if (r > n) return 0;
-    ll res = factorialMod(n, x);
-    ll fr = factorialMod(r, x);
-    ll zr = factorialMod(n - r, x);
-    res = (res * inverseMod((fr * zr) % x, x)) % x;
-    return res;
-}
 int main()
 {
     fast;
@@ -198,14 +161,57 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    cin>>t;
+    //cin>>t;
 
     while(t--){
-    cin>>n>>k;
-    ll pow=(n*k)/2;
-    ll ans=powerMod(2,n-1,M);//subset with even number of elements
-    ans=powerMod(ans,k,M);
-    cout<<ans<<nn;
+        ll n;
+        cin>>n;
+        string s;
+        cin>>s;
+        ll curr=0;
+        ll xr=0;
+        vector<pll>ans;
+        for(ll i=1;i<n;i++){
+            if(s[i]==s[i-1]){
+                curr++;
+            }
+            else{
+                xr=(xr^curr);
+                curr=0;
+            }
+        }
+         xr=(xr^curr);
+         curr=0;
+         for(ll i=1;i<n;i++){
+            if(s[i]==s[i-1]){
+                curr++;
+            }
+            else{
+                ll now=(xr^curr);
+                if(now){
+                    ans.push_back({i,i+1});
+                }
+                curr=0;
+            }
+         }
+          curr=0;
+          for(ll i=n-2;i>=0;i--){
+            if(s[i]==s[i+1]){
+                curr++;
+            }
+            else{
+                ll now=(xr^curr);
+                if(now){
+                    ans.push_back({i+1,i});
+                }
+                curr=0;
+            }
+         }
+         sort(all(ans));
+         cout<<ans.size()<<nn;
+         for(auto it:ans){
+            cout<<it<<nn;
+         }
     }
 
 

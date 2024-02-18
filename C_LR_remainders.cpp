@@ -58,7 +58,7 @@ using namespace __gnu_pbds;
 #define PI 3.1415926535897932384626
 const double EPS = 1e-9;
 const ll N = 2e5+10;
-const ll M = 998244353;
+const ll M = 1e9+7;
 
 
 ///INLINE FUNCTIONS
@@ -153,44 +153,156 @@ struct custom_hash {
     }
 };
 
-ll n,k;
 
-ll FM[N];
-int is_initialized = 0;
-ll factorialMod(ll n, ll x){
-    if (!is_initialized){
-        FM[0] = 1 % x;
-        for (int i = 1; i < N; i++)
-            FM[i] = (FM[i - 1] * i) % x;
-        is_initialized = 1;
+ 
+ll tre[3*N];
+ll lazy[3*N];
+ll n,m;
+ll merge(ll x,ll y){
+    return (x*y)%m;
+}
+ 
+void buildSegTree(vector<ll>& arr, ll treeIndex, ll lo, ll hi){
+ 
+    if (lo == hi) {                 // leaf node. store value in node.
+        tre[treeIndex] = arr[lo];
+        return;
     }
-    return FM[n];
+ 
+    ll mid = lo + (hi - lo) / 2;   // recurse deeper for children.
+    buildSegTree(arr, 2 * treeIndex + 1, lo, mid);
+    buildSegTree(arr, 2 * treeIndex + 2, mid + 1, hi);
+ 
+    // merge build results
+    tre[treeIndex] = merge(tre[2 * treeIndex + 1], tre[2 * treeIndex + 2]);
 }
-
-ll powerMod(ll x, ll y, ll p){
-    ll res = 1 % p;
-    x = x % p;
-    while (y > 0){
-        if (y & 1) res = (res * x) % p;
-        y = y >> 1;
-        x = (x * x) % p;
+ 
+// call this method as buildSegTree(arr, 0, 0, n-1);
+// Here arr[] is input array and n is its size.
+ 
+ll querySegTree(ll treeIndex, ll lo, ll hi, ll i, ll j){
+    // query for arr[i..j]
+ 
+    if (lo > j || hi < i)               // segment completely outside range
+        return 0;                       // represents a null node
+ 
+    if (i <= lo && j >= hi)             // segment completely inside range
+        return tre[treeIndex];
+ 
+    ll mid = lo + (hi - lo) / 2;       // partial overlap of current segment and queried range. Recurse deeper.
+ 
+    if (i > mid)
+        return querySegTree(2 * treeIndex + 2, mid + 1, hi, i, j);
+    else if (j <= mid)
+        return querySegTree(2 * treeIndex + 1, lo, mid, i, j);
+ 
+    ll leftQuery = querySegTree(2 * treeIndex + 1, lo, mid, i, mid);
+    ll rightQuery = querySegTree(2 * treeIndex + 2, mid + 1, hi, mid + 1, j);
+ 
+    // merge query results
+    return merge(leftQuery, rightQuery);
+}
+ 
+// call this method as querySegTree(0, 0, n-1, i, j);
+// Here [i,j] is the range/interval you are querying.
+// This method relies on "null" nodes being equivalent to storing zero.
+ 
+void updateValSegTree(ll treeIndex, ll lo, ll hi, ll arrIndex, ll val)
+{
+    if (lo == hi) {                 // leaf node. update element.
+        tre[treeIndex] = val;
+        return;
     }
-    return res;
+ 
+    ll mid = lo + (hi - lo) / 2;   // recurse deeper for appropriate child
+ 
+    if (arrIndex > mid)
+        updateValSegTree(2 * treeIndex + 2, mid + 1, hi, arrIndex, val);
+    else if (arrIndex <= mid)
+        updateValSegTree(2 * treeIndex + 1, lo, mid, arrIndex, val);
+ 
+    // merge updates
+    tre[treeIndex] = merge(tre[2 * treeIndex + 1], tre[2 * treeIndex + 2]);
 }
+ 
+// call this method as updateValSegTree(0, 0, n-1, i, val);
+// Here you want to update the value at index i with value val.
+ 
+void updateLazySegTree(ll treeIndex, ll lo, ll hi, ll i, ll j, ll val){
+    if (lazy[treeIndex] != 0) {                             // this node is lazy
+        tre[treeIndex] += (hi - lo + 1) * lazy[treeIndex]; // normalize current node by removing laziness
+ 
+        if (lo != hi) {                                     // update lazy[] for children nodes
+            lazy[2 * treeIndex + 1] += lazy[treeIndex];
+            lazy[2 * treeIndex + 2] += lazy[treeIndex];
+        }
+ 
+        lazy[treeIndex] = 0;                                // current node processed. No longer lazy
+    }
+ 
+    if (lo > hi || lo > j || hi < i)
+        return;                                             // out of range. escape.
+ 
+    if (i <= lo && hi <= j) {                               // segment is fully within update range
+        tre[treeIndex] += (hi - lo + 1) * val;             // update segment
+ 
+        if (lo != hi) {                                     // update lazy[] for children
+            lazy[2 * treeIndex + 1] += val;
+            lazy[2 * treeIndex + 2] += val;
+        }
+ 
+        return;
+    }
+ 
+    ll mid = lo + (hi - lo) / 2;                             // recurse deeper for appropriate child
+ 
+    updateLazySegTree(2 * treeIndex + 1, lo, mid, i, j, val);
+    updateLazySegTree(2 * treeIndex + 2, mid + 1, hi, i, j, val);
+ 
+    // merge updates
+    tre[treeIndex] = tre[2 * treeIndex + 1] + tre[2 * treeIndex + 2];
+}
+// call this method as updateLazySegTree(0, 0, n-1, i, j, val);
+// Here you want to update the range [i, j] with value val.
+ 
+ll queryLazySegTree(ll treeIndex, ll lo, ll hi, ll i, ll j){
+    // query for arr[i..j]
+ 
+    if (lo > j || hi < i)                                   // segment completely outside range
+        return 0;                                           // represents a null node
+ 
+    if (lazy[treeIndex] != 0) {                             // this node is lazy
+        tre[treeIndex] += (hi - lo + 1) * lazy[treeIndex]; // normalize current node by removing laziness
+ 
+        if (lo != hi) {                                     // update lazy[] for children nodes
+            lazy[2 * treeIndex + 1] += lazy[treeIndex];
+            lazy[2 * treeIndex + 2] += lazy[treeIndex];
+        }
+ 
+        lazy[treeIndex] = 0;                                // current node processed. No longer lazy
+    }
+ 
+    if (i <= lo && j >= hi)                                 // segment completely inside range
+        return tre[treeIndex];
+ 
+    ll mid = lo + (hi - lo) / 2;                           // partial overlap of current segment and queried range. Recurse deeper.
+ 
+    if (i > mid)
+        return queryLazySegTree(2 * treeIndex + 2, mid + 1, hi, i, j);
+    else if (j <= mid)
+        return queryLazySegTree(2 * treeIndex + 1, lo, mid, i, j);
+ 
+    ll leftQuery = queryLazySegTree(2 * treeIndex + 1, lo, mid, i, mid);
+    ll rightQuery = queryLazySegTree(2 * treeIndex + 2, mid + 1, hi, mid + 1, j);
+ 
+    // merge query results
+    return leftQuery + rightQuery;
+}
+// call this method as queryLazySegTree(0, 0, n-1, i, j);
+// Here [i,j] is the range/interval you are querying.
+// This method relies on "null" nodes being equivalent to storing zero.
+ 
 
-ll inverseMod(ll a, ll x){
-    return powerMod(a, x - 2, x);
-}
-
-ll nCrMod(ll n, ll r, ll x){
-    if (r == 0) return 1;
-    if (r > n) return 0;
-    ll res = factorialMod(n, x);
-    ll fr = factorialMod(r, x);
-    ll zr = factorialMod(n - r, x);
-    res = (res * inverseMod((fr * zr) % x, x)) % x;
-    return res;
-}
 int main()
 {
     fast;
@@ -201,11 +313,22 @@ int main()
     cin>>t;
 
     while(t--){
-    cin>>n>>k;
-    ll pow=(n*k)/2;
-    ll ans=powerMod(2,n-1,M);//subset with even number of elements
-    ans=powerMod(ans,k,M);
-    cout<<ans<<nn;
+      
+      cin>>n>>m;
+      vector<ll>vec(n);
+      cin>>vec;
+      for(ll i=0;i<n;i++) vec[i]=(vec[i])%m;
+      buildSegTree(vec,0,0,n-1);
+      ll l=0,r=n-1;
+      string s;
+      cin>>s;
+      for(ll i=0;i<n;i++){
+        ll curr=querySegTree(0,0,n-1,l,r);
+        cout<<curr<<" ";
+        if(s[i]=='L') l++;
+        else r--;
+      }
+        cout<<nn;
     }
 
 

@@ -58,7 +58,7 @@ using namespace __gnu_pbds;
 #define PI 3.1415926535897932384626
 const double EPS = 1e-9;
 const ll N = 2e5+10;
-const ll M = 998244353;
+const ll M = 1e9+7;
 
 
 ///INLINE FUNCTIONS
@@ -152,45 +152,31 @@ struct custom_hash {
         return splitmix64(x + FIXED_RANDOM);
     }
 };
+vpll g[N];
+vl dist(N,LLONG_MAX);
+vl par(N,-1);
 
-ll n,k;
-
-ll FM[N];
-int is_initialized = 0;
-ll factorialMod(ll n, ll x){
-    if (!is_initialized){
-        FM[0] = 1 % x;
-        for (int i = 1; i < N; i++)
-            FM[i] = (FM[i - 1] * i) % x;
-        is_initialized = 1;
+void dijkstra(int source){
+    QP<pll> pq;
+    pq.push(mp(0,source));
+    dist[source]=0;
+    while(pq.size()){
+        ll v=pq.top().second;
+        ll v_dist=pq.top().first;
+        pq.pop();
+        if(dist[v]<v_dist) continue;
+        for(auto &child:g[v]){
+            ll child_v=child.first;
+            ll wt=child.second;
+            if(dist[v]+wt<dist[child_v]){
+                dist[child_v]=dist[v]+wt;
+                par[child_v]=v;
+                pq.push(mp(dist[child_v],child_v));
+            }
+        }
     }
-    return FM[n];
 }
 
-ll powerMod(ll x, ll y, ll p){
-    ll res = 1 % p;
-    x = x % p;
-    while (y > 0){
-        if (y & 1) res = (res * x) % p;
-        y = y >> 1;
-        x = (x * x) % p;
-    }
-    return res;
-}
-
-ll inverseMod(ll a, ll x){
-    return powerMod(a, x - 2, x);
-}
-
-ll nCrMod(ll n, ll r, ll x){
-    if (r == 0) return 1;
-    if (r > n) return 0;
-    ll res = factorialMod(n, x);
-    ll fr = factorialMod(r, x);
-    ll zr = factorialMod(n - r, x);
-    res = (res * inverseMod((fr * zr) % x, x)) % x;
-    return res;
-}
 int main()
 {
     fast;
@@ -198,14 +184,19 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    cin>>t;
+    //cin>>t;
 
     while(t--){
-    cin>>n>>k;
-    ll pow=(n*k)/2;
-    ll ans=powerMod(2,n-1,M);//subset with even number of elements
-    ans=powerMod(ans,k,M);
-    cout<<ans<<nn;
+      ll n;
+      cin>>n;
+      for(ll i=1;i<=n-1;i++){
+        ll x,y,w;
+        cin>>x>>y>>w;
+        g[i].push_back({i+1,x});
+        g[i].push_back({w,y});
+      }
+      dijkstra(1);
+      cout<<dist[n]<<nn;
     }
 
 

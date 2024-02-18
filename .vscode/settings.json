@@ -22,7 +22,8 @@
         "cstdlib": "cpp",
         "iomanip": "cpp",
         "climits": "cpp",
-        "bitset": "cpp"
+        "bitset": "cpp",
+        "string_view": "cpp"
     },
     "cmake.configureOnOpen": true,
     "jupyter.interactiveWindow.textEditor.executeSelection": true

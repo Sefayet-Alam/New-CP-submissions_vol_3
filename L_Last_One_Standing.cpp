@@ -58,7 +58,7 @@ using namespace __gnu_pbds;
 #define PI 3.1415926535897932384626
 const double EPS = 1e-9;
 const ll N = 2e5+10;
-const ll M = 998244353;
+const ll M = 1e9+7;
 
 
 ///INLINE FUNCTIONS
@@ -153,59 +153,53 @@ struct custom_hash {
     }
 };
 
-ll n,k;
-
-ll FM[N];
-int is_initialized = 0;
-ll factorialMod(ll n, ll x){
-    if (!is_initialized){
-        FM[0] = 1 % x;
-        for (int i = 1; i < N; i++)
-            FM[i] = (FM[i - 1] * i) % x;
-        is_initialized = 1;
-    }
-    return FM[n];
-}
-
-ll powerMod(ll x, ll y, ll p){
-    ll res = 1 % p;
-    x = x % p;
-    while (y > 0){
-        if (y & 1) res = (res * x) % p;
-        y = y >> 1;
-        x = (x * x) % p;
-    }
-    return res;
-}
-
-ll inverseMod(ll a, ll x){
-    return powerMod(a, x - 2, x);
-}
-
-ll nCrMod(ll n, ll r, ll x){
-    if (r == 0) return 1;
-    if (r > n) return 0;
-    ll res = factorialMod(n, x);
-    ll fr = factorialMod(r, x);
-    ll zr = factorialMod(n - r, x);
-    res = (res * inverseMod((fr * zr) % x, x)) % x;
-    return res;
-}
 int main()
 {
-    fast;
+    // fast;
      ll t;
     //setIO();
      //ll tno=1;;
      t=1;
-    cin>>t;
+    //cin>>t;
 
     while(t--){
-    cin>>n>>k;
-    ll pow=(n*k)/2;
-    ll ans=powerMod(2,n-1,M);//subset with even number of elements
-    ans=powerMod(ans,k,M);
-    cout<<ans<<nn;
+        ll h1,h2,d1,d2,t1,t2;
+        cin>>h1>>d1>>t1;
+        cin>>h2>>d2>>t2;
+        ll f=0;
+        ll nxt1=t1;
+        ll nxt2=t2;
+        bool f1=1,f2=1;
+        
+        for(ll i=1;(h1>=0 && h2>=0);i++){
+           
+            if(f1){
+                h2-=d1;
+                f1=0;
+            }
+            if(f2){
+                h1-=d2;
+                f2=0;
+            }
+            if(i==nxt1){
+                nxt1=i+t1;
+                f1=1;
+                // deb(nxt1);
+       
+            }
+            if(i==nxt2){
+                nxt2=i+t2;
+                f2=1;
+                //  deb(nxt2);
+            }
+             if(h1<=0 || h2<=0) break;
+            // cout<<i<<" "<<h1<<" "<<h2<<nn;
+        }
+        if(h1<=0 && h2<=0) f=2;
+        else if(h2<=0) f=1;
+        if(f==0) cout<<"player one"<<nn;
+        else if(f==1) cout<<"player two"<<nn;
+        else cout<<"draw"<<nn;
     }
 
 

@@ -58,7 +58,7 @@ using namespace __gnu_pbds;
 #define PI 3.1415926535897932384626
 const double EPS = 1e-9;
 const ll N = 2e5+10;
-const ll M = 998244353;
+const ll M = 1e9+7;
 
 
 ///INLINE FUNCTIONS
@@ -153,43 +153,46 @@ struct custom_hash {
     }
 };
 
-ll n,k;
 
-ll FM[N];
-int is_initialized = 0;
-ll factorialMod(ll n, ll x){
-    if (!is_initialized){
-        FM[0] = 1 % x;
-        for (int i = 1; i < N; i++)
-            FM[i] = (FM[i - 1] * i) % x;
-        is_initialized = 1;
+string findSum(string str1, string str2)
+{
+    if (str1.length() > str2.length())
+        swap(str1, str2);
+ 
+    
+    string str = "";
+ 
+    
+    int n1 = str1.length(), n2 = str2.length();
+
+    reverse(str1.begin(), str1.end());
+    reverse(str2.begin(), str2.end());
+ 
+    int carry = 0;
+    for (int i=0; i<n1; i++)
+    {
+        
+        int sum = ((str1[i]-'0')+(str2[i]-'0')+carry);
+        str.push_back(sum%10 + '0');
+ 
+        carry = sum/10;
     }
-    return FM[n];
-}
-
-ll powerMod(ll x, ll y, ll p){
-    ll res = 1 % p;
-    x = x % p;
-    while (y > 0){
-        if (y & 1) res = (res * x) % p;
-        y = y >> 1;
-        x = (x * x) % p;
+ 
+ 
+    for (ll i=n1; i<n2; i++)
+    {
+        ll sum = ((str2[i]-'0')+carry);
+        str.push_back(sum%10 + '0');
+        carry = sum/10;
     }
-    return res;
-}
-
-ll inverseMod(ll a, ll x){
-    return powerMod(a, x - 2, x);
-}
-
-ll nCrMod(ll n, ll r, ll x){
-    if (r == 0) return 1;
-    if (r > n) return 0;
-    ll res = factorialMod(n, x);
-    ll fr = factorialMod(r, x);
-    ll zr = factorialMod(n - r, x);
-    res = (res * inverseMod((fr * zr) % x, x)) % x;
-    return res;
+ 
+    
+    if (carry)
+        str.push_back(carry+'0');
+ 
+    reverse(str.begin(), str.end());
+ 
+    return str;
 }
 int main()
 {
@@ -201,11 +204,26 @@ int main()
     cin>>t;
 
     while(t--){
-    cin>>n>>k;
-    ll pow=(n*k)/2;
-    ll ans=powerMod(2,n-1,M);//subset with even number of elements
-    ans=powerMod(ans,k,M);
-    cout<<ans<<nn;
+       ll len ; cin>>len;
+        string s; cin>>s;
+ 
+        ll pref[len] = {};
+        pref[0] = s[0] - '0';
+        for(ll i = 1 ; i < len ; i++){
+            pref[i] = pref[i - 1] + (s[i] - '0');
+        }
+        string ans;
+        ll rem = 0;
+        for(ll i = len - 1 ; i >= 0 ; i--){
+            ll dig = (pref[i] + rem) % 10;
+            rem = (pref[i] + rem) / 10;
+            ans += char(dig+'0');
+        }
+        if(rem)ans += string(1 , rem + '0');
+        while(ans.empty() != 1 && ans.back() == '0')ans.pop_back();
+        reverse(all(ans));
+        cout<<ans<<endl;
+        
     }
 
 
