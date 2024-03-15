@@ -57,7 +57,7 @@ using namespace __gnu_pbds;
 #define md                  10000007
 #define PI 3.1415926535897932384626
 const double EPS = 1e-9;
-const ll N = 4e5+10;
+const ll N = 2e5+10;
 const ll M = 1e9+7;
 
 
@@ -123,13 +123,6 @@ namespace io{
 } using namespace io;
  
 
-/*===================================================================//
-            
-        ░█▀▀▀█ ░█▀▀▀ ░█▀▀▀ ─█▀▀█ ░█──░█ ░█▀▀▀ ▀▀█▀▀ 
-        ─▀▀▀▄▄ ░█▀▀▀ ░█▀▀▀ ░█▄▄█ ░█▄▄▄█ ░█▀▀▀ ─░█── 
-        ░█▄▄▄█ ░█▄▄▄ ░█─── ░█─░█ ──░█── ░█▄▄▄ ─░█──
-//====================================================================*/
-
 void setIO(){
     #ifndef ONLINE_JUDGE
     freopen("input.txt", "r", stdin);
@@ -152,28 +145,7 @@ struct custom_hash {
         return splitmix64(x + FIXED_RANDOM);
     }
 };
-ll n,m;
-vector<ll>g[N];
-bool vis[N];
-void dfs(ll vertex){
-    /*
-    take action on vertex after entering the vertex
-    */
-    vis[vertex]=true;
-    for(ll child: g[vertex]){
-        /*
-        take action on child before entering the child node
-        */
-        if(vis[child]) continue;
-        dfs(child);
-        /*
-        take action on child after entering the child node
-        */
-    }
-    /*
-    take action on vertex before exiting the vertex
-    */
-}
+
 int main()
 {
     fast;
@@ -184,27 +156,69 @@ int main()
     //cin>>t;
 
     while(t--){
-        cin>>n>>m;
-        for(ll i=1;i<=n;i++){
-            ll x;
-            cin>>x;
-            for(ll j=0;j<x;j++){
-                ll y;
-                cin>>y;
-                g[i].push_back(n+y);
-                g[n+y].push_back(i);
+        string s;
+        cin>>s;
+        string p="";
+        ll n=s.size();
+        ll crr=1;
+        for(ll i=0;i<n;i++){
+            if(i && s[i]==s[i-1]){
+                crr++;
             }
+            else{
+                crr=1;
+            }
+            if(crr<=2) p+=s[i];
         }
-        ll comps=0;
-        dfs(1);
-        for(ll i=1;i<=n;i++){
-            if(!vis[i]){comps++;}
+        ll sz=p.size();
+        if(p.size()==1){
+            cout<<1<<nn;
+            continue;
         }
-        if(comps==0) cout<<"YES"<<nn;
-        else cout<<"NO"<<nn;
+        if(p.size()==2){
+            if(p[0]==p[1]){
+                cout<<1<<nn;
+            }
+            else{
+                cout<<2<<nn;
+            }
+            continue;
+        }
+        if(p.size()==3){
+           set<char>stt;
+           stt.insert(p[0]);
+           stt.insert(p[1]);
+           stt.insert(p[2]);
+           cout<<stt.size()<<nn;
+           continue;
+        }
+       
+        deb(p);
+        // deb(sz);
+        ll ex=0;
+        ll duo=0;
+        for(ll i=0;i<sz;i++){
+            if(i && p[i]==p[i-1]){}
+            else ex++;
+        }
+        ll singl=0;
+        for(ll i=1;i<sz-1;i++){
+            if(p[i]==p[i-1] || p[i]==p[i+1]) duo++;
+            else singl++;
+        }
+        if(p[0]!=p[1]) singl++;
+        if(p[sz-1]!=p[sz-2]) singl++;
+        // deb(ex);
+        duo/=2;
+        deb(duo);
+        deb(singl);
+        ll difs=duo+singl;
+        deb(difs);
+        ll ans=duo+(difs*(difs-1))/2;
+        cout<<ans<<nn;
+
     }
 
 
     return 0;
 }
-

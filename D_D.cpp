@@ -152,7 +152,7 @@ struct custom_hash {
         return splitmix64(x + FIXED_RANDOM);
     }
 };
-ll n;
+
 int main()
 {
     fast;
@@ -160,23 +160,44 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    //cin>>t;
+    cin>>t;
 
     while(t--){
-      
-      cin>>n;
-      set<ll>ans;
-      ll curr=0;
-      for(ll i=1;i<=n;i++){
-       if(curr>n) break;
-       curr+=i;
-       ans.insert(i);
-      }
-      if(ans.find(curr-n)!=ans.end()) ans.erase(curr-n);
-      for(auto it:ans){
-        cout<<it<<nn;
-      }
+    ll n;
+    cin>>n;
+    vector<ll>vec(n);
+    cin>>vec;
+    ll g=vec[0];
+    for(ll i=1;i<n;i++){
+        g=GCD(g,vec[i]);
+    }  
+    if(g!=1) cout<<n<<nn;
+    else{
+        vector<ll> suff(n,0),pref(n,0);
+        pref[0]=vec[0];
+        for(ll i=1;i<n;i++){
+            pref[i]=GCD(pref[i-1],vec[i]);
+        }
+        suff[n-1]=vec[n-1];
+        for(ll i=n-2;i>=0;i--){
+            suff[i]=GCD(suff[i+1],vec[i]);
+        }
+        ll ans=n;
+        for(ll i=0;i<n;i++){
+            if(i==0){
+                if(suff[i+1]==1) ans--;
+            }
+            else if(i==n-1){
+                if(pref[i-1]==1) ans--;
+            }
+            else {
+                if(GCD(pref[i-1],suff[i+1])==1) ans--;
+            }
+            
+        }
+        cout<<ans<<nn;
 
+    }
     }
 
 

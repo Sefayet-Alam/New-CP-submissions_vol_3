@@ -163,11 +163,18 @@ int main()
     cin>>t;
 
     while(t--){
-        ll a,n;
-        cin>>n>>a;
-        ll ans=min(a,n-a);
-        cout<<ans<<nn;
-    }   
+      ll n;
+      cin>>n;
+      vector<ll>a(n),b(n);
+      cin>>a>>b;
+      vector<ll>vec;
+      for(ll i=0;i<n;i++){
+        ll curr=max(0LL,a[i]*20-b[i]*10);
+        vec.push_back(curr);
+      }
+      ll ans=*max_element(all(vec));
+      cout<<ans<<nn;
+    }
 
 
     return 0;

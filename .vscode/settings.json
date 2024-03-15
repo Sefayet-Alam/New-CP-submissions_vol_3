@@ -28,7 +28,8 @@
         "random": "cpp",
         "future": "cpp",
         "optional": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "limits": "cpp"
     },
     "cmake.configureOnOpen": true,
     "jupyter.interactiveWindow.textEditor.executeSelection": true

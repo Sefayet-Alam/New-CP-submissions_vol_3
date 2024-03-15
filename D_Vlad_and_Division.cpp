@@ -132,9 +132,9 @@ namespace io{
 
 void setIO(){
     #ifndef ONLINE_JUDGE
-    freopen("input.txt", "r", stdin);
+    freopen("inputncpc.txt", "r", stdin);
 
-    freopen("output.txt", "w", stdout);
+    freopen("outputncpc.txt", "w", stdout);
     #endif // ONLINE_JUDGE
 
 }
@@ -157,7 +157,7 @@ int main()
 {
     fast;
      ll t;
-    //setIO();
+    // setIO();
      //ll tno=1;;
      t=1;
     cin>>t;
@@ -166,18 +166,25 @@ int main()
         cin>>n;
         vector<ll>vec(n);
         cin>>vec;
-        map<ll,ll>mpp;
-        ll ans=n;
-        ll lim=(1LL<<33)-1;
-        for(ll i=0;i<n;i++){
-            ll xr=(lim^vec[i]);
-        }
+      
+        multiset<ll>ms;
         ll ans=0;
-        for(auto it:mpp){
-            cout<<it<<nn;
-            ans=max(ans,it.second);
-        }
+        ll lim=(1LL<<31)-1;
+        // deb(lim);
+        for(ll i=0;i<n;i++){     
+            ll g=vec[i];       
+            ll currxr=(lim^g);
+            if(ms.find(currxr)!=ms.end()){
+                ms.erase(ms.find(currxr));
+                ans++;
+            }
+            else{
+                ms.insert(g);
+            }
+        } 
+        ans+=ms.size(); 
         cout<<ans<<nn;
+
     }
     return 0;
 }
