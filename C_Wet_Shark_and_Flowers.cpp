@@ -292,6 +292,7 @@ struct custom_hash
     }
 };
 
+
 int main()
 {
     fast;
@@ -299,22 +300,30 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
-
+    // cin >> t;
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<ll>vec(n);
-        cin>>vec;
-        ll ans=0;
-        ordered_multiset<ll>os;
-        for(ll i=n-1;i>=0;i--){
-           if(os.size()) ans+=os.order_of_key(vec[i]);
-           cout<<i<<" "<<os.order_of_key(vec[i])<<nn;
-           os.insert(vec[i]);
-        }
-        cout<<ans<<nn;
+      ll n,p;
+      cin>>n>>p;
+      vector<double>probs(n);
+      for(ll i=0;i<n;i++){
+        ll l,r;
+        cin>>l>>r;
+        
+       
+        ll divs=r/p-(l-1)/p;
+    //    deb2(i,divs);
+        double prob=(double)divs/((r-l+1)*1.00);
+        probs[i]=prob;
+      }
+    
+      double ans=0.00;
+      for(ll i=0;i<n;i++){
+        ans+=(probs[i]+probs[(i+1)%n]-(probs[i]*probs[(i+1)%n]));
+      }
+      
+     
+      Setpre(10)<<ans*2000<<nn;
     }
 
     return 0;

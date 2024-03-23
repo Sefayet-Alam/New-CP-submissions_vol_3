@@ -299,22 +299,26 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<ll>vec(n);
-        cin>>vec;
-        ll ans=0;
-        ordered_multiset<ll>os;
-        for(ll i=n-1;i>=0;i--){
-           if(os.size()) ans+=os.order_of_key(vec[i]);
-           cout<<i<<" "<<os.order_of_key(vec[i])<<nn;
-           os.insert(vec[i]);
+        string s;
+        cin>>s;
+        string yr="";
+        string mon="";
+        string da="";
+        for(ll i=0;i<4;i++) yr+=s[i];
+        for(ll i=5;i<7;i++) mon+=s[i];
+        for(ll i=8;i<10;i++) da+=s[i];
+        ll day=stoi(da);
+        ll month=stoi(mon);
+        if(month<=8) cout<<"GOOD"<<nn;
+        else if(month==9){
+            if(day<=16) cout<<"GOOD"<<nn;
+            else cout<<"TOO LATE"<<nn;
         }
-        cout<<ans<<nn;
+        else cout<<"TOO LATE"<<nn;
     }
 
     return 0;

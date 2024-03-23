@@ -165,21 +165,29 @@ int main()
     while(t--){
       ll n;
       cin>>n;
-      ordered_set<ll>stt;
       vector<ll>vec(n);
       cin>>vec;
+      set<ll>stt;
+      for(auto it:vec) stt.insert(it);
+      map<ll,ll>last,maxlength;
       for(ll i=0;i<n;i++){
-        vec[i]=abs(vec[i]);
+        // maxlength[vec[i]]=max(maxlength[vec[i]],i+1-last[vec[i]]);
+        last[vec[i]]=i+1;
       }
-      sort(all(vec));
-      ll ans=0;
-      for(ll i=0;i<n;i++){
-        ll k=lower_bound(all(vec),((vec[i]+1)/2))-vec.begin();
-        ans+=i-k;
+      ll maxm=0;
+      for(auto it:stt){
+        maxlength[it]=max(maxlength[it],n+1-last[it]);
+        maxm=max(maxm,maxlength[it]);
+      }
+      ll ans=-1;
+      for(auto it:stt){
+        // cout<<it<<" "<<maxlength[it]<<nn;
+        if(maxlength[it]==maxm){
+            ans=it;
+        }
       }
       cout<<ans<<nn;
-      
-    }
+    }   
 
 
     return 0;

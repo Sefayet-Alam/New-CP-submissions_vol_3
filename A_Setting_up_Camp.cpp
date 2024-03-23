@@ -303,18 +303,18 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<ll>vec(n);
-        cin>>vec;
-        ll ans=0;
-        ordered_multiset<ll>os;
-        for(ll i=n-1;i>=0;i--){
-           if(os.size()) ans+=os.order_of_key(vec[i]);
-           cout<<i<<" "<<os.order_of_key(vec[i])<<nn;
-           os.insert(vec[i]);
-        }
+      ll a,b,c;
+      cin>>a>>b>>c;
+      ll ans=a+b/3;
+      ll rem=b%3;
+      ll need=3-rem;
+    //   deb2(ans,rem);
+      if(rem && c<need) cout<<-1<<nn;
+      else{
+        rem+=c;
+        ans+=(rem+2)/3;
         cout<<ans<<nn;
+      }
     }
 
     return 0;

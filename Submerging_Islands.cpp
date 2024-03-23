@@ -292,29 +292,74 @@ struct custom_hash
     }
 };
 
+/* For multiple edges between 2 nodes, this code needs modifications for articulation bridge*/
+/* Modification area: if(v == p) continue; */
+/* Modification Suggestion: Number the edges and use the numbers for pointing edges */
+
+#define ll long long
+const ll sz = 100009;
+vector <ll> g[sz];
+ll low[sz], start[sz], TM = 1, root = 1;
+bool artPoint[sz], vis[sz];
+ll n,m;
+void artdfs(ll u, ll p)
+{
+    low[u] = start[u] = TM++;
+    vis[u] = 1;
+    ll child = 0;       /// Counter of the children of u in dfs tree
+    for(ll i = 0; i < g[u].size(); i++) {
+        ll v = g[u][i];
+        if(v == p)
+            continue;
+
+        if(vis[v])
+            low[u] = min(low[u], start[v]);
+        else {
+            artdfs(v, u);
+            low[u] = min(low[u], low[v]);
+
+            if(start[u] <= low[v] && u != root) {    /// For articulation bridge: if(start[u] < low[v])
+                artPoint[u] = true;                             /// the edge between u and v is an articulation bridge
+            }
+            child++;
+        }
+    }
+
+    if(child > 1 && u == root)  /// For articulation bridge: this
+        artPoint[u] = true;     /// and this line have no need
+}
+
+// artdfs(root, -1)
+
 int main()
 {
     fast;
     ll t;
     // setIO();
     // ll tno=1;;
-    t = 1;
-    cin >> t;
-
-    while (t--)
+    // t = 1;
+    // cin >> t;
+   
+    while (cin>>n>>m)
     {
-        ll n;
-        cin >> n;
-        vector<ll>vec(n);
-        cin>>vec;
-        ll ans=0;
-        ordered_multiset<ll>os;
-        for(ll i=n-1;i>=0;i--){
-           if(os.size()) ans+=os.order_of_key(vec[i]);
-           cout<<i<<" "<<os.order_of_key(vec[i])<<nn;
-           os.insert(vec[i]);
-        }
-        cout<<ans<<nn;
+        if(n==0 && m==0)  break;
+      TM = 1, root = 1;
+      for(ll i=0;i<=n;i++){
+        g[i].clear();
+        vis[i]=artPoint[i]=low[i]=start[i]=0;
+      }
+      for(ll i=0;i<m;i++){
+        ll u,v;
+        cin>>u>>v;
+        g[u].push_back(v);
+        g[v].push_back(u);
+      }
+      artdfs(1,-1);
+      ll ans=0;
+      for(ll i=1;i<=n;i++){
+        if(artPoint[i]) ans++;
+      }
+      cout<<ans<<nn;
     }
 
     return 0;

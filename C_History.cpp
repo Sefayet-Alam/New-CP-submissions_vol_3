@@ -165,20 +165,20 @@ int main()
     while(t--){
       ll n;
       cin>>n;
-      ordered_set<ll>stt;
-      vector<ll>vec(n);
+      vector<pll>vec(n);
       cin>>vec;
-      for(ll i=0;i<n;i++){
-        vec[i]=abs(vec[i]);
-      }
       sort(all(vec));
+      multiset<ll>ms;
       ll ans=0;
       for(ll i=0;i<n;i++){
-        ll k=lower_bound(all(vec),((vec[i]+1)/2))-vec.begin();
-        ans+=i-k;
+        if(ms.size()){
+            if(*ms.rbegin()>vec[i].second){
+                ans++;
+            }
+        }
+        ms.insert(vec[i].second);
       }
       cout<<ans<<nn;
-      
     }
 
 

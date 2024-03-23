@@ -303,18 +303,15 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<ll>vec(n);
-        cin>>vec;
-        ll ans=0;
-        ordered_multiset<ll>os;
-        for(ll i=n-1;i>=0;i--){
-           if(os.size()) ans+=os.order_of_key(vec[i]);
-           cout<<i<<" "<<os.order_of_key(vec[i])<<nn;
-           os.insert(vec[i]);
+        ll x,y,k,n;
+        cin>>x>>y>>k>>n;
+        ll dist=abs(x-y);
+        if(dist%k) cout<<"No"<<nn;
+        else{
+            ll g=dist/k;
+            if(g%2==0) cout<<"Yes"<<nn;
+            else cout<<"No"<<nn;
         }
-        cout<<ans<<nn;
     }
 
     return 0;

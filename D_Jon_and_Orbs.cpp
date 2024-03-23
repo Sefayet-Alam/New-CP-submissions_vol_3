@@ -58,7 +58,7 @@ using namespace __gnu_pbds;
 // CONSTANTS
 #define md 10000007
 #define PI 3.1415926535897932384626
-const double EPS = 1e-9;
+const double EPS = 1e-7;
 const ll N = 2e5 + 10;
 const ll M = 1e9 + 7;
 
@@ -291,31 +291,65 @@ struct custom_hash
         return splitmix64(x + FIXED_RANDOM);
     }
 };
-
-int main()
+#define limit 13200
+ 
+double p[1010][limit + 10];
+ 
+#define eps 0.000000001
+ 
+bool comp(double l, double r)
 {
-    fast;
-    ll t;
-    // setIO();
-    // ll tno=1;;
-    t = 1;
-    cin >> t;
-
-    while (t--)
+    if (fabs(l-r) < eps)
+        return true;
+    else return false;
+}
+ 
+int main ()
+{
+  
+    ll cs, t, i, j, k, x, y, z, ans, q, m, b, e;
+ 
+    cin>>k>>q;
+ 
+ 
+    for (i = 1; i <= 1005; i++)
+        p[i][0] = 0;
+ 
+    for (i = 0; i <= limit; i++)
+        p[0][i] = 1;
+ 
+    for (i = 1; i <= k; i++)
     {
-        ll n;
-        cin >> n;
-        vector<ll>vec(n);
-        cin>>vec;
-        ll ans=0;
-        ordered_multiset<ll>os;
-        for(ll i=n-1;i>=0;i--){
-           if(os.size()) ans+=os.order_of_key(vec[i]);
-           cout<<i<<" "<<os.order_of_key(vec[i])<<nn;
-           os.insert(vec[i]);
-        }
-        cout<<ans<<nn;
-    }
+        for (j = 1; j <= limit; j++)
+        {
+            p[i][j] = ( (double) (i-1)*p[i][j-1] + (k-i+1)*p[i-1][j-1]) / (double) k;
 
+        }
+    }
+ 
+ 
+    for (cs = 1; cs <= q; cs++)
+    {
+        double x;
+        cin>>x;
+ 
+        b = 1;
+        e = limit;
+ 
+        while (b <= e)
+        {
+            ll mid = (b+e)/2;
+ 
+            if (p[k][mid]*2000 >= x)
+            {
+                ans = mid;
+                e = mid - 1;
+            }
+            else b = mid + 1;
+        }
+ 
+        printf("%lld\n", ans);
+    }
+ 
     return 0;
 }

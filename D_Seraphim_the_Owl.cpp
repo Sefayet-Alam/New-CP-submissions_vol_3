@@ -291,7 +291,19 @@ struct custom_hash
         return splitmix64(x + FIXED_RANDOM);
     }
 };
-
+ll dp[N];
+vector<pll>vec(N);
+ll n,m;
+ll func(ll i){
+    if(i==1) return vec[i].first;
+    ll ans=LLONG_MAX;
+    if(dp[i]!=-1) return dp[i];
+    ans=min(ans,vec[i].second+func(i-1));
+    
+    if(i<=m) ans=min(ans,vec[i].first);
+    else ans=min(ans,vec[i].first+func(i-1)); 
+    return dp[i]=ans;
+}
 int main()
 {
     fast;
@@ -303,18 +315,17 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<ll>vec(n);
-        cin>>vec;
-        ll ans=0;
-        ordered_multiset<ll>os;
-        for(ll i=n-1;i>=0;i--){
-           if(os.size()) ans+=os.order_of_key(vec[i]);
-           cout<<i<<" "<<os.order_of_key(vec[i])<<nn;
-           os.insert(vec[i]);
-        }
-        cout<<ans<<nn;
+      
+      cin>>n>>m;
+      for(ll i=0;i<=n+1;i++) dp[i]=-1;
+      for(ll i=1;i<=n;i++){
+        cin>>vec[i].first;
+      }
+      for(ll i=1;i<=n;i++){
+        cin>>vec[i].second;
+      }
+      ll ret=func(n);
+      cout<<ret<<nn;
     }
 
     return 0;

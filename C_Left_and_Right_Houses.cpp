@@ -305,14 +305,50 @@ int main()
     {
         ll n;
         cin >> n;
-        vector<ll>vec(n);
-        cin>>vec;
-        ll ans=0;
-        ordered_multiset<ll>os;
-        for(ll i=n-1;i>=0;i--){
-           if(os.size()) ans+=os.order_of_key(vec[i]);
-           cout<<i<<" "<<os.order_of_key(vec[i])<<nn;
-           os.insert(vec[i]);
+        string s;
+        cin >> s;
+        s = '$' + s;
+
+        ll l = 0, r = 0;
+        for (ll i = 1; i <= n; i++)
+        {
+            if (s[i] == '0')
+                l++;
+            else
+                r++;
+        }
+        ll hpr = r;
+        ll sdr = l;
+        ll hpl = 0;
+        ll sdl = 0;
+         ll ans = 2*n;
+        if(hpl>=sdl && hpr>=sdr){
+            ans=0;
+        }
+       
+        for (ll i = 1; i <= n ; i++)
+        {
+            if (s[i] == '0')
+            {
+                sdr--;
+                hpl++;
+            }
+            else
+            {
+                hpr--;
+                sdl++;
+            }
+          
+            if (hpl >= sdl && hpr >= sdr)
+            {
+                double a=abs((n/2.00)*1LL-i*1LL);
+                double b=abs((n/2.00)*1LL-ans*1LL);
+                // deb2(a,b);
+                if(a<b){
+                    ans=i;
+                }
+            }
+           
         }
         cout<<ans<<nn;
     }

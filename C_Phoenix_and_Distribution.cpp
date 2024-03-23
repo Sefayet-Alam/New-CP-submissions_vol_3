@@ -303,18 +303,47 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<ll>vec(n);
-        cin>>vec;
-        ll ans=0;
-        ordered_multiset<ll>os;
-        for(ll i=n-1;i>=0;i--){
-           if(os.size()) ans+=os.order_of_key(vec[i]);
-           cout<<i<<" "<<os.order_of_key(vec[i])<<nn;
-           os.insert(vec[i]);
+        ll n,k;
+        cin>>n>>k;
+        string s;
+        cin>>s;
+        sort(all(s));
+        if(k==1){
+            cout<<s<<nn;
+            continue;
         }
-        cout<<ans<<nn;
+        string tmp="";
+        string ans="";
+        for(ll i=0;i<k-1;i++){
+            tmp+=s[i];
+        }
+        for(ll i=k-1;i<n;i++){
+            ans+=s[i];
+        }
+        bool f=0;
+        // deb2(tmp,ans);
+        if(tmp[0]!=ans[0]) cout<<ans[0]<<nn;
+        else{
+            
+            ll pos=1;
+            ll othrs=2;
+            ll cnt=0;
+            while(pos<ans.size() && ans[pos]==ans.back()){
+                if(ans.size()>othrs){
+                    ans.pop_back();
+                    cnt++;
+                    if(cnt==k-1){
+                        pos++;
+                        othrs++;
+                        cnt=0;
+                    }
+                }
+                else break;
+            }
+            cout<<ans<<nn;
+
+        }
+      
     }
 
     return 0;

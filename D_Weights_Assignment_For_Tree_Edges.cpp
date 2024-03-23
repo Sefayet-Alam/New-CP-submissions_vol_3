@@ -152,6 +152,35 @@ struct custom_hash {
         return splitmix64(x + FIXED_RANDOM);
     }
 };
+void solve(){
+    int n;
+    cin >> n;
+    vector<int> b(n + 1), p(n + 1), dist(n + 1, -1);
+ 
+    for(int i = 1; i <= n; i++)
+        cin >> b[i];
+    for(int i = 1; i <= n; i++)
+        cin >> p[i];
+ 
+    if (b[p[1]] != p[1]){
+        cout << -1 << '\n';
+        return;
+    }
+ 
+    dist[p[1]] = 0;
+    for(int i = 2; i <= n; i++){
+        if(dist[b[p[i]]] == -1){
+            cout << -1 << '\n';
+            return;
+        }
+        dist[p[i]] = dist[p[i - 1]] + 1;
+    }
+ 
+    for(int i = 1; i <= n; i++) {
+        cout << dist[i] - dist[b[i]] << ' ';
+    }
+    cout << '\n';
+}
 
 int main()
 {
@@ -160,25 +189,10 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    //cin>>t;
+    cin>>t;
 
     while(t--){
-      ll n;
-      cin>>n;
-      ordered_set<ll>stt;
-      vector<ll>vec(n);
-      cin>>vec;
-      for(ll i=0;i<n;i++){
-        vec[i]=abs(vec[i]);
-      }
-      sort(all(vec));
-      ll ans=0;
-      for(ll i=0;i<n;i++){
-        ll k=lower_bound(all(vec),((vec[i]+1)/2))-vec.begin();
-        ans+=i-k;
-      }
-      cout<<ans<<nn;
-      
+    solve();  
     }
 
 

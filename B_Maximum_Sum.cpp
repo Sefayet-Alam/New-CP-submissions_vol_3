@@ -291,7 +291,16 @@ struct custom_hash
         return splitmix64(x + FIXED_RANDOM);
     }
 };
-
+ll kadane(vl &vc,ll n){
+    ll ret=0;
+    ll curr=0;
+    for(ll i=0;i<n;i++){
+       curr+=vc[i];
+       if(curr<0) curr=0;
+       ret=max(ret,curr);
+    }
+    return ret;
+}
 int main()
 {
     fast;
@@ -303,18 +312,28 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin >> n;
+        ll n,k;
+        cin>>n>>k;
         vector<ll>vec(n);
         cin>>vec;
-        ll ans=0;
-        ordered_multiset<ll>os;
-        for(ll i=n-1;i>=0;i--){
-           if(os.size()) ans+=os.order_of_key(vec[i]);
-           cout<<i<<" "<<os.order_of_key(vec[i])<<nn;
-           os.insert(vec[i]);
+        ll tot=0;
+        ll pos=0;
+        for(ll i=0;i<n;i++){
+            if(vec[i]>0) pos++;
+            tot=(tot+vec[i]+M)%M;
         }
-        cout<<ans<<nn;
+       
+        ll maxsum=kadane(vec,n);
+        maxsum%=M;
+        // deb(maxsum);
+        tot=(tot-maxsum+M)%M;
+        ll ex=0;
+        for(ll i=0;i<=k;i++){
+            ex=(ex+maxsum)%M;
+            maxsum=ex;
+        }
+        tot=(tot+ex)%M;
+        cout<<tot<<nn;
     }
 
     return 0;

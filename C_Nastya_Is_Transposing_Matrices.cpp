@@ -291,7 +291,8 @@ struct custom_hash
         return splitmix64(x + FIXED_RANDOM);
     }
 };
-
+vector<ll>g[N];
+vector<ll>g2[N];
 int main()
 {
     fast;
@@ -299,22 +300,46 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<ll>vec(n);
-        cin>>vec;
-        ll ans=0;
-        ordered_multiset<ll>os;
-        for(ll i=n-1;i>=0;i--){
-           if(os.size()) ans+=os.order_of_key(vec[i]);
-           cout<<i<<" "<<os.order_of_key(vec[i])<<nn;
-           os.insert(vec[i]);
+        ll n,m;
+        cin>>n>>m;
+        for(ll i=1;i<=n+m;i++){
+            g[i].clear();
+            g2[i].clear();
         }
-        cout<<ans<<nn;
+        
+        ll grid1[n+1][m+1];
+        ll grid2[n+1][m+1];
+        
+        for(ll i=1;i<=n;i++){
+            for(ll j=1;j<=m;j++){
+                ll x;
+                cin>>x;
+                g[i+j].push_back(x);
+            }
+        }
+        for(ll i=1;i<=n;i++){
+            for(ll j=1;j<=m;j++){
+                ll x;
+                cin>>x;
+                g2[i+j].push_back(x);
+            }
+        }
+        bool f=0;
+        for(ll i=1;i<=n+m;i++){
+            if(g[i].size()) sort(all(g[i]));
+            if(g2[i].size()) sort(all(g2[i]));
+            if(g2[i]!=g[i]){
+                f=1;
+                break;
+            }
+        }
+        if(f) cout<<"NO"<<nn;
+        else cout<<"YES"<<nn;
+      
     }
 
     return 0;

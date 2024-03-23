@@ -59,8 +59,8 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI 3.1415926535897932384626
 const double EPS = 1e-9;
-const ll N = 2e5 + 10;
-const ll M = 1e9 + 7;
+const ll N = 1e5 + 10;
+const ll M = 1e18 + 7;
 
 /// INLINE FUNCTIONS
 inline ll GCD(ll a, ll b) { return b == 0 ? a : GCD(b, a % b); }
@@ -291,6 +291,36 @@ struct custom_hash
         return splitmix64(x + FIXED_RANDOM);
     }
 };
+string s;
+ll dp[N][25];
+ull d;
+ll n;
+ll func(ll i, ll len, ull prev)
+{
+
+    if (i == n)
+        return 0;
+    if (dp[i][len] != -1)
+        return dp[i][len];
+    ll ret = M;
+    ull curr = 0;
+    for (ll j = 0; j <= 20; j++)
+    {
+        if (i + j + 1 > n)
+            break;
+        if (s[i] == '0' && j > 0)
+            break;
+        ull now=curr * 10 + (s[i + j] - '0');
+        if((now/10)>curr || (now/10)<curr) break;
+        curr = now;
+        if (curr > d)
+            break;
+        if (curr < prev)
+            continue;
+        ret = min(ret, 1 + func(i + j + 1, j + 1, curr));
+    }
+    return dp[i][len] = ret;
+}
 
 int main()
 {
@@ -299,22 +329,21 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<ll>vec(n);
-        cin>>vec;
-        ll ans=0;
-        ordered_multiset<ll>os;
-        for(ll i=n-1;i>=0;i--){
-           if(os.size()) ans+=os.order_of_key(vec[i]);
-           cout<<i<<" "<<os.order_of_key(vec[i])<<nn;
-           os.insert(vec[i]);
-        }
-        cout<<ans<<nn;
+        cin >> s;
+        cin >> d;
+
+        n = s.size();
+        mem(dp, -1);
+        ll ans = func(0, 0, 0);
+
+        if (ans >= M / 2)
+            cout << "NO WAY" << nn;
+        else
+            cout << ans - 1 << nn;
     }
 
     return 0;

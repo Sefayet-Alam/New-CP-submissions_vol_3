@@ -303,18 +303,24 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<ll>vec(n);
-        cin>>vec;
-        ll ans=0;
-        ordered_multiset<ll>os;
-        for(ll i=n-1;i>=0;i--){
-           if(os.size()) ans+=os.order_of_key(vec[i]);
-           cout<<i<<" "<<os.order_of_key(vec[i])<<nn;
-           os.insert(vec[i]);
-        }
-        cout<<ans<<nn;
+     ll n;
+     cin>>n;
+     vector<ll>vec(n);
+     cin>>vec;
+     sort(all(vec));
+   
+     ll mid=(n-1)/2;
+   
+     ll med=vec[mid];
+     
+     ll nos=1;
+     ll j=mid+1;
+     while(j<n && vec[j]==med){
+        j++;
+        nos++;
+     }
+     cout<<nos<<nn;
+    
     }
 
     return 0;

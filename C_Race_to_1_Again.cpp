@@ -158,30 +158,31 @@ int main()
     fast;
      ll t;
     //setIO();
-     //ll tno=1;;
+     ll tno=1;;
      t=1;
-    //cin>>t;
-
+    cin>>t;
+    vector<double>dp(N,0);
+    vector<ll>divs(N,0);
+    for(ll i=2;i<N;i++){
+        double sum=dp[i];
+        ll cnt=divs[i];
+        cnt+=2;
+        sum+=cnt;
+        
+        sum=sum/((double)(cnt-1));
+        dp[i]=sum;
+        for(ll j=i*2;j<N;j+=i){
+            divs[j]++;
+            dp[j]+=dp[i];
+        }
+    }
     while(t--){
-      ll n;
-      cin>>n;
-      ordered_set<ll>stt;
-      vector<ll>vec(n);
-      cin>>vec;
-      for(ll i=0;i<n;i++){
-        vec[i]=abs(vec[i]);
-      }
-      sort(all(vec));
-      ll ans=0;
-      for(ll i=0;i<n;i++){
-        ll k=lower_bound(all(vec),((vec[i]+1)/2))-vec.begin();
-        ans+=i-k;
-      }
-      cout<<ans<<nn;
-      
+     cout<<"Case "<<tno++<<": ";
+     ll n;
+     cin>>n;
+     Setpre(10)<<dp[n]<<nn;   
     }
 
 
     return 0;
 }
-

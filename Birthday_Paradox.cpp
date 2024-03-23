@@ -291,30 +291,39 @@ struct custom_hash
         return splitmix64(x + FIXED_RANDOM);
     }
 };
+double power(double a, ll n){
+    double res = 1.00;
+    while(n){if(n%2){res*=a;n--;}else{a*=a;n/=2;}}
+    return res;
+
+}
+
 
 int main()
 {
     fast;
     ll t;
     // setIO();
-    // ll tno=1;;
+    ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<ll>vec(n);
-        cin>>vec;
-        ll ans=0;
-        ordered_multiset<ll>os;
-        for(ll i=n-1;i>=0;i--){
-           if(os.size()) ans+=os.order_of_key(vec[i]);
-           cout<<i<<" "<<os.order_of_key(vec[i])<<nn;
-           os.insert(vec[i]);
-        }
-        cout<<ans<<nn;
+      cout<<"Case "<<tno++<<": ";
+      ll n;
+      cin>>n;
+     
+      ll k=1;
+      double curr=1;
+      while(curr>0.500000000){
+        curr*=(n-k)/(n*1.00);
+        // deb(curr);
+        if(curr<=0.500000000) break;
+        k++;
+      }
+      cout<<k<<nn;
+
     }
 
     return 0;

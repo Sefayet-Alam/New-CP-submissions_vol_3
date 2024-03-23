@@ -292,29 +292,76 @@ struct custom_hash
     }
 };
 
+ll n;
+double p;
+vector<ll> tk(105);
+vector<double> prob(105);
+bool vis[105][10005];
+double dp[105][10005];
+double func(ll i, ll val)
+{
+    if (val <= 0)
+    {
+        return 0;
+    }
+    if (i >= n)
+    {
+        return 1.00 * M;
+    }
+    double curr = 1.00;
+    if (vis[i][val])
+        return dp[i][val];
+    vis[i][val] = 1;
+
+    double x = prob[i] + (1.00 - prob[i]) * func(i + 1, val - tk[i]);
+    double y = func(i + 1, val);
+    return dp[i][val] = min(x,y);
+}
+
+
+
 int main()
 {
     fast;
     ll t;
     // setIO();
-    // ll tno=1;;
+    ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<ll>vec(n);
-        cin>>vec;
-        ll ans=0;
-        ordered_multiset<ll>os;
-        for(ll i=n-1;i>=0;i--){
-           if(os.size()) ans+=os.order_of_key(vec[i]);
-           cout<<i<<" "<<os.order_of_key(vec[i])<<nn;
-           os.insert(vec[i]);
+        cout<<"Case "<<tno++<<": ";
+        cin >> p >> n;
+        for (ll i = 0; i <= n; i++)
+        {
+            tk[i] = 0;
+            prob[i] = 0.000;
+        }
+        mem(dp,0.00);
+        mem(vis,0);
+        tk.resize(n);
+        prob.resize(n);
+        for (ll i = 0; i < n; i++)
+        {
+            cin >> tk[i];
+            cin >> prob[i];
+        }
+        ll l=0,r=10005;
+        ll ans=-1;
+        while(l<=r){
+            ll mid=(l+r)/2;
+            double curr=func(0,mid);
+            if(p-curr>EPS){
+                ans=mid;
+                l=mid+1;
+            }
+            else{
+                r=mid-1;
+            }
         }
         cout<<ans<<nn;
+        
     }
 
     return 0;

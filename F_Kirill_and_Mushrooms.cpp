@@ -303,18 +303,39 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<ll>vec(n);
-        cin>>vec;
-        ll ans=0;
-        ordered_multiset<ll>os;
-        for(ll i=n-1;i>=0;i--){
-           if(os.size()) ans+=os.order_of_key(vec[i]);
-           cout<<i<<" "<<os.order_of_key(vec[i])<<nn;
-           os.insert(vec[i]);
+      ll n;
+      cin>>n;
+      vector<ll>vec(n);
+      cin>>vec;
+     
+      vector<ll>p(n);
+      for(ll i=0;i<n;i++){
+        cin>>p[i];
+        p[i]--;
+      }
+      ordered_multiset<ll>os;
+      for(ll i=0;i<n;i++){
+        os.insert(vec[i]);
+      }
+     
+      ll ans=0;
+      ll tek=0;
+      ll pos=n;
+      for(ll i=1;i<=n;i++){
+        pos=os.size()-i;
+        ll curr=*os.find_by_order(pos);
+       
+        if(curr*i>ans){
+            ans=curr*i;
+            tek=i;
         }
-        cout<<ans<<nn;
+        ll todel=vec[p[i-1]];
+        
+        os.insert(0);
+        os.erase(os.upper_bound(todel));
+     
+      }
+      cout<<ans<<" "<<tek<<nn;
     }
 
     return 0;

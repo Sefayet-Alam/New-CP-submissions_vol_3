@@ -152,7 +152,27 @@ struct custom_hash {
         return splitmix64(x + FIXED_RANDOM);
     }
 };
+ll n;
+string s;
 
+
+ll func(ll val){
+    ll cnt=0;
+    ll ret=0;
+    ll st=n;
+    for(ll i=0;i<n-val;i++){
+        if(s[i]==s[i+val] || s[i+val]=='?' || s[i]=='?'){
+            st=min(i+val,st);
+            cnt++;
+            if(i+1==st) ret=max(ret,cnt*2);
+        }
+        else{
+            cnt=0;
+            st=n;
+        }
+    }
+    return ret;
+}
 int main()
 {
     fast;
@@ -160,25 +180,19 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    //cin>>t;
+    cin>>t;
 
     while(t--){
-      ll n;
-      cin>>n;
-      ordered_set<ll>stt;
-      vector<ll>vec(n);
-      cin>>vec;
-      for(ll i=0;i<n;i++){
-        vec[i]=abs(vec[i]);
-      }
-      sort(all(vec));
+      cin>>s;
+      n=s.size();
+    //   deb(s);
       ll ans=0;
-      for(ll i=0;i<n;i++){
-        ll k=lower_bound(all(vec),((vec[i]+1)/2))-vec.begin();
-        ans+=i-k;
+      for(ll i=1;i<=n;i++){
+        ll k=func(i);
+        // deb2(i,k);
+        ans=max(ans,k);
       }
       cout<<ans<<nn;
-      
     }
 
 

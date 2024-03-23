@@ -292,6 +292,21 @@ struct custom_hash
     }
 };
 
+ll table[N][25], ar[N];//note: ar is 1 based
+void build(ll n) {
+    for(ll i = 1; i <= n; ++i) table[i][0] = ar[i];
+    for(ll k = 1; k < 25; ++k) {
+        for(ll i = 1; i + (1 << k) - 1 <= n; ++i) {
+            table[i][k] = min(table[i][k - 1], table[i + (1 << (k - 1))][k - 1]);
+        }
+    }
+}
+ 
+ll query(ll l, ll r) {
+    ll k = pophigh(r - l + 1);
+    return min(table[l][k], table[r - (1 << k) + 1][k]);
+}
+
 int main()
 {
     fast;
@@ -299,22 +314,27 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<ll>vec(n);
-        cin>>vec;
-        ll ans=0;
-        ordered_multiset<ll>os;
-        for(ll i=n-1;i>=0;i--){
-           if(os.size()) ans+=os.order_of_key(vec[i]);
-           cout<<i<<" "<<os.order_of_key(vec[i])<<nn;
-           os.insert(vec[i]);
-        }
+      ll n;
+      cin>>n;
+      
+      for(ll i=1;i<=n;i++){
+        cin>>ar[i];
+      }
+      build(n);
+      ll q;
+      cin>>q;
+      while(q--){
+        ll x,y;
+        cin>>x>>y;
+        x++;
+        y++;
+        ll ans=query(x,y);
         cout<<ans<<nn;
+      }
     }
 
     return 0;

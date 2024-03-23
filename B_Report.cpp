@@ -98,14 +98,13 @@ template <typename T>
 using PQ = priority_queue<T>;
 template <typename T>
 using QP = priority_queue<T, vector<T>, greater<T>>;
+
 template <typename T>
 using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
-template <typename T>
-using ordered_multiset = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
 template <typename T, typename R>
 using ordered_map = tree<T, R, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
-template <typename T, typename R>
-using ordered_multimap = tree<T, R, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
+;
+
 namespace io
 {
     template <typename First, typename Second>
@@ -291,7 +290,11 @@ struct custom_hash
         return splitmix64(x + FIXED_RANDOM);
     }
 };
-
+int a[N];
+int st[N][2];
+int n, m;
+int k;
+int b[N];
 int main()
 {
     fast;
@@ -299,22 +302,49 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin>>t;
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<ll>vec(n);
-        cin>>vec;
-        ll ans=0;
-        ordered_multiset<ll>os;
-        for(ll i=n-1;i>=0;i--){
-           if(os.size()) ans+=os.order_of_key(vec[i]);
-           cout<<i<<" "<<os.order_of_key(vec[i])<<nn;
-           os.insert(vec[i]);
+        scanf("%d%d", &n, &m);
+        for (int i = 0; i < n; i++)
+            scanf("%d", &a[i]);
+        k = 0;
+        while (m--)
+        {
+            int t, x;
+            scanf("%d%d", &t, &x);
+            while (k > 0 && st[k - 1][0] <= x)
+                k--;
+            if (k > 0 && st[k - 1][1] == t)
+                continue;
+            st[k][0] = x;
+            st[k][1] = t;
+            k++;
         }
-        cout<<ans<<nn;
+        st[k][0] = 0;
+        st[k][1] = 1;
+        for (int i = 0; i < st[0][0]; i++)
+            b[i] = a[i];
+        sort(b, b + st[0][0]);
+        int l = 0, r = st[0][0];
+        int p = r;
+        for (int i = 0; i < k; i++)
+        {
+            while (p > st[i + 1][0])
+            {
+                p--;
+                if (st[i][1] == 1)
+                    a[p] = b[--r];
+                else
+                    a[p] = b[l++];
+            }
+        }
+        for (int i = 0; i < n; i++)
+            printf("%d ", a[i]);
+        printf("\n");
+
+        return 0;
     }
 
     return 0;

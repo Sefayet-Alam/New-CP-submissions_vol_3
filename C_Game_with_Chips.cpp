@@ -299,22 +299,44 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<ll>vec(n);
-        cin>>vec;
-        ll ans=0;
-        ordered_multiset<ll>os;
-        for(ll i=n-1;i>=0;i--){
-           if(os.size()) ans+=os.order_of_key(vec[i]);
-           cout<<i<<" "<<os.order_of_key(vec[i])<<nn;
-           os.insert(vec[i]);
+        ll n, m, k;
+        cin >> n >> m >> k;
+        ll up = LLONG_MAX;
+        ll down = 0;
+        ll right = 0;
+        ll left = LLONG_MAX;
+        for (ll i = 0; i < k; i++)
+        {
+            ll x, y;
+            cin >> x >> y;
+            up = min(up, x);
+            down = max(down, x);
+            right = max(right, y);
+            left = min(left, y);
         }
-        cout<<ans<<nn;
+        // deb2(up,down);
+        // deb2(left,right);
+        ll tl = right - 1 + down - 1;
+        string s="";
+        for (ll i = 1; i <= right - 1; i++)
+            s += "L";
+        for (ll i = 1; i <= down - 1; i++)
+            s += "U";
+        for(ll i=0;i<n;i++){
+           for(ll j=0;j<m-1;j++){
+            if(i%2==0){
+                s+="R";
+            }
+            else s+="L";
+           }
+           s+="D";
+        }
+        cout<<s.size()<<nn;
+        cout<<s<<nn;
     }
 
     return 0;

@@ -299,22 +299,29 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<ll>vec(n);
-        cin>>vec;
-        ll ans=0;
-        ordered_multiset<ll>os;
-        for(ll i=n-1;i>=0;i--){
-           if(os.size()) ans+=os.order_of_key(vec[i]);
-           cout<<i<<" "<<os.order_of_key(vec[i])<<nn;
-           os.insert(vec[i]);
-        }
-        cout<<ans<<nn;
+      ll rt,rj;
+      double st,sj;
+      cin>>rt>>rj>>st>>sj;
+      double a=(double)(rt-1)/st;
+      double b=(double)(rj-1)/sj;
+    
+      
+      ll a1=a*10000000000;
+      ll b1=b*10000000000;
+    //   deb2(a1,b1);
+      if(a1==b1){
+        cout<<"SAME"<<nn;
+      }
+      else if(a1>b1){
+        cout<<"JAKARTA"<<nn;
+      }
+      else{
+        cout<<"TAOYUAN"<<nn;
+      }
     }
 
     return 0;

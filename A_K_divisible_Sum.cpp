@@ -160,25 +160,23 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    //cin>>t;
+    cin>>t;
 
     while(t--){
-      ll n;
-      cin>>n;
-      ordered_set<ll>stt;
-      vector<ll>vec(n);
-      cin>>vec;
-      for(ll i=0;i<n;i++){
-        vec[i]=abs(vec[i]);
-      }
-      sort(all(vec));
-      ll ans=0;
-      for(ll i=0;i<n;i++){
-        ll k=lower_bound(all(vec),((vec[i]+1)/2))-vec.begin();
-        ans+=i-k;
-      }
-      cout<<ans<<nn;
-      
+        ll n,k;
+        cin>>n>>k;
+        if(n==k){
+            cout<<1<<nn;
+        }
+        else if(n>k){
+            if(n%k==0) cout<<1<<nn;
+            else{
+                cout<<2<<nn;
+            }
+        }
+        else{
+            cout<<(n+k-1)/n<<nn;
+        }
     }
 
 

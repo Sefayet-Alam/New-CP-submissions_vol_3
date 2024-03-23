@@ -98,14 +98,13 @@ template <typename T>
 using PQ = priority_queue<T>;
 template <typename T>
 using QP = priority_queue<T, vector<T>, greater<T>>;
+
 template <typename T>
 using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
-template <typename T>
-using ordered_multiset = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
 template <typename T, typename R>
 using ordered_map = tree<T, R, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
-template <typename T, typename R>
-using ordered_multimap = tree<T, R, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
+;
+
 namespace io
 {
     template <typename First, typename Second>
@@ -292,29 +291,70 @@ struct custom_hash
     }
 };
 
+double dist(pll a, pll b)
+{
+    ll x1 = a.first;
+    ll y1 = a.second;
+    ll x2 = b.first;
+    ll y2 = b.second;
+    double ret = sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+    return ret;
+}
+
+double func(vector<pll> &vec)
+{
+    double ret = 0.00;
+    ll n = vec.size();
+
+    ll l = 0;
+    ll r = n / 2;
+    while (r < n)
+    {
+        ret += dist(vec[l], vec[r]);
+        l++;
+        r++;
+    }
+
+    return ret;
+}
+
 int main()
 {
-    fast;
+
     ll t;
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin>>t;
 
     while (t--)
     {
         ll n;
         cin >> n;
-        vector<ll>vec(n);
-        cin>>vec;
-        ll ans=0;
-        ordered_multiset<ll>os;
-        for(ll i=n-1;i>=0;i--){
-           if(os.size()) ans+=os.order_of_key(vec[i]);
-           cout<<i<<" "<<os.order_of_key(vec[i])<<nn;
-           os.insert(vec[i]);
+        string s;
+        cin >> s;
+        vector<pll> vec1, vec2;
+        for (ll i = 0; i < n; i++)
+        {
+            ll x, y;
+            cin >> x >> y;
+            if (s[i] == 'B')
+            {
+                vec1.push_back({x, y});
+            }
+            else
+            {
+                vec2.push_back({x, y});
+            }
         }
-        cout<<ans<<nn;
+       
+        double ans1 = func(vec1);
+        // deb(ans1);
+        double ans2 = func(vec2);
+        // deb(ans2);
+        // deb2(ans1, ans2);
+        double ans = ans1 + ans2;
+        Setpre(12) << ans << nn;
     }
 
     return 0;

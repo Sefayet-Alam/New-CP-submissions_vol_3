@@ -98,14 +98,13 @@ template <typename T>
 using PQ = priority_queue<T>;
 template <typename T>
 using QP = priority_queue<T, vector<T>, greater<T>>;
+
 template <typename T>
 using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
-template <typename T>
-using ordered_multiset = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
 template <typename T, typename R>
 using ordered_map = tree<T, R, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
-template <typename T, typename R>
-using ordered_multimap = tree<T, R, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
+;
+
 namespace io
 {
     template <typename First, typename Second>
@@ -305,16 +304,30 @@ int main()
     {
         ll n;
         cin >> n;
-        vector<ll>vec(n);
-        cin>>vec;
-        ll ans=0;
-        ordered_multiset<ll>os;
-        for(ll i=n-1;i>=0;i--){
-           if(os.size()) ans+=os.order_of_key(vec[i]);
-           cout<<i<<" "<<os.order_of_key(vec[i])<<nn;
-           os.insert(vec[i]);
+        if (n == 1)
+        {
+            cout << "NO" << nn;
+            continue;
         }
-        cout<<ans<<nn;
+        if (n % 2 == 0)
+        {
+            cout << "YES" << nn;
+            string ans = "";
+            for (ll i = 0; i < n / 2; i++)
+            {
+                if (i % 2)
+                {
+                    ans += "AA";
+                }
+                else
+                    ans += "BB";
+            }
+            cout << ans << nn;
+        }
+        else
+        {
+            cout << "NO" << nn;
+        }
     }
 
     return 0;

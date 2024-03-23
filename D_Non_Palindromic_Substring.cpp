@@ -98,14 +98,13 @@ template <typename T>
 using PQ = priority_queue<T>;
 template <typename T>
 using QP = priority_queue<T, vector<T>, greater<T>>;
+
 template <typename T>
 using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
-template <typename T>
-using ordered_multiset = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
 template <typename T, typename R>
 using ordered_map = tree<T, R, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
-template <typename T, typename R>
-using ordered_multimap = tree<T, R, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
+;
+
 namespace io
 {
     template <typename First, typename Second>
@@ -291,7 +290,91 @@ struct custom_hash
         return splitmix64(x + FIXED_RANDOM);
     }
 };
+/***
+ *
+ * 64-bit hashing for vectors or strings
+ * Get the forward and reverse hash of any segment
+ * Base is chosen randomly to prevent anti-hash cases from being constructed
+ *
+ * Complexity - O(n) to build, O(1) for each hash query
+ *
+ ***/
 
+#define MAXLEN N
+constexpr uint64_t mod = (1ULL << 61) - 1;
+
+const uint64_t seed = chrono::system_clock::now().time_since_epoch().count();
+const uint64_t base = mt19937_64(seed)() % (mod / 3) + (mod / 3);
+
+uint64_t base_pow[MAXLEN];
+
+int64_t modmul(uint64_t a, uint64_t b)
+{
+    uint64_t l1 = (uint32_t)a, h1 = a >> 32, l2 = (uint32_t)b, h2 = b >> 32;
+    uint64_t l = l1 * l2, m = l1 * h2 + l2 * h1, h = h1 * h2;
+    uint64_t ret = (l & mod) + (l >> 61) + (h << 3) + (m >> 29) + (m << 35 >> 3) + 1;
+    ret = (ret & mod) + (ret >> 61);
+    ret = (ret & mod) + (ret >> 61);
+    return ret - 1;
+}
+
+void init()
+{
+    base_pow[0] = 1;
+    for (int i = 1; i < MAXLEN; i++)
+    {
+        base_pow[i] = modmul(base_pow[i - 1], base);
+    }
+}
+
+struct PolyHash
+{
+    /// Remove suff vector and usage if reverse hash is not required for more speed
+    vector<int64_t> pref, suff;
+
+    PolyHash() {}
+
+    template <typename T>
+    PolyHash(const vector<T> &ar)
+    {
+        if (!base_pow[0])
+            init();
+
+        int n = ar.size();
+        assert(n < MAXLEN);
+        pref.resize(n + 3, 0), suff.resize(n + 3, 0);
+
+        for (int i = 1; i <= n; i++)
+        {
+            pref[i] = modmul(pref[i - 1], base) + ar[i - 1] + 997;
+            if (pref[i] >= mod)
+                pref[i] -= mod;
+        }
+
+        for (int i = n; i >= 1; i--)
+        {
+            suff[i] = modmul(suff[i + 1], base) + ar[i - 1] + 997;
+            if (suff[i] >= mod)
+                suff[i] -= mod;
+        }
+    }
+
+    PolyHash(const char *str)
+        : PolyHash(vector<char>(str, str + strlen(str))) {}
+    PolyHash(string str)
+        : PolyHash(vector<char>(all(str))) {}
+    uint64_t get_hash(int l, int r)
+    {
+        int64_t h = pref[r + 1] - modmul(base_pow[r - l + 1], pref[l]);
+        return h < 0 ? h + mod : h;
+    }
+
+    uint64_t rev_hash(int l, int r)
+    {
+        int64_t h = suff[l + 1] - modmul(base_pow[r - l + 1], suff[r + 2]);
+        return h < 0 ? h + mod : h;
+    }
+};
 int main()
 {
     fast;
@@ -303,18 +386,99 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<ll>vec(n);
-        cin>>vec;
-        ll ans=0;
-        ordered_multiset<ll>os;
-        for(ll i=n-1;i>=0;i--){
-           if(os.size()) ans+=os.order_of_key(vec[i]);
-           cout<<i<<" "<<os.order_of_key(vec[i])<<nn;
-           os.insert(vec[i]);
+        ll n, q;
+        cin >> n >> q;
+        string s;
+        cin >> s;
+        PolyHash pl(s);
+        ll cnts[n][30];
+        mem(cnts, 0);
+        for (ll i = 0; i < n; i++)
+        {
+            cnts[i][s[i] - 'a']++;
         }
-        cout<<ans<<nn;
+        for (ll i = 1; i < n; i++)
+        {
+            for (ll j = 0; j < 30; j++)
+            {
+                cnts[i][j] += cnts[i - 1][j];
+            }
+        }
+        while (q--)
+        {
+            ll l, r;
+            cin >> l >> r;
+            l--;
+            r--;
+
+            ll len = r - l + 1;
+            if (len == 1)
+            {
+                cout << 0 << nn;
+                continue;
+            }
+
+            ll ans = (len * (len + 1)) / 2;
+
+            ll k1 = pl.get_hash(l, r);
+            ll k2 = pl.rev_hash(l, r);
+
+            ll dist = 0;
+            for (ll ch = 'a'; ch <= 'z'; ch++)
+            {
+                ll chr = ch - 'a';
+                ll curr = cnts[r][chr];
+                if (l)
+                    curr -= cnts[l - 1][chr];
+                if (curr > 0)
+                    dist++;
+            }
+
+            if (dist == 1)
+                cout << 0 << nn;
+            else if (dist >= 3)
+            {
+                ans--;
+                if (k1 == k2)
+                    ans -= len;
+                cout << ans << nn;
+            }
+            else
+            {
+                if (len == 2)
+                {
+                    cout << 2 << nn;
+                }
+                else
+                {
+                    // cout<<"HERE"<<nn;
+                    // ll g1 = pl.get_hash(l, r - 1);
+                    // ll g2 = pl.get_hash(l + 1, r);
+                   
+                    ll g1 = pl.get_hash(l, r - 2);
+                    ll g2 = pl.get_hash(l + 2, r);
+                    
+
+                    ans--;
+                    if (k1 == k2)
+                    {
+                        ans -= len;
+                    }
+
+                    if (g1 == g2)
+                    {   
+                        // cout<<"HERE"<<nn;
+                        ll n1 = (len + 1) / 2;
+                        ll sum = n1 * n1;
+                        ans -= sum;
+                        ans++;
+                        if (k1 == k2 && len % 2)
+                            ans += len;
+                    }
+                    cout << ans << nn;
+                }
+            }
+        }
     }
 
     return 0;

@@ -98,14 +98,13 @@ template <typename T>
 using PQ = priority_queue<T>;
 template <typename T>
 using QP = priority_queue<T, vector<T>, greater<T>>;
+
 template <typename T>
 using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
-template <typename T>
-using ordered_multiset = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
 template <typename T, typename R>
 using ordered_map = tree<T, R, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
-template <typename T, typename R>
-using ordered_multimap = tree<T, R, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
+;
+
 namespace io
 {
     template <typename First, typename Second>
@@ -303,18 +302,78 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<ll>vec(n);
-        cin>>vec;
-        ll ans=0;
-        ordered_multiset<ll>os;
-        for(ll i=n-1;i>=0;i--){
-           if(os.size()) ans+=os.order_of_key(vec[i]);
-           cout<<i<<" "<<os.order_of_key(vec[i])<<nn;
-           os.insert(vec[i]);
+        ll n, k;
+        cin >> n >> k;
+        vector<ll> vec(2 * n);
+        cin >> vec;
+        map<ll, ll> pos1, pos2;
+        for (ll i = 0; i < 2 * n; i++)
+        {
+            if (!pos1[vec[i]])
+            {
+                pos1[vec[i]] = i + 1;
+            }
+            else
+            {
+                pos2[vec[i]] = i + 1;
+            }
         }
-        cout<<ans<<nn;
+        vector<ll> ans;
+        for (ll i = 1; i <= n; i++)
+        {
+            if(!pos1[i]) continue;
+            if (pos1[i] <= n && pos2[i] > n)
+            {
+                ans.push_back(i);
+            }
+        }
+        sort(all(ans));
+        if (ans.size() >= 2 * k)
+        {
+            for (ll i = 0; i < 2 * k; i++)
+            {
+                cout << ans[i] << " ";
+            }
+            cout << nn;
+            for (ll i = 0; i < 2 * k; i++)
+            {
+                cout << ans[i] << " ";
+            }
+            cout << nn;
+        }
+        else
+        {
+            
+            vector<ll>ans3,ans2;
+            for(auto it:ans){
+                ans3.push_back(it);
+                ans2.push_back(it);
+            }
+            if(ans3.size()%2){
+                ans3.pop_back();
+            }
+            if(ans2.size()%2){
+                ans2.pop_back();
+            }
+            for (ll i = 1; i <= n; i++)
+            {
+                if(!pos1[i]) continue;
+                if (pos1[i] <= n && pos2[i] <= n)
+                {
+                    ans3.push_back(i);
+                    ans3.push_back(i);
+                }
+                else  if (pos1[i] > n && pos2[i] > n)
+                {
+                    ans2.push_back(i);
+                    ans2.push_back(i);
+                }
+            }
+            for(ll i=0;i<2*k;i++) cout<<ans3[i]<<" ";
+            cout<<nn;
+            for(ll i=0;i<2*k;i++) cout<<ans2[i]<<" ";
+            cout<<nn;
+        }
     }
 
     return 0;

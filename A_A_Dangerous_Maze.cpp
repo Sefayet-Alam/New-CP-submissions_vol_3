@@ -297,24 +297,31 @@ int main()
     fast;
     ll t;
     // setIO();
-    // ll tno=1;;
+    ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
+        cout<<"Case "<<tno++<<": ";
         ll n;
-        cin >> n;
+        cin>>n;
         vector<ll>vec(n);
         cin>>vec;
         ll ans=0;
-        ordered_multiset<ll>os;
-        for(ll i=n-1;i>=0;i--){
-           if(os.size()) ans+=os.order_of_key(vec[i]);
-           cout<<i<<" "<<os.order_of_key(vec[i])<<nn;
-           os.insert(vec[i]);
+        ll pos=0;
+        ll neg=0;
+        for(ll i=0;i<n;i++){
+            ans+=abs(vec[i]);
+            if(vec[i]>0) pos++;
+            else neg++;
         }
-        cout<<ans<<nn;
+        if(n-neg==0) cout<<"inf"<<nn;
+        else {
+        ll g=GCD(ans,n-neg);
+        cout<<ans/g<<"/"<<(n-neg)/g<<nn;
+        }
+
     }
 
     return 0;

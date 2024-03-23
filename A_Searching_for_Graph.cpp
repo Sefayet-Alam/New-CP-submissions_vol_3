@@ -160,25 +160,21 @@ int main()
     //setIO();
      //ll tno=1;;
      t=1;
-    //cin>>t;
+    cin>>t;
 
     while(t--){
-      ll n;
-      cin>>n;
-      ordered_set<ll>stt;
-      vector<ll>vec(n);
-      cin>>vec;
-      for(ll i=0;i<n;i++){
-        vec[i]=abs(vec[i]);
+      ll n,p;
+      cin>>n>>p;
+      ll edges=0;
+      for(ll i=1;i<=n;i++){
+        if(edges>=2*n+p) break;
+        for(ll j=i+1;j<=n;j++){
+            if(edges>=2*n+p) break;
+            cout<<i<<" "<<j<<nn;
+            edges++;
+        }
       }
-      sort(all(vec));
-      ll ans=0;
-      for(ll i=0;i<n;i++){
-        ll k=lower_bound(all(vec),((vec[i]+1)/2))-vec.begin();
-        ans+=i-k;
-      }
-      cout<<ans<<nn;
-      
+    //   deb(edges);
     }
 
 

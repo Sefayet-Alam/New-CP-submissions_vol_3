@@ -299,22 +299,18 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<ll>vec(n);
-        cin>>vec;
-        ll ans=0;
-        ordered_multiset<ll>os;
-        for(ll i=n-1;i>=0;i--){
-           if(os.size()) ans+=os.order_of_key(vec[i]);
-           cout<<i<<" "<<os.order_of_key(vec[i])<<nn;
-           os.insert(vec[i]);
-        }
-        cout<<ans<<nn;
+      string s;
+      cin>>s;
+      ll n=s.size();
+      ll ans=0;
+      for(ll i=0;i<n-3;i++){
+        if(s[i]=='k' && s[i+1]=='i' && s[i+2]=='c' && s[i+3]=='k') ans++;
+      }
+      cout<<ans<<nn;
     }
 
     return 0;

@@ -98,14 +98,13 @@ template <typename T>
 using PQ = priority_queue<T>;
 template <typename T>
 using QP = priority_queue<T, vector<T>, greater<T>>;
+
 template <typename T>
 using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
-template <typename T>
-using ordered_multiset = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
 template <typename T, typename R>
 using ordered_map = tree<T, R, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
-template <typename T, typename R>
-using ordered_multimap = tree<T, R, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
+;
+
 namespace io
 {
     template <typename First, typename Second>
@@ -299,22 +298,53 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin>>t;
 
     while (t--)
     {
         ll n;
         cin >> n;
-        vector<ll>vec(n);
-        cin>>vec;
-        ll ans=0;
-        ordered_multiset<ll>os;
-        for(ll i=n-1;i>=0;i--){
-           if(os.size()) ans+=os.order_of_key(vec[i]);
-           cout<<i<<" "<<os.order_of_key(vec[i])<<nn;
-           os.insert(vec[i]);
+        vector<ll> g[n + 1];
+        vector<pll> alls;
+        for (ll i = 0; i < n - 1; i++)
+        {
+            ll x, y;
+            cin >> x >> y;
+            alls.push_back({x, y});
+            g[x].push_back(y);
+            g[y].push_back(x);
         }
-        cout<<ans<<nn;
+        map<pll, ll> val;
+        ll now = 0;
+        for (ll i = 1; i <= n; i++)
+        {
+            ll u = i;
+            ll v = g[i][0];
+            if (u > v)
+                swap(u, v);
+            if (val.find({u,v})!=val.end()) continue;
+            if (g[i].size() == 1)
+            {
+                val[{u, v}] = now;
+                now++;
+            }
+        }
+        for (auto it : alls)
+        {
+            ll u = it.first;
+            ll v = it.second;
+            if (u > v)
+                swap(u, v);
+            if (val.find({u,v})!=val.end())
+            {
+                cout << val[{u, v}]<<nn;
+            }
+            else
+            {
+                 cout<<now<<nn;
+                 now++;
+            }
+        }
     }
 
     return 0;

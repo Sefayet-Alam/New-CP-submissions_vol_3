@@ -291,7 +291,21 @@ struct custom_hash
         return splitmix64(x + FIXED_RANDOM);
     }
 };
+pll extendedEuclid(ll a, ll b)   // returns x, y for ax + by = gcd(a,b)
+{
+    if(b == 0) return pll(1, 0);
+    else
+    {
+        pll d = extendedEuclid(b, a % b);
+        return pll(d.ss, d.ff - d.ss * (a / b));
+    }
+}
 
+ll modularInverse(ll a, ll m)
+{
+    pll ret = extendedEuclid(a, m);
+    return ((ret.ff % m) + m) % m;
+}
 int main()
 {
     fast;
@@ -303,18 +317,11 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<ll>vec(n);
-        cin>>vec;
-        ll ans=0;
-        ordered_multiset<ll>os;
-        for(ll i=n-1;i>=0;i--){
-           if(os.size()) ans+=os.order_of_key(vec[i]);
-           cout<<i<<" "<<os.order_of_key(vec[i])<<nn;
-           os.insert(vec[i]);
-        }
-        cout<<ans<<nn;
+        ll a, b, m;
+        cin >> a >> b >> m;
+        ll ans1=(m+1+a-1)/a;
+        ll ans2=(m+1+b-1)/b;
+        cout<<ans1+ans2<<nn;
     }
 
     return 0;

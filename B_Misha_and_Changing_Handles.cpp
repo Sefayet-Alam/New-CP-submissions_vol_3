@@ -163,22 +163,40 @@ int main()
     //cin>>t;
 
     while(t--){
-      ll n;
-      cin>>n;
-      ordered_set<ll>stt;
-      vector<ll>vec(n);
-      cin>>vec;
-      for(ll i=0;i<n;i++){
-        vec[i]=abs(vec[i]);
-      }
-      sort(all(vec));
-      ll ans=0;
-      for(ll i=0;i<n;i++){
-        ll k=lower_bound(all(vec),((vec[i]+1)/2))-vec.begin();
-        ans+=i-k;
-      }
-      cout<<ans<<nn;
-      
+        ll n;
+        cin>>n;
+        vector<string>alls;
+        map<string,string>mpp;
+        for(ll i=0;i<n;i++){
+            string s,p;
+            cin>>s>>p;
+            if(mpp.find(p)==mpp.end()) mpp[s]=p;
+            alls.push_back(s);
+            alls.push_back(p);
+        }
+        map<string,bool>vis;
+        vector<pair<string,string>>ans;
+        for(auto it:alls){
+            pair<string,string>pp={"-1","-1,"};
+            if(!vis[it]){
+                pp.first=it;
+                string curr=it;
+                vis[curr]=1;
+                while(mpp.find(curr)!=mpp.end()){
+                    curr=mpp[curr];
+                    vis[curr]=1;
+                }
+                pp.second=curr;
+                vis[curr]=1;
+            }
+            if(pp.first!="-1")ans.push_back(pp);
+        }
+       
+        cout<<ans.size()<<nn;
+        for(auto it:ans){
+            cout<<it<<nn;
+        }
+
     }
 
 

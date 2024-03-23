@@ -163,22 +163,39 @@ int main()
     //cin>>t;
 
     while(t--){
-      ll n;
-      cin>>n;
-      ordered_set<ll>stt;
+      ll n,x;
+      cin>>n>>x;
       vector<ll>vec(n);
       cin>>vec;
+    //   sort(all(vec));
+      map<ll,ll>mpp;
+       ll less=0,more=0;
       for(ll i=0;i<n;i++){
-        vec[i]=abs(vec[i]);
+        mpp[vec[i]]++;
+        if(vec[i]<x) less++;
+        else if(vec[i]>x) more++;
       }
-      sort(all(vec));
-      ll ans=0;
-      for(ll i=0;i<n;i++){
-        ll k=lower_bound(all(vec),((vec[i]+1)/2))-vec.begin();
-        ans+=i-k;
-      }
-      cout<<ans<<nn;
       
+      if(less==more){
+        if(mpp[x]) cout<<0<<nn;
+        else{
+            cout<<1<<nn;
+        }
+      }
+      else if(less<more){
+        ll lef=less+mpp[x];
+        if(lef>=more) cout<<0<<nn;
+        else{
+            cout<<more-lef<<nn;
+        }
+      }
+      else{
+        ll righ=more+mpp[x];
+        if(righ>=less) cout<<0<<nn;
+        else{
+            cout<<less-righ+1<<nn;
+        }
+      }
     }
 
 

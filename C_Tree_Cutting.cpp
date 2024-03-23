@@ -292,6 +292,59 @@ struct custom_hash
     }
 };
 
+
+bool vis[N];
+ll level[N];
+ll n,k;
+vector<ll>g[N];
+
+ll curr,cmp;
+ll dfs(int vertex,int par=-1){
+    
+    ll sz=1;
+    for(int child: g[vertex]){
+       
+        if(child==par) continue;
+        sz+=dfs(child,vertex);   
+    }
+    if(sz>=curr){
+        cmp++;
+        return 0;
+    }
+   return sz;
+}
+void reset(ll n){
+    for(ll i=0;i<=n;i++){
+        g[i].clear();
+        vis[i]=0;
+        level[i]=0;
+    }
+  
+}
+
+bool func(ll pos){
+    cmp=0;
+    curr=pos;
+    ll ret=dfs(1);
+    return cmp>=k+1;
+}
+ll bs(ll low,ll high){
+    ll mid;
+    ll ans=0;
+    while(low<=high){
+        mid=low+(high-low)/2;
+        //cout<<mid<<" "<<func(mid)<<endl;
+        if(func(mid)){
+            ans=mid;
+             low=mid+1;
+        }
+        else{
+            high=mid-1;
+        }
+    }
+    return ans;
+}
+
 int main()
 {
     fast;
@@ -303,18 +356,19 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<ll>vec(n);
-        cin>>vec;
-        ll ans=0;
-        ordered_multiset<ll>os;
-        for(ll i=n-1;i>=0;i--){
-           if(os.size()) ans+=os.order_of_key(vec[i]);
-           cout<<i<<" "<<os.order_of_key(vec[i])<<nn;
-           os.insert(vec[i]);
-        }
-        cout<<ans<<nn;
+    
+     cin>>n>>k;
+     reset(n);
+     for(ll i=0;i<n-1;i++){
+        ll u,v;
+        cin>>u>>v;
+        g[u].push_back(v);
+        g[v].push_back(u);
+     } 
+    
+     ll l=1,r=n;
+     ll ans=bs(l,r);
+     cout<<ans<<nn;
     }
 
     return 0;

@@ -98,14 +98,13 @@ template <typename T>
 using PQ = priority_queue<T>;
 template <typename T>
 using QP = priority_queue<T, vector<T>, greater<T>>;
+
 template <typename T>
 using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
-template <typename T>
-using ordered_multiset = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
 template <typename T, typename R>
 using ordered_map = tree<T, R, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
-template <typename T, typename R>
-using ordered_multimap = tree<T, R, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
+;
+
 namespace io
 {
     template <typename First, typename Second>
@@ -305,16 +304,73 @@ int main()
     {
         ll n;
         cin >> n;
-        vector<ll>vec(n);
-        cin>>vec;
-        ll ans=0;
-        ordered_multiset<ll>os;
-        for(ll i=n-1;i>=0;i--){
-           if(os.size()) ans+=os.order_of_key(vec[i]);
-           cout<<i<<" "<<os.order_of_key(vec[i])<<nn;
-           os.insert(vec[i]);
+        vector<ll> vec(n);
+        cin >> vec;
+        if (is_sorted(all(vec)))
+        {
+            cout << "YES" << nn;
+            continue;
         }
-        cout<<ans<<nn;
+
+        vector<ll> alls(4 * n, -1);
+        ll l = 0;
+        map<ll, bool> vis;
+        for (ll i = 0; i < n; i++)
+        {
+            if (vec[i] >= 10)
+            {
+                ll frst = vec[i] / 10;
+                ll second = vec[i] % 10;
+                alls[l] = frst;
+                vis[l] = 1;
+                l++;
+                alls[l] = second;
+                l++;
+            }
+            else
+            {
+                alls[l] = vec[i];
+                l++;
+            }
+        }
+        // deb(alls);
+        bool f = 0;
+        ll sz = alls.size();
+        for (ll i = 0; i < sz; i++)
+        {
+            if (alls[i] == -1)
+                break;
+            if (i && alls[i] < alls[i - 1])
+            {
+                if (vis[i - 1])
+                {
+                    ll val = alls[i - 1] * 10 + alls[i];
+                    alls[i] = val;
+                    alls[i - 1] = val;
+                }
+                else if (i < sz - 1 && vis[i] && alls[i + 1] != -1)
+                {
+                    ll val = alls[i] * 10 + alls[i + 1];
+                    alls[i] = val;
+                    alls[i + 1] = val;
+                }
+            }
+        }
+        for (ll i = 1; i < sz; i++)
+        {
+            if (alls[i] == -1)
+                break;
+            if (alls[i] < alls[i - 1])
+            {
+                f = 1;
+                break;
+            }
+        }
+        // deb(alls);
+        if (f)
+            cout << "NO" << nn;
+        else
+            cout << "YES" << nn;
     }
 
     return 0;

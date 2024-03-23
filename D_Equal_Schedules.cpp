@@ -163,22 +163,81 @@ int main()
     //cin>>t;
 
     while(t--){
-      ll n;
-      cin>>n;
-      ordered_set<ll>stt;
-      vector<ll>vec(n);
-      cin>>vec;
-      for(ll i=0;i<n;i++){
-        vec[i]=abs(vec[i]);
-      }
-      sort(all(vec));
-      ll ans=0;
-      for(ll i=0;i<n;i++){
-        ll k=lower_bound(all(vec),((vec[i]+1)/2))-vec.begin();
-        ans+=i-k;
-      }
-      cout<<ans<<nn;
+        string s;
+        map<string,ll>mpp,mpp2;
+        while(1){
+            getline(cin,s);
+            if(s=="------") break;
+            
+            string p="";
+            string q="";
+            string name="";
+            ll pos=1;
+            for(ll i=0;s[i]!=' ';i++){
+                p+=s[i];
+                pos=i+1;
+            }
+            for(ll i=pos+1;s[i]!=' ';i++){
+                q+=s[i];
+                pos=i+1;
+            }
+            for(ll i=pos+1;i<s.size();i++){
+                name+=s[i];
+            }
+          
+            ll x=stoll(p);
+            ll y=stoll(q);
+            ll curr=y-x;
+           
+            mpp[name]+=curr;
+        }
+        // for(auto it:mpp) cout<<it<<nn;
+        while(1){
+            getline(cin,s);
+            if(s=="======") break;
+            
+            string p="";
+            string q="";
+            string name="";
+            ll pos=1;
+            for(ll i=0;s[i]!=' ';i++){
+                p+=s[i];
+                pos=i+1;
+            }
+            for(ll i=pos+1;s[i]!=' ';i++){
+                q+=s[i];
+                pos=i+1;
+            }
+            for(ll i=pos+1;i<s.size();i++){
+                name+=s[i];
+            }
+            // deb(p);
+            // deb(q);
+          
+            ll x=stoll(p);
+            ll y=stoll(q);
+            ll curr=y-x;
+            // cout<<name<<" "<<curr<<" "<<mpp[name]<<nn;
+            mpp[name]-=curr;
+        }
+        ll cnt=0;
+        for(auto it:mpp){
+            if(it.second!=0){
+                cout<<it.first<<" ";
+                cnt++;
+                if(it.second<0){
+                    cout<<"+"<<abs(it.second)<<nn;
+                }
+                else{
+                    cout<<"-"<<abs(it.second)<<nn;
+                }
+            }
+        }
+        if(cnt==0){
+            cout<<"No differences found."<<nn;
+        }
       
+
     }
 
 

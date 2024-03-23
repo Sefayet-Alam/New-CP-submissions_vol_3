@@ -57,7 +57,7 @@ using namespace __gnu_pbds;
 #define md                  10000007
 #define PI 3.1415926535897932384626
 const double EPS = 1e-9;
-const ll N = 2e5+10;
+const ll N = 4e5+10;
 const ll M = 1e9+7;
 
 
@@ -152,6 +152,7 @@ struct custom_hash {
         return splitmix64(x + FIXED_RANDOM);
     }
 };
+const ll MOD=32768;
 
 int main()
 {
@@ -163,21 +164,32 @@ int main()
     //cin>>t;
 
     while(t--){
-      ll n;
-      cin>>n;
-      ordered_set<ll>stt;
-      vector<ll>vec(n);
-      cin>>vec;
-      for(ll i=0;i<n;i++){
-        vec[i]=abs(vec[i]);
-      }
-      sort(all(vec));
-      ll ans=0;
-      for(ll i=0;i<n;i++){
-        ll k=lower_bound(all(vec),((vec[i]+1)/2))-vec.begin();
-        ans+=i-k;
-      }
-      cout<<ans<<nn;
+       
+        ll n;
+        cin>>n;
+        vector<ll>pows2;
+        for(ll i=0;i<=15;i++){
+            pows2.push_back((1LL<<i));
+        }
+        for(ll i=0;i<n;i++){
+            ll x;
+            cin>>x;
+            if(x==0){
+                cout<<0<<" ";
+                continue;
+            }
+            ll ans=LLONG_MAX;
+            ll currans=0;
+            for(ll j=x;j<=x+20;j++){
+                currans=j-x;
+                ll curr=j;
+                while(curr%MOD){curr*=2;currans++;}
+                ans=min(ans,currans);
+            }
+            cout<<ans<<" ";
+        }
+        cout<<nn;
+       
       
     }
 

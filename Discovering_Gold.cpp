@@ -297,24 +297,38 @@ int main()
     fast;
     ll t;
     // setIO();
-    // ll tno=1;;
+    ll tno = 1;
+    ;
     t = 1;
     cin >> t;
 
     while (t--)
     {
+        cout << "Case " << tno++ << ": ";
         ll n;
         cin >> n;
-        vector<ll>vec(n);
-        cin>>vec;
-        ll ans=0;
-        ordered_multiset<ll>os;
-        for(ll i=n-1;i>=0;i--){
-           if(os.size()) ans+=os.order_of_key(vec[i]);
-           cout<<i<<" "<<os.order_of_key(vec[i])<<nn;
-           os.insert(vec[i]);
+        vector<ll> vec(n);
+        cin >> vec;
+        // deb(vec);
+
+        vector<double> prob(n, 0.00);
+        prob[0] = 1.00;
+        double ans = vec[0]*1.00;
+        for (ll i = 1; i < n; i++)
+        {
+            for (ll j = 1; j <= 6; j++)
+            {
+                if (i - j >=0)
+                {
+                    ll dwn=min(6LL,n-1-i+j);
+                    prob[i] += (1.00 / dwn*1.00) * prob[i-j];
+                }
+            }
+            ans += vec[i] * prob[i];
         }
-        cout<<ans<<nn;
+       
+            
+        Setpre(10) << ans << nn;
     }
 
     return 0;

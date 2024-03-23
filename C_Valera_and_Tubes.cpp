@@ -299,22 +299,43 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<ll>vec(n);
-        cin>>vec;
-        ll ans=0;
-        ordered_multiset<ll>os;
-        for(ll i=n-1;i>=0;i--){
-           if(os.size()) ans+=os.order_of_key(vec[i]);
-           cout<<i<<" "<<os.order_of_key(vec[i])<<nn;
-           os.insert(vec[i]);
+      ll n,m,k;
+      cin>>n>>m>>k;
+      vector<pll>alls;
+      for(ll i=1;i<=n;i++){
+        if(i%2){
+            for(ll j=1;j<=m;j++){
+                alls.push_back({i,j});
+            }
         }
-        cout<<ans<<nn;
+        else{
+            for(ll j=m;j>=1;j--){
+                alls.push_back({i,j});
+            }
+        }
+      }
+      vector<pair<pll,pll>>othrs;
+      for(ll i=1;i<=k-1;i++){
+        pll a=alls.back();
+        alls.pop_back();
+        pll b=alls.back();
+        alls.pop_back();
+        othrs.push_back({b,a});
+      }
+      reverse(all(othrs));
+      cout<<alls.size()<<" ";
+      for(auto it:alls){
+        cout<<it<<" ";
+      }
+      cout<<nn;
+      for(auto it:othrs){
+        cout<<2<<" "<<it<<nn;
+      }
+
     }
 
     return 0;
