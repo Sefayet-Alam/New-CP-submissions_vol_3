@@ -59,7 +59,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI 3.1415926535897932384626
 const double EPS = 1e-9;
-const ll N = 2e5 + 10;
+const ll N = 1e5 + 10;
 const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
@@ -292,6 +292,112 @@ struct custom_hash
     }
 };
 
+
+ll n,m;
+vector<pair<pll,ll>>edges;
+struct Hopcroft_Karp {
+    static const int inf = 1e9;
+    vector <vector<int>> adj;
+    int n, m;
+    vector <int> lef, rig, dis;
+    queue <int> q;
+ 
+    Hopcroft_Karp(int n, int m) : n(n), m(m) {
+        int p=n+m+1;
+        adj.resize(p);
+        lef.resize(p, 0);
+        rig.resize(p, 0);
+        dis.resize(p, 0);
+    }
+ 
+    void add_edge(int u, int v) {
+        adj[u].pb(v+n);
+    }
+ 
+    bool bfs() {
+        for(int i=1; i<=n; i++){
+            if(!lef[i]){
+                dis[i]=0;
+                q.push(i);
+            }
+            else dis[i]=inf;
+        }
+ 
+        dis[0]=inf;
+        while (!q.empty()) {
+            int u=q.front();
+            q.pop();
+            for(int i=0; i<adj[u].size(); i++){
+                int v=adj[u][i];
+                if(dis[rig[v]]==inf){
+                    dis[rig[v]]=dis[u]+1;
+                    q.push(rig[v]);
+                }
+            }
+        }
+ 
+        return dis[0]!=inf;
+    }
+ 
+    bool dfs(int u){
+        if(!u) return true;
+        for(int i=0; i<adj[u].size(); i++){
+            int v=adj[u][i];
+            if(dis[rig[v]]==dis[u]+1 && dfs(rig[v])){
+                lef[u]=v;
+                rig[v]=u;
+                return true;
+            }
+        }
+        dis[u]=inf;
+        return false;
+    }
+ 
+    ll matching(){
+        ll max_matching=0;
+        while(bfs()){
+            for(int i=1; i<=n; i++){
+                if(!lef[i] && dfs(i)) max_matching++; 
+            }
+        }
+        return max_matching;
+    }
+};
+bool func(ll pos){
+
+    Hopcroft_Karp h(n,2*n);
+    
+   
+    for(ll i=0;i<m;i++){
+        ll u=edges[i].first.first;
+        ll v=edges[i].first.second;
+        ll w=edges[i].second;
+        if(w<=pos){
+           h.add_edge(u,n+v);
+        }
+    }
+    ll ret=h.matching();
+
+    return ret>=n;
+}
+ll bs(ll low,ll high){
+    ll mid;
+    ll ans=-1;
+    while(low<=high){
+        mid=low+(high-low)/2;
+       
+        if(func(mid)){
+            ans=mid;
+            high=mid-1;
+        }
+        else{
+            low=mid+1;
+        }
+    }
+    return ans;
+}
+
+
 int main()
 {
     fast;
@@ -299,33 +405,23 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
-      ll n;
-      cin>>n;
-      string s;
-      cin>>s;
-      if(n%2){
-        cout<<"NO"<<nn;
-        continue;
+     
+      cin>>n>>m;
+      ll maxw=0;
+      for(ll i=0;i<m;i++){
+        ll x,y,w;
+        cin>>x>>y>>w;
+        edges.push_back({{x,y},w});
+        
+        maxw=max(maxw,w);
       }
-      map<char,ll>mpp;
-      for(ll i=0;i<n;i++){
-        mpp[s[i]]++;
-      }
-      bool f=0;
-      for(auto it:mpp){
-        if(it.second>n/2) f=1;
-      }
-      if(f) cout<<"NO"<<nn;
-      else {
-        cout<<"YES"<<nn;
-        sort(all(s));
-        reverse(s.begin(),s.begin()+n/2);
-        cout<<s<<nn;
-      }
+      ll l=0,r=maxw;
+      ll ans=bs(l,r);
+      cout<<ans<<nn;
     }
 
     return 0;

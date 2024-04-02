@@ -10,7 +10,7 @@ using namespace __gnu_pbds;
     cin.tie(0);                   \
     cout.tie(0);
 #define pb push_back
-#define ll long long
+#define ll unsigned long long
 #define ff first
 #define ss second
 #define SZ(a) (int)a.size()
@@ -260,38 +260,6 @@ namespace io
 }
 using namespace io;
 
-/*===================================================================//
-
-        ░█▀▀▀█ ░█▀▀▀ ░█▀▀▀ ─█▀▀█ ░█──░█ ░█▀▀▀ ▀▀█▀▀
-        ─▀▀▀▄▄ ░█▀▀▀ ░█▀▀▀ ░█▄▄█ ░█▄▄▄█ ░█▀▀▀ ─░█──
-        ░█▄▄▄█ ░█▄▄▄ ░█─── ░█─░█ ──░█── ░█▄▄▄ ─░█──
-//====================================================================*/
-
-void setIO()
-{
-#ifndef ONLINE_JUDGE
-    freopen("input.txt", "r", stdin);
-
-    freopen("output.txt", "w", stdout);
-#endif // ONLINE_JUDGE
-}
-
-struct custom_hash
-{
-    static uint64_t splitmix64(uint64_t x)
-    {
-        x += 0x9e3779b97f4a7c15;
-        x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
-        x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
-        return x ^ (x >> 31);
-    }
-    size_t operator()(uint64_t x) const
-    {
-        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
-        return splitmix64(x + FIXED_RANDOM);
-    }
-};
-
 int main()
 {
     fast;
@@ -299,33 +267,11 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;a
 
     while (t--)
     {
-      ll n;
-      cin>>n;
-      string s;
-      cin>>s;
-      if(n%2){
-        cout<<"NO"<<nn;
-        continue;
-      }
-      map<char,ll>mpp;
-      for(ll i=0;i<n;i++){
-        mpp[s[i]]++;
-      }
-      bool f=0;
-      for(auto it:mpp){
-        if(it.second>n/2) f=1;
-      }
-      if(f) cout<<"NO"<<nn;
-      else {
-        cout<<"YES"<<nn;
-        sort(all(s));
-        reverse(s.begin(),s.begin()+n/2);
-        cout<<s<<nn;
-      }
+     cout<<"I can't"<<endl;
     }
 
     return 0;

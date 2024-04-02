@@ -291,42 +291,73 @@ struct custom_hash
         return splitmix64(x + FIXED_RANDOM);
     }
 };
+ll table[N][25], ar[N];//note: ar is 1 based
+vector<ll>dif(N);
+void build(ll n) {
+    for(ll i = 1; i <= n; ++i) table[i][0] = dif[i];
+    for(ll k = 1; k < 25; ++k) {
+        for(ll i = 1; i + (1 << k) - 1 <= n; ++i) {
+            table[i][k] = max(table[i][k - 1], table[i + (1 << (k - 1))][k - 1]);
+        }
+    }
+}
+ 
+ll query(ll l, ll r) {
+    ll k = pophigh(r - l + 1);
+    return max(table[l][k], table[r - (1 << k) + 1][k]);
+}
+
+ll curr;
+ll t,d;
+ll func(ll l, ll r)
+{
+	if (r - l + 1 == 1)return 0;
+
+	ll val = query(l,r-1);
+	return val;
+}
+ll bs(ll low,ll high){
+    ll mid;
+    ll ans=high;
+    while(low<=high){
+        mid=low+(high-low)/2;
+        //cout<<mid<<" "<<func(mid)<<endl;
+        if(func(mid,curr)<=d){
+            ans=mid;
+            high=mid-1;
+        }
+        else{
+            low=mid+1;
+        }
+    }
+    return ans;
+}
 
 int main()
 {
-    fast;
-    ll t;
-    // setIO();
-    // ll tno=1;;
-    t = 1;
-    cin >> t;
+	fast;
+    ll n;
+	cin >> n;
+    
+	for (int i = 1; i <= n; i++)
+	{
+		cin >> ar[i];
+		if (i) dif[i - 1] = ar[i] - ar[i - 1];
+	}
 
-    while (t--)
-    {
-      ll n;
-      cin>>n;
-      string s;
-      cin>>s;
-      if(n%2){
-        cout<<"NO"<<nn;
-        continue;
-      }
-      map<char,ll>mpp;
-      for(ll i=0;i<n;i++){
-        mpp[s[i]]++;
-      }
-      bool f=0;
-      for(auto it:mpp){
-        if(it.second>n/2) f=1;
-      }
-      if(f) cout<<"NO"<<nn;
-      else {
-        cout<<"YES"<<nn;
-        sort(all(s));
-        reverse(s.begin(),s.begin()+n/2);
-        cout<<s<<nn;
-      }
-    }
+	build(n);
+    ll q;
+	cin>>q;
+	while (q--)
+	{
+		cin >> t >> d;
+        ll pos = upper_bound(ar + 1, ar + n + 1, t) - ar;
+		pos--;
+        curr=pos;
+        ll l = 1, r = pos;
+		ll ans=bs(l,r);
+		cout<<ans<<nn;
+	}
 
-    return 0;
+	return 0;
 }

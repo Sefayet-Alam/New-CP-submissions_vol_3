@@ -291,6 +291,20 @@ struct custom_hash
         return splitmix64(x + FIXED_RANDOM);
     }
 };
+ll table[N][20], ar[N];//note: ar is 1 based
+void build(ll n) {
+    for(ll i = 1; i <= n; ++i) table[i][0] = ar[i];
+    for(ll k = 1; k < 25; ++k) {
+        for(ll i = 1; i + (1 << k) - 1 <= n; ++i) {
+            table[i][k] = max(table[i][k - 1], table[i + (1 << (k - 1))][k - 1]);
+        }
+    }
+}
+ 
+ll query(ll l, ll r) {
+    ll k = pophigh(r - l + 1);
+    return max(table[l][k], table[r - (1 << k) + 1][k]);
+}
 
 int main()
 {
@@ -299,33 +313,28 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
-      ll n;
-      cin>>n;
-      string s;
-      cin>>s;
-      if(n%2){
-        cout<<"NO"<<nn;
-        continue;
-      }
-      map<char,ll>mpp;
-      for(ll i=0;i<n;i++){
-        mpp[s[i]]++;
-      }
-      bool f=0;
-      for(auto it:mpp){
-        if(it.second>n/2) f=1;
-      }
-      if(f) cout<<"NO"<<nn;
-      else {
-        cout<<"YES"<<nn;
-        sort(all(s));
-        reverse(s.begin(),s.begin()+n/2);
-        cout<<s<<nn;
-      }
+        ll n,q;
+        cin>>n>>q;
+        ll m=q;
+        for(ll i=1;i<=n;i++) cin>>ar[i];
+        build(n);
+        ll ans=0;
+        while(q--){
+          ll l,r;
+          cin>>l>>r;
+        
+          r--;
+          if(l>r) continue;
+        //   deb2(l,r);
+          ll maxm=query(l,r);
+        //   deb2(ar[l],maxm);
+          if(maxm>ar[l]) ans++;
+        }
+        cout<<m-ans<<nn;
     }
 
     return 0;

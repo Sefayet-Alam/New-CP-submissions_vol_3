@@ -292,6 +292,16 @@ struct custom_hash
     }
 };
 
+ll ask(ll x){
+    cout<<"?"<<" "<<x<<endl;
+    ll ret;
+    cin>>ret;
+    return ret;
+}
+
+
+
+
 int main()
 {
     fast;
@@ -299,32 +309,18 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
-      ll n;
-      cin>>n;
-      string s;
-      cin>>s;
-      if(n%2){
-        cout<<"NO"<<nn;
-        continue;
-      }
-      map<char,ll>mpp;
-      for(ll i=0;i<n;i++){
-        mpp[s[i]]++;
-      }
-      bool f=0;
-      for(auto it:mpp){
-        if(it.second>n/2) f=1;
-      }
-      if(f) cout<<"NO"<<nn;
-      else {
-        cout<<"YES"<<nn;
-        sort(all(s));
-        reverse(s.begin(),s.begin()+n/2);
-        cout<<s<<nn;
+      ll x=1;
+      for(ll i=1;i<=41;i++){
+        ll k=ask(x);
+        if(k<x){
+            cout<<"!"<<" "<<x-k<<endl;
+            break;
+        }
+        x*=2;
       }
     }
 

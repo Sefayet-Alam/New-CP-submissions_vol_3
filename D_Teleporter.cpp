@@ -299,33 +299,30 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
-      ll n;
-      cin>>n;
-      string s;
-      cin>>s;
-      if(n%2){
-        cout<<"NO"<<nn;
-        continue;
-      }
-      map<char,ll>mpp;
-      for(ll i=0;i<n;i++){
-        mpp[s[i]]++;
-      }
-      bool f=0;
-      for(auto it:mpp){
-        if(it.second>n/2) f=1;
-      }
-      if(f) cout<<"NO"<<nn;
-      else {
-        cout<<"YES"<<nn;
-        sort(all(s));
-        reverse(s.begin(),s.begin()+n/2);
-        cout<<s<<nn;
-      }
+    ll n,k;
+    cin >> n >> k;
+    vector<ll> vec(n + 1);
+    for (ll i = 1; i <= n; i++) {
+        cin >> vec[i];
+    }
+    vector<ll> pos(n + 1, -1), B;
+    ll cur = 1;
+    while(pos[cur] == -1) {
+        pos[cur] = B.size();
+        B.push_back(cur);
+        cur = vec[cur];
+    }
+    if (k < B.size()) {
+        cout << B[k] << nn;
+    } else {
+        k -= pos[cur];
+        ll len = B.size() - pos[cur];
+        cout << B[pos[cur] + (k % len)] << nn;
+    }
     }
 
     return 0;

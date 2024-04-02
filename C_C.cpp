@@ -303,18 +303,27 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<ll>vec(n);
-        cin>>vec;
-        ll ans=0;
-        ordered_multiset<ll>os;
-        for(ll i=n-1;i>=0;i--){
-           if(os.size()) ans+=os.order_of_key(vec[i]);
-           cout<<i<<" "<<os.order_of_key(vec[i])<<nn;
-           os.insert(vec[i]);
+     ll n;
+     cin>>n;
+     bool f=0;
+     ll grid[n][n];
+     for(ll i=0;i<n;i++){
+        bool k=0;
+        for(ll j=0;j<n;j++){
+            cin>>grid[i][j];
+            if(grid[i][j]==0) k=1;
         }
-        cout<<ans<<nn;
+        if(!k) f=1;
+     } 
+     for(ll i=0;i<n;i++){
+        bool k=0;
+        for(ll j=0;j<n;j++){
+            if(grid[j][i]==0) k=1;
+        }
+        if(!k) f=1;
+     } 
+     if(f) cout<<"NO"<<nn;
+     else cout<<"YES"<<nn;
     }
 
     return 0;

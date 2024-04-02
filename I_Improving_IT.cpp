@@ -59,7 +59,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI 3.1415926535897932384626
 const double EPS = 1e-9;
-const ll N = 2e5 + 10;
+const ll N = 5e5 + 10;
 const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
@@ -291,7 +291,19 @@ struct custom_hash
         return splitmix64(x + FIXED_RANDOM);
     }
 };
-
+vector<vl>vec(N);
+// vector<ll>g[N];
+ll n,m;
+ll dp[N];
+ll func(ll i){
+    if(i>=n) return 0;
+    if(dp[i]!=-1) return dp[i];
+    ll ret=LLONG_MAX;
+    for(ll j=1;j<vec[i].size();j++){
+        ret=min(ret,vec[i][0]-vec[i][j]+func(i+j));
+    }
+    return dp[i]=ret;
+}
 int main()
 {
     fast;
@@ -299,33 +311,24 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
-
+    // cin >> t;
+    mem(dp,-1);
     while (t--)
     {
-      ll n;
-      cin>>n;
-      string s;
-      cin>>s;
-      if(n%2){
-        cout<<"NO"<<nn;
-        continue;
-      }
-      map<char,ll>mpp;
+      cin>>n>>m;
+      vec.resize(n);
+      cin>>vec;
       for(ll i=0;i<n;i++){
-        mpp[s[i]]++;
+        ll x;
+        cin>>x;
+        vec[i].push_back(x);
+        for(ll j=0;j<min(m,n-i);j++){
+            cin>>x;
+            vec[i].push_back(x);
+        }
       }
-      bool f=0;
-      for(auto it:mpp){
-        if(it.second>n/2) f=1;
-      }
-      if(f) cout<<"NO"<<nn;
-      else {
-        cout<<"YES"<<nn;
-        sort(all(s));
-        reverse(s.begin(),s.begin()+n/2);
-        cout<<s<<nn;
-      }
+      ll ans=func(0);
+      cout<<ans<<nn;
     }
 
     return 0;

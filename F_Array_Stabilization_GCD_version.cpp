@@ -59,7 +59,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI 3.1415926535897932384626
 const double EPS = 1e-9;
-const ll N = 2e5 + 10;
+const ll N = 5e5 + 10;
 const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
@@ -291,6 +291,38 @@ struct custom_hash
         return splitmix64(x + FIXED_RANDOM);
     }
 };
+ll table[N][19], ar[N];//note: ar is 1 based
+void build(ll n) {
+    for(ll i = 1; i <= n; ++i) table[i][0] = ar[i];
+    for(ll k = 1; k < 19; ++k) {
+        for(ll i = 1; i + (1 << k) - 1 <= n; ++i) {
+            table[i][k] = GCD(table[i][k - 1], table[i + (1 << (k - 1))][k - 1]);
+        }
+    }
+}
+ 
+ll query(ll l, ll r) {
+    ll k = pophigh(r - l + 1);
+    return GCD(table[l][k], table[r - (1 << k) + 1][k]);
+}
+
+ll now;
+ll bs(ll low,ll high){
+    ll mid;
+    ll ans=low;
+    while(low<=high){
+        mid=low+(high-low)/2;
+        //cout<<mid<<" "<<func(mid)<<endl;
+        if(query(now,mid)==1){
+            ans=mid;
+            high=mid-1;
+        }
+        else{
+            low=mid+1;
+        }
+    }
+    return ans;
+}
 
 int main()
 {
@@ -305,27 +337,28 @@ int main()
     {
       ll n;
       cin>>n;
-      string s;
-      cin>>s;
-      if(n%2){
-        cout<<"NO"<<nn;
-        continue;
+      ll g=0;
+      for(ll i=1;i<=n;i++){
+        cin>>ar[i];
+        ar[n+i]=ar[i];
+        g=GCD(g,ar[i]);
       }
-      map<char,ll>mpp;
-      for(ll i=0;i<n;i++){
-        mpp[s[i]]++;
+      for(ll i=1;i<=2*n;i++){
+        ar[i]/=g;
       }
-      bool f=0;
-      for(auto it:mpp){
-        if(it.second>n/2) f=1;
+    //   for(ll i=1;i<=2*n;i++) cout<<ar[i]<<" ";
+    //   cout<<nn;
+      build(2*n);
+      ll maxm=0;
+      for(ll i=1;i<=n;i++){
+        ll l=i+1,r=2*n;
+        now=l;
+        ll ans=bs(l,r);
+        // deb2(l,ans);
+        ll curans=ans-l;
+        maxm=max(maxm,curans);
       }
-      if(f) cout<<"NO"<<nn;
-      else {
-        cout<<"YES"<<nn;
-        sort(all(s));
-        reverse(s.begin(),s.begin()+n/2);
-        cout<<s<<nn;
-      }
+      cout<<maxm<<nn;
     }
 
     return 0;

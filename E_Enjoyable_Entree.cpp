@@ -1,3 +1,4 @@
+/**Barry, the scars we have, make us who we are...We're not meant to go back and fix them**/
 #include <bits/stdc++.h>
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>
@@ -292,6 +293,39 @@ struct custom_hash
     }
 };
 
+
+#define REP(i, n) for (int i = 0; i < (n); i++)
+struct Matrix
+{
+    double a[2][2] = {{0, 0}, {0, 0}};
+    Matrix operator*(const Matrix &other)
+    {
+        Matrix product;
+        REP(i, 2)
+        REP(j, 2) REP(k, 2)
+        {
+            product.a[i][k] += a[i][j] * other.a[j][k];
+        }
+        return product;
+    }
+};
+Matrix expo_power(Matrix a, ll k)
+{
+    Matrix product;
+    REP(i, 2)
+    product.a[i][i] = 1;
+    while (k > 0)
+    {
+        if (k % 2)
+        {
+            product = product * a;
+        }
+        a = a * a;
+        k /= 2;
+    }
+    return product;
+}
+
 int main()
 {
     fast;
@@ -299,33 +333,32 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
-      ll n;
-      cin>>n;
-      string s;
-      cin>>s;
-      if(n%2){
-        cout<<"NO"<<nn;
-        continue;
-      }
-      map<char,ll>mpp;
-      for(ll i=0;i<n;i++){
-        mpp[s[i]]++;
-      }
-      bool f=0;
-      for(auto it:mpp){
-        if(it.second>n/2) f=1;
-      }
-      if(f) cout<<"NO"<<nn;
-      else {
-        cout<<"YES"<<nn;
-        sort(all(s));
-        reverse(s.begin(),s.begin()+n/2);
-        cout<<s<<nn;
-      }
+        ll n;
+        cin>>n;
+      
+        if(n==1){
+            cout<<100<<" "<<0<<nn;
+            continue;
+        }
+        else if(n==2){
+            cout<<0<<" "<<100<<nn;
+            continue;
+        }
+        Matrix mat;
+        mat.a[0][0]=0.5;
+        mat.a[0][1]=0.5;
+        mat.a[1][0]=1;
+        mat.a[1][1]=0;
+        Matrix p=expo_power(mat,n-1);
+        double ans1=(p.a[0][0]-p.a[0][1])*100;
+        double ans2=100.00-ans1;
+        if(ans1>ans2) swap(ans1,ans2);
+        Setpre(7)<<ans1<<" "<<ans2<<nn;
+        // cout<<p.a[0][0]+p.a[1][0]<<nn;
     }
 
     return 0;

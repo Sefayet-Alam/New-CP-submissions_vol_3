@@ -291,6 +291,7 @@ struct custom_hash
         return splitmix64(x + FIXED_RANDOM);
     }
 };
+unordered_map<ll,ll>mpp,cnt;
 
 int main()
 {
@@ -299,33 +300,34 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
-      ll n;
-      cin>>n;
-      string s;
-      cin>>s;
-      if(n%2){
-        cout<<"NO"<<nn;
-        continue;
-      }
-      map<char,ll>mpp;
+      ll n,k;
+      cin>>n>>k;
+      vector<ll>vec(n);
+      
       for(ll i=0;i<n;i++){
-        mpp[s[i]]++;
+        cin>>vec[i];
+        vec[i]++;
+        cnt[vec[i]]++;
       }
-      bool f=0;
-      for(auto it:mpp){
-        if(it.second>n/2) f=1;
+      sort(all(vec));
+      UNIQUE(vec);
+     
+    
+      for(auto it:vec){
+        ll curr=it;
+        // deb2(curr,cnt[curr]);
+        for(ll j=curr;j<=k;j+=curr){
+            mpp[j]+=cnt[curr];
+        }
       }
-      if(f) cout<<"NO"<<nn;
-      else {
-        cout<<"YES"<<nn;
-        sort(all(s));
-        reverse(s.begin(),s.begin()+n/2);
-        cout<<s<<nn;
+      for(ll i=1;i<=k;i++){
+        cout<<mpp[i]<<" ";
       }
+      cout<<nn;
     }
 
     return 0;

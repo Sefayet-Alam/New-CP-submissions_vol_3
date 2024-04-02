@@ -291,6 +291,95 @@ struct custom_hash
         return splitmix64(x + FIXED_RANDOM);
     }
 };
+map<ll,ll>mpp;
+struct Hopcroft_Karp
+{
+    static const int inf = 1e9;
+    vector<vector<int>> adj;
+    int n, m;
+    vector<int> lef, rig, dis;
+    queue<int> q;
+   
+    Hopcroft_Karp(int n, int m) : n(n), m(m)
+    {
+        int p = n + m + 1;
+        adj.resize(p);
+        lef.resize(p, 0);
+        rig.resize(p, 0);
+        dis.resize(p, 0);
+    }
+
+    void add_edge(int u, int v)
+    {
+        adj[u].pb(v + n);
+    }
+
+    bool bfs()
+    {
+        for (int i = 1; i <= n; i++)
+        {
+            if (!lef[i])
+            {
+                dis[i] = 0;
+                q.push(i);
+            }
+            else
+                dis[i] = inf;
+        }
+
+        dis[0] = inf;
+        while (!q.empty())
+        {
+            int u = q.front();
+            q.pop();
+            for (int i = 0; i < adj[u].size(); i++)
+            {
+                int v = adj[u][i];
+                if (dis[rig[v]] == inf)
+                {
+                    dis[rig[v]] = dis[u] + 1;
+                    q.push(rig[v]);
+                }
+            }
+        }
+
+        return dis[0] != inf;
+    }
+
+    bool dfs(int u)
+    {
+        if (!u)
+            return true;
+        for (int i = 0; i < adj[u].size(); i++)
+        {
+            int v = adj[u][i];
+            if (dis[rig[v]] == dis[u] + 1 && dfs(rig[v]))
+            {
+                lef[u] = v;
+                rig[v] = u;
+                return true;
+            }
+        }
+        dis[u] = inf;
+        return false;
+    }
+
+    ll matching()
+    {
+        ll max_matching = 0;
+        while (bfs())
+        {
+            for (int i = 1; i <= n; i++)
+            {
+                if (!lef[i] && dfs(i))
+                {
+                    max_matching++;
+                }
+            }
+        }
+        return max_matching;
+    }
+};
 
 int main()
 {
@@ -299,33 +388,30 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
-      ll n;
-      cin>>n;
-      string s;
-      cin>>s;
-      if(n%2){
-        cout<<"NO"<<nn;
-        continue;
-      }
-      map<char,ll>mpp;
-      for(ll i=0;i<n;i++){
-        mpp[s[i]]++;
-      }
-      bool f=0;
-      for(auto it:mpp){
-        if(it.second>n/2) f=1;
-      }
-      if(f) cout<<"NO"<<nn;
-      else {
-        cout<<"YES"<<nn;
-        sort(all(s));
-        reverse(s.begin(),s.begin()+n/2);
-        cout<<s<<nn;
-      }
+        ll n, m, p;
+        cin >> n >> m >> p;
+        Hopcroft_Karp h(n, m);
+        for (ll i = 0; i < p; i++)
+        {
+            ll x, y;
+            cin >> x >> y;
+            h.add_edge(x, y);
+        }
+        ll p1=h.matching();
+        vector<pll>ans;
+        for(ll i=1;i<=n;i++){
+            if(h.lef[i]){
+                ans.push_back({i,h.lef[i]-n});
+            }
+        }
+        cout<<ans.size()<<nn;
+        for(auto it:ans){
+            cout<<it<<nn;
+        }
     }
 
     return 0;

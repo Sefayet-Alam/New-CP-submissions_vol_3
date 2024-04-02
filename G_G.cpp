@@ -291,6 +291,16 @@ struct custom_hash
         return splitmix64(x + FIXED_RANDOM);
     }
 };
+bool is_binary_palindrome(int num) {
+    int rev_binary = 0;
+    int copy_num = num;
+    while (copy_num) {
+        rev_binary = (rev_binary << 1) | (copy_num & 1);
+        copy_num >>= 1;
+    }
+    return rev_binary == num;
+}
+vector<ll> vals;
 
 int main()
 {
@@ -300,32 +310,25 @@ int main()
     // ll tno=1;;
     t = 1;
     cin >> t;
-
+  
+    for (int i = 1; i <= 1000; i++)
+    {
+        if(is_binary_palindrome(i)) vals.push_back(i);
+    }
+    // deb(vals.size());
     while (t--)
     {
-      ll n;
-      cin>>n;
-      string s;
-      cin>>s;
-      if(n%2){
-        cout<<"NO"<<nn;
-        continue;
-      }
-      map<char,ll>mpp;
-      for(ll i=0;i<n;i++){
-        mpp[s[i]]++;
-      }
-      bool f=0;
-      for(auto it:mpp){
-        if(it.second>n/2) f=1;
-      }
-      if(f) cout<<"NO"<<nn;
-      else {
-        cout<<"YES"<<nn;
-        sort(all(s));
-        reverse(s.begin(),s.begin()+n/2);
-        cout<<s<<nn;
-      }
+        ll n;
+        cin>>n;
+        vector<ll>ans;
+        for(ll i=vals.size()-1;i>=0;i--){
+            while(n-vals[i]>=0){
+                n-=vals[i];
+                ans.push_back(vals[i]);
+            }
+        }
+        cout<<ans.size()<<nn;
+        cout<<ans<<nn;
     }
 
     return 0;

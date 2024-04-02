@@ -291,7 +291,20 @@ struct custom_hash
         return splitmix64(x + FIXED_RANDOM);
     }
 };
-
+ll table[N][20], ar[N];//note: ar is 1 based
+void build(ll n) {
+    for(ll i = 1; i <= n; ++i) table[i][0] = ar[i];
+    for(ll k = 1; k < 20; ++k) {
+        for(ll i = 1; i + (1 << k) - 1 <= n; ++i) {
+            table[i][k] = min(table[i][k - 1], table[i + (1 << (k - 1))][k - 1]);
+        }
+    }
+}
+ 
+ll query(ll l, ll r) {
+    ll k = pophigh(r - l + 1);
+    return min(table[l][k], table[r - (1 << k) + 1][k]);
+}
 int main()
 {
     fast;
@@ -299,32 +312,29 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
-      ll n;
-      cin>>n;
-      string s;
-      cin>>s;
-      if(n%2){
-        cout<<"NO"<<nn;
-        continue;
-      }
-      map<char,ll>mpp;
-      for(ll i=0;i<n;i++){
-        mpp[s[i]]++;
-      }
-      bool f=0;
-      for(auto it:mpp){
-        if(it.second>n/2) f=1;
-      }
-      if(f) cout<<"NO"<<nn;
-      else {
-        cout<<"YES"<<nn;
-        sort(all(s));
-        reverse(s.begin(),s.begin()+n/2);
-        cout<<s<<nn;
+      ll n,k;
+      cin>>n>>k;
+      vector<ll>vec(n);
+      cin>>vec;
+      ll maxm=*max_element(all(vec));
+      ll minm=*min_element(all(vec));
+      if(k==1) cout<<minm<<nn;
+      else if(k>2) cout<<maxm<<nn;
+      else{
+        for(ll i=1;i<=n;i++) ar[i]=vec[i-1];
+        build(n);
+        maxm=LLONG_MIN;
+        for(ll i=1;i<=n-1;i++){
+            ll max1=query(1,i);
+            ll max2=query(i+1,n);
+            // deb2(max1,max2);
+            maxm=max({maxm,max1,max2});
+        }
+        cout<<maxm<<nn;
       }
     }
 

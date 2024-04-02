@@ -291,7 +291,9 @@ struct custom_hash
         return splitmix64(x + FIXED_RANDOM);
     }
 };
-
+ll n,k,p;
+ll dp[305][305*305];
+ll pref[305*305];
 int main()
 {
     fast;
@@ -299,34 +301,25 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
-      ll n;
-      cin>>n;
-      string s;
-      cin>>s;
-      if(n%2){
-        cout<<"NO"<<nn;
-        continue;
+      cin>>n>>k>>p;
+      dp[0][0]=1;
+      for(ll i=1;i<=n;i++){
+        for(ll j=0;j<=n*k;j++) pref[j+1]=(pref[j]+dp[i-1][j])%M;
+        for(ll ps=0;ps<=n*k;ps++){
+            ll l=ps-min(k,ps);
+            ll r=ps-1;
+            if(l<=r) dp[i][ps]=(pref[r+1]-pref[l]+M)%M;
+        }
       }
-      map<char,ll>mpp;
-      for(ll i=0;i<n;i++){
-        mpp[s[i]]++;
-      }
-      bool f=0;
-      for(auto it:mpp){
-        if(it.second>n/2) f=1;
-      }
-      if(f) cout<<"NO"<<nn;
-      else {
-        cout<<"YES"<<nn;
-        sort(all(s));
-        reverse(s.begin(),s.begin()+n/2);
-        cout<<s<<nn;
-      }
+      ll ans=0;
+      for(ll i=p+1;i<=n*k;i++) ans=(ans+dp[n][i])%M;
+      cout<<ans<<nn;
     }
 
     return 0;
 }
+

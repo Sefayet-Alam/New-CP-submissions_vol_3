@@ -291,7 +291,24 @@ struct custom_hash
         return splitmix64(x + FIXED_RANDOM);
     }
 };
-
+pll table[N][22];
+ll ar[N];//note: ar is 1 based
+void build(ll n) {
+    for(ll i = 1; i <= n; ++i) table[i][0] = {ar[i],ar[i]};
+    for(ll k = 1; k < 22; ++k) {
+        for(ll i = 1; i + (1 << k) - 1 <= n; ++i) {
+            table[i][k].first = min(table[i][k - 1].first, table[i + (1 << (k - 1))][k - 1].first);
+            table[i][k].second = max(table[i][k - 1].second, table[i + (1 << (k - 1))][k - 1].second);
+        }
+    }
+}
+ 
+pll query(ll l, ll r) {
+    ll k = pophigh(r - l + 1);
+    ll minm=min(table[l][k].first, table[r - (1 << k) + 1][k].first);
+    ll maxm=max(table[l][k].second, table[r - (1 << k) + 1][k].second);
+    return {minm,maxm};
+}
 int main()
 {
     fast;
@@ -299,33 +316,44 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
-      ll n;
+      ll n,q;
       cin>>n;
-      string s;
-      cin>>s;
-      if(n%2){
-        cout<<"NO"<<nn;
-        continue;
+      for(ll i=1;i<=n;i++){
+        cin>>ar[i];
       }
-      map<char,ll>mpp;
-      for(ll i=0;i<n;i++){
-        mpp[s[i]]++;
+      build(n);
+      cin>>q;
+      while (q--)
+      {
+        ll l,r;
+        cin>>l>>r;
+        l++;
+        r++;
+        // deb2(l,r);
+        ll lm=0;
+        ll rm=0;
+        if(1<=l-1){
+        pll left=query(1,l-1);
+        
+        lm=left.second;
+        }
+        if(r+1<=n){
+        pll right=query(r+1,n);
+        rm=right.second;
+        }
+        pll mid=query(l,r);
+        ll midl=mid.first;
+        ll midr=mid.second;
+        lm+=midl;
+        rm+=midl;
+        double ans=max({lm*1.00,rm*1.00,midl*1.00+(midr-midl)/2.00});
+        Setpre(1)<<ans<<nn;
       }
-      bool f=0;
-      for(auto it:mpp){
-        if(it.second>n/2) f=1;
-      }
-      if(f) cout<<"NO"<<nn;
-      else {
-        cout<<"YES"<<nn;
-        sort(all(s));
-        reverse(s.begin(),s.begin()+n/2);
-        cout<<s<<nn;
-      }
+      
     }
 
     return 0;

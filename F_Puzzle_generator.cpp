@@ -299,32 +299,33 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
       ll n;
       cin>>n;
-      string s;
-      cin>>s;
-      if(n%2){
-        cout<<"NO"<<nn;
-        continue;
-      }
-      map<char,ll>mpp;
+      ll grid[n+1][n+1];
       for(ll i=0;i<n;i++){
-        mpp[s[i]]++;
+        cin>>grid[0][i];
       }
-      bool f=0;
-      for(auto it:mpp){
-        if(it.second>n/2) f=1;
+      for(ll i=0;i<n;i++){
+        ll curr=grid[0][i];
+        ll cnt=n;
+        ll i1=0;
+        ll j1=i;
+        while(cnt){
+            cnt--;
+            grid[i1][j1]=curr;
+            i1=(i1+1)%n;
+            j1=(j1+1)%n;
+        }
       }
-      if(f) cout<<"NO"<<nn;
-      else {
-        cout<<"YES"<<nn;
-        sort(all(s));
-        reverse(s.begin(),s.begin()+n/2);
-        cout<<s<<nn;
+      for(ll i=0;i<n;i++){
+        for(ll j=0;j<n;j++){
+            cout<<grid[i][j]<<" ";
+        }
+        cout<<nn;
       }
     }
 
