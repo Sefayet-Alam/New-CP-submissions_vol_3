@@ -1,0 +1,1 @@
+{"name":"Local: salami_c","url":"e:\\GitHub\\New-CP-submissions_vol_3\\salami_c.cpp","tests":[{"id":1712576165908,"input":"1\n10","output":"5\n1 1\n1 4\n1 9\n2 2\n3 3"},{"id":1712576187228,"input":"1\n16","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"e:\\GitHub\\New-CP-submissions_vol_3\\salami_c.cpp","group":"local","local":true}

@@ -59,7 +59,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI 3.1415926535897932384626
 const double EPS = 1e-9;
-const ll N = 1e5 + 10;
+const ll N = 2e5 + 10;
 const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
@@ -292,24 +292,32 @@ struct custom_hash
     }
 };
 
-vector<ll>g[N];
+ll dp[N];
+ll k;
 
-vector<ll>hav(N),req(N),mark(N);
-
-vector<ll>ans;
-void dfs(ll vertex,ll parent ,ll a,ll b){
-    hav[vertex]^=a;
-    if(hav[vertex]!=req[vertex]){
-        ans.push_back(vertex);
-        a^=1;
-    }
-    for(ll child: g[vertex]){
-        if(child==parent) continue;
-        dfs(child,vertex,b,a);
-    }
-  
+ll calculateMex(unordered_set<ll> &st)
+{
+    ll Mex = 0;
+    while (st.count(Mex))
+        Mex++;
+    return (Mex);
 }
 
+// A function to Compute Grundy Number of 'n'
+// Only this function varies according to the game
+ll calculateGrundy(ll n)
+{
+    if (n == 0)
+        return 0;
+    ll &ret = dp[n];
+    if (ret != -1)
+        return ret;
+    unordered_set<ll> Set; // A Hash Table
+    Set.insert(calculateGrundy(n - 1));
+    Set.insert(calculateGrundy(n / k));
+
+    return ret = calculateMex(Set);
+}
 int main()
 {
     fast;
@@ -317,27 +325,22 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    // cin >> t;
-
+    cin >> t;
+    mem(dp, -1);
+    // dp[1]=1;
     while (t--)
     {
         ll n;
-        cin>>n;
-        for(ll i=0;i<n-1;i++){
-            ll u,v;
-            cin>>u>>v;
-            g[u].push_back(v);
-            g[v].push_back(u);
+        cin >> n >> k;
+        for (ll i = 1; i <= n; i++)
+        {
+            ll p = calculateGrundy(i);
+            cout << p << nn;
         }
-    
-        for(ll i=1;i<=n;i++) cin>>hav[i];
-        for(ll i=1;i<=n;i++) cin>>req[i];
-        
-        dfs(1,-1,0,0);
-        cout<<ans.size()<<nn;
-        for(auto it:ans){
-            cout<<it<<nn;
-        }
+
+        // cin >> n >> k;
+        // vector<ll> vec(n);
+        // cin >> vec;
     }
 
     return 0;

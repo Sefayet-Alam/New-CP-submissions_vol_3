@@ -3,7 +3,7 @@
 #include <ext/pb_ds/tree_policy.hpp>
 using namespace std;
 using namespace __gnu_pbds;
-
+ 
 // VVI
 #define fast                      \
     ios_base::sync_with_stdio(0); \
@@ -17,23 +17,23 @@ using namespace __gnu_pbds;
 #define UNIQUE(a) (a).erase(unique(all(a)), (a).end())
 #define eb emplace_back
 #define mp make_pair
-
+ 
 /// BIT MANIPULATION
-
+ 
 #define Set(x, k) (x |= (1LL << k))
 #define Unset(x, k) (x &= ~(1LL << k))
 #define Check(x, k) (x & (1LL << k))
 #define Toggle(x, k) (x ^ (1LL << k))
-
+ 
 // LOOPS
-
+ 
 #define scl(n) scanf("%lld", &n)
 #define fr(i, n) for (ll i = 0; i < n; i++)
 #define fr1(i, n) for (ll i = 1; i <= n; i++)
 #define Fo(i, k, n) for (i = k; k < n ? i < n : i > n; k < n ? i += 1 : i -= 1)
-
+ 
 /// PRINTING
-
+ 
 #define deb(x) cout << #x << "=" << x << endl
 #define deb2(x, y) cout << #x << "=" << x << "," << #y << "=" << y << endl
 #define nn '\n'
@@ -42,9 +42,9 @@ using namespace __gnu_pbds;
 #define Setpre(n) cout << fixed << setprecision(n)
 #define itr(it, a) for (auto it = a.begin(); it != a.end(); it++)
 #define debug printf("I am here\n")
-
+ 
 /// SORTING AND FILLING
-
+ 
 #define asort(a) sort(a, a + n)
 #define dsort(a) sort(a, a + n, greater<int>())
 #define vasort(v) sort(v.begin(), v.end());
@@ -54,14 +54,14 @@ using namespace __gnu_pbds;
 #define mem(a, b) memset(a, b, sizeof(a))
 #define all(x) x.begin(), x.end()
 #define rev(x) reverse(all(x))
-
+ 
 // CONSTANTS
 #define md 10000007
 #define PI 3.1415926535897932384626
 const double EPS = 1e-9;
 const ll N = 2e5 + 10;
 const ll M = 1e9 + 7;
-
+ 
 /// INLINE FUNCTIONS
 inline ll GCD(ll a, ll b) { return b == 0 ? a : GCD(b, a % b); }
 inline ll LCM(ll a, ll b) { return a * b / GCD(a, b); }
@@ -87,7 +87,7 @@ double euclidean_distance(ll x1, ll y1, ll x2, ll y2)
 int popcount(ll x) { return __builtin_popcountll(x); };
 int poplow(ll x) { return __builtin_ctzll(x); };
 int pophigh(ll x) { return 63 - __builtin_clzll(x); };
-
+ 
 /// Data structures
 typedef unsigned long long ull;
 typedef pair<ll, ll> pll;
@@ -158,7 +158,7 @@ namespace io
         }
         return os;
     }
-
+ 
     template <typename First, typename Second>
     istream &operator>>(istream &is, pair<First, Second> &p) { return is >> p.first >> p.second; }
     template <typename First>
@@ -170,7 +170,7 @@ namespace io
         }
         return is;
     }
-
+ 
     long long fastread()
     {
         char c;
@@ -187,11 +187,11 @@ namespace io
         }
         return d * x;
     }
-
+ 
     static bool sep = false;
-
+ 
     using std::to_string;
-
+ 
     string to_string(bool x) { return (x ? "true" : "false"); }
     string to_string(const string &s) { return "\"" + s + "\""; }
     string to_string(const char *s) { return "\"" + string(s) + "\""; }
@@ -201,14 +201,14 @@ namespace io
         s += c;
         return "\'" + s + "\'";
     }
-
+ 
     template <typename Type>
     string to_string(vector<Type>);
     template <typename First, typename Second>
     string to_string(pair<First, Second>);
     template <typename Collection>
     string to_string(Collection);
-
+ 
     template <typename First, typename Second>
     string to_string(pair<First, Second> p) { return "{" + to_string(p.first) + ", " + to_string(p.second) + "}"; }
     template <typename Type>
@@ -241,7 +241,7 @@ namespace io
         s += "}";
         return s;
     }
-
+ 
     void print()
     {
         cerr << endl;
@@ -256,26 +256,26 @@ namespace io
         cerr << to_string(first);
         print(other...);
     }
-
+ 
 }
 using namespace io;
-
+ 
 /*===================================================================//
-
+ 
         ░█▀▀▀█ ░█▀▀▀ ░█▀▀▀ ─█▀▀█ ░█──░█ ░█▀▀▀ ▀▀█▀▀
         ─▀▀▀▄▄ ░█▀▀▀ ░█▀▀▀ ░█▄▄█ ░█▄▄▄█ ░█▀▀▀ ─░█──
         ░█▄▄▄█ ░█▄▄▄ ░█─── ░█─░█ ──░█── ░█▄▄▄ ─░█──
 //====================================================================*/
-
+ 
 void setIO()
 {
 #ifndef ONLINE_JUDGE
     freopen("input.txt", "r", stdin);
-
+ 
     freopen("output.txt", "w", stdout);
 #endif // ONLINE_JUDGE
 }
-
+ 
 struct custom_hash
 {
     static uint64_t splitmix64(uint64_t x)
@@ -295,15 +295,15 @@ const ll maxnodes = 10005;
 const ll inf=M;
 ll nodes = maxnodes, src, dest;
 ll dist[maxnodes], q[maxnodes], work[maxnodes];
-
+ 
 struct Edge
 {
     ll to, rev;
     ll f, cap;
 };
-
+ 
 vector<Edge> g[maxnodes];
-
+ 
 void addEdge(ll s, ll t, ll cap)
 {
     Edge a = {t, g[t].size(), 0, cap};
@@ -311,15 +311,15 @@ void addEdge(ll s, ll t, ll cap)
     g[s].push_back(a);
     g[t].push_back(b);
 }
-
+ 
 bool dinic_bfs()
 {
     fill(dist, dist + nodes, -1);
-
+ 
     dist[src] = 0;
     ll index = 0;
     q[index++] = src;
-
+ 
     for (ll i = 0; i < index; i++)
     {
         ll u = q[i];
@@ -335,18 +335,18 @@ bool dinic_bfs()
     }
     return dist[dest] >= 0;
 }
-
+ 
 ll dinic_dfs(ll u, ll f)
 {
     if (u == dest)
         return f;
-
+ 
     for (ll &i = work[u]; i < (ll) g[u].size(); i++)
     {
         Edge &e = g[u][i];
-
+ 
         if (e.cap <= e.f) continue;
-
+ 
         if (dist[e.to] == dist[u] + 1)
         {
             ll flow = dinic_dfs(e.to, min(f, e.cap - e.f));
@@ -360,7 +360,7 @@ ll dinic_dfs(ll u, ll f)
     }
     return 0;
 }
-
+ 
 ll maxFlow(ll _src, ll _dest)
 {
     src = _src;
@@ -382,7 +382,7 @@ int main()
     // ll tno=1;;
     t = 1;
     // cin >> t;
-
+ 
     while (t--)
     {
       ll n,m;
@@ -395,6 +395,6 @@ int main()
       ll ans=maxFlow(1,n);
       cout<<ans<<nn;
     }
-
+ 
     return 0;
 }

@@ -291,16 +291,6 @@ struct custom_hash
         return splitmix64(x + FIXED_RANDOM);
     }
 };
-bool is_binary_palindrome(int num) {
-    int rev_binary = 0;
-    int copy_num = num;
-    while (copy_num) {
-        rev_binary = (rev_binary << 1) | (copy_num & 1);
-        copy_num >>= 1;
-    }
-    return rev_binary == num;
-}
-vector<ll> vals;
 
 int main()
 {
@@ -309,26 +299,70 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
-  
-    for (int i = 1; i <= 1000; i++)
-    {
-        if(is_binary_palindrome(i)) vals.push_back(i);
-    }
-    // deb(vals.size());
-    while (t--)
+    ll k;
+
+    while (1)
     {
         ll n;
-        cin>>n;
-        vector<ll>ans;
-        for(ll i=vals.size()-1;i>=0;i--){
-            while(n-vals[i]>=0){
-                n-=vals[i];
-                ans.push_back(vals[i]);
+        cin >> n;
+        if (n == 0)
+            break;
+        n *= 2;
+        vector<ll> vec(n);
+        cin >> vec;
+        vector<pll> pars;
+        for (ll i = 0; i < n; i++)
+        {
+            pars.push_back({vec[i], i + 1});
+        }
+        sort(all(pars));
+        ll maxdiff=0;
+        map<ll,ll>ansf;
+        for(ll i=0;i<n;i+=2){
+            ansf[pars[i].second]=pars[i+1].second;
+            ansf[pars[i+1].second]=pars[i].second;
+            maxdiff=max(maxdiff,abs(pars[i].first-pars[i+1].first));
+        }
+
+        ll l=0,r=1;
+        map<ll,ll>vis,fst;
+        vector<pll>ans2;
+        while(r+1<n){
+            ll curr=abs(pars[l].first-pars[r+1].first);
+            if(curr<maxdiff) r++;
+            else{
+                ans2.push_back({l,r});
+                vis[l]=vis[r]=1;
+                r++;
+                l=r;
+                r++;
             }
         }
-        cout<<ans.size()<<nn;
-        cout<<ans<<nn;
+        l=0,r=0;
+        while(l<n && r<n){
+            while(vis[r]) r++;
+            while(vis[l]) l++;
+            if(l==r) r++;
+            ans2.push_back({l,r});
+            l++;
+            r++;
+        }
+        for(auto it:ans2) cout<<it<<nn;
+        for(auto it:ans2){
+            fst[pars[it.first].second]=pars[it.second].second;
+            fst[pars[it.second].second]=pars[it.first].second;
+        }
+        for (ll i = 1; i <= n; i++)
+        {
+            cout << ansf[i] << " ";
+        }
+        cout << nn;
+
+        for (ll i = 1; i <= n; i++)
+        {
+            cout << fst[i] << " ";
+        }
+        cout << nn;
     }
 
     return 0;

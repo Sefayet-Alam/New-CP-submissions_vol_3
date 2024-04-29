@@ -299,24 +299,28 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    // cin >> t;
+    cin >> t;
 
     while (t--)
     {
-      ll n;
-      cin>>n;
-      map<string,ll>mpp;
+      ll n,m;
+      cin>>n>>m;
+      map<ll,ll>teams;
+      map<ll,ll>probs;
+      bool f=0;
       for(ll i=0;i<n;i++){
-        string s;
-        cin>>s;
-        mpp[s]++;
+        vector<ll>tmp(m);
+        cin>>tmp;
+        ll sum=accumulate(all(tmp),0);
+        if(sum==0) f=1;
+        if(sum==m) f=1;
+        for(ll j=0;j<m;j++){
+            if(tmp[j]){probs[j]++;teams[j]++;}
+        }
       }
-      ll q;
-      cin>>q;
-      for(ll i=0;i<q;i++){
-        string s;
-        cin>>s;cout<<mpp[s]<<nn;
-      }
+      if(probs.size()!=m) f=1;
+      if(f) cout<<"NO"<<nn;
+      else cout<<"YES"<<nn;
     }
 
     return 0;

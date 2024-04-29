@@ -29,7 +29,8 @@
         "future": "cpp",
         "optional": "cpp",
         "utility": "cpp",
-        "limits": "cpp"
+        "limits": "cpp",
+        "algorithm": "cpp"
     },
     "cmake.configureOnOpen": true,
     "jupyter.interactiveWindow.textEditor.executeSelection": true

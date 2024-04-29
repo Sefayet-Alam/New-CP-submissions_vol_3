@@ -291,7 +291,8 @@ struct custom_hash
         return splitmix64(x + FIXED_RANDOM);
     }
 };
-const ll maxnodes = 10005;
+
+const ll maxnodes = 500;
 const ll inf=M;
 ll nodes = maxnodes, src, dest;
 ll dist[maxnodes], q[maxnodes], work[maxnodes];
@@ -374,19 +375,26 @@ ll maxFlow(ll _src, ll _dest)
     }
     return result;
 }
-int main()
-{
-    fast;
-    ll t;
-    // setIO();
-    // ll tno=1;;
-    t = 1;
-    cin >> t;
 
-    while (t--)
-    {
-      
-    }
+int main() {
+	int n;
+    cin>>n;
+	
+	 for(ll i=0;i<n;i++){
+	    addEdge(0, i + 1, 1);
+        
+		addEdge(i + 1 + n, 2 * n + 1, 1);
+		for(ll j=0;j<n;j++) {
+			char c;
+			cin>>c;
+			if (c == 'o')
+				addEdge(i + 1, j + 1 + n, M);  // some big capacity -> not cut
+		}
+	}
+    ll ans=maxFlow(0,2*n+1);
+	cout<<ans<<nn;
+	dinic_bfs();
 
-    return 0;
+	for(ll i=1;i<n + 1;i++) if (dist[i] < 0) cout<<1<<" "<<i<<nn;   // edge from 0 to i is cut
+	for(ll i=1;i<n + 1;i++) if (dist[i + n] >= 0) cout<<2<<" "<<i<<nn;;  // edge from i+n to 2*n+1 is cut
 }
