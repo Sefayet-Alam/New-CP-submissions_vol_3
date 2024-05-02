@@ -29,7 +29,7 @@ using namespace __gnu_pbds;
 #define PI acos(-1)
 const double EPS = 1e-9;
 const ll N = 2e5 + 10;
-const ll M = 1e19 + 7;
+const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
 inline ll GCD(ll a, ll b) { return b == 0 ? a : GCD(b, a % b); }
@@ -81,13 +81,32 @@ namespace io{
     template <typename First, typename... Other> void print( First first, Other... other ) { if( sep ) cerr << " | "; sep = true; cerr << to_string( first ); print( other... ); }
 } using namespace io;
 
-ll n,k;
-ll dp1[31][31];
-ll ncr(ll n,ll r){
-    if(r==1) return n;
-    if(n==r || r==0) return 1;
-    if(dp1[n][r]!=-1) return dp1[n][r];
-    return dp1[n][r]=ncr(n-1,r)+ncr(n-1,r-1);
+ll dp[31+5][31+5];
+
+ll func(string &s1,string &s2,ll i,ll j){
+    if(i<0 || j<0) return 0;
+    if(dp[i][j]!=-1) return dp[i][j];
+    ll ans=0;
+    if(s1[i]==s2[j]){
+        ans=1+func(s1,s2,i-1,j-1);
+    }
+    else{
+        ans=func(s1,s2,i-1,j);
+        ans=max(ans,func(s1,s2,i,j-1));
+    }
+    return dp[i][j]=ans;
+}
+
+
+ll dp2[32][32];
+
+ll ans(ll ex1,ll ex2){
+    if(ex1<=0 || ex2<=0) return 1;
+    ll ret=0;
+    // if(dp2[ex1][ex2]!=-1) return dp2[ex1][ex2];
+    ret=(ret+ans(ex1-1,ex2));
+    ret=(ret+ans(ex1,ex2-1));
+    return dp2[ex1][ex2]=ret;
 }
 
 int main()
@@ -97,23 +116,24 @@ int main()
     // setIO();
     ll tno=1;;
     t = 1;
-    cin >> t;
-    while (t--)
-    {
-        mem(dp1,-1);
-        cout<<"Case "<<tno++<<": ";
-        cin>>n>>k;
-        if(n<k){
-            cout<<0<<nn;
-            continue;
-        }
+    cin>>t;
+    while(t--){
+        cout<<"Case "<<tno++<<": "<<nn;
+        string s,p;
+        cin>>s>>p;
+        deb2(s,p);
+        mem(dp,-1);
+        mem(dp2,-1);
+
+        ll n=s.size();
+        ll m=p.size();
+        ll lcss=func(s,p,n-1,m-1);
+        deb(lcss);
         
-        ll ans=ncr(n,k);
-        ans*=ans;
-        ll ex=1;
-        for(ll i=1;i<=k;i++) ex*=i;
-        ans*=ex;
-        cout<<ans<<nn;
+        ll ex1=n-lcss;
+        ll ex2=m-lcss;
+        deb2(ex1,ex2);
+        cout<<ans(ex1,ex2)<<nn;
     }
     return 0;
 }

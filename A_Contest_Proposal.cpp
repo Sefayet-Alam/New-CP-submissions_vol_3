@@ -29,7 +29,7 @@ using namespace __gnu_pbds;
 #define PI acos(-1)
 const double EPS = 1e-9;
 const ll N = 2e5 + 10;
-const ll M = 1e19 + 7;
+const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
 inline ll GCD(ll a, ll b) { return b == 0 ? a : GCD(b, a % b); }
@@ -81,40 +81,37 @@ namespace io{
     template <typename First, typename... Other> void print( First first, Other... other ) { if( sep ) cerr << " | "; sep = true; cerr << to_string( first ); print( other... ); }
 } using namespace io;
 
-ll n,k;
-ll dp1[31][31];
-ll ncr(ll n,ll r){
-    if(r==1) return n;
-    if(n==r || r==0) return 1;
-    if(dp1[n][r]!=-1) return dp1[n][r];
-    return dp1[n][r]=ncr(n-1,r)+ncr(n-1,r-1);
-}
+
 
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno=1;;
+    // ll tno=1;;
     t = 1;
     cin >> t;
+
     while (t--)
     {
-        mem(dp1,-1);
-        cout<<"Case "<<tno++<<": ";
-        cin>>n>>k;
-        if(n<k){
-            cout<<0<<nn;
-            continue;
+        ll n;
+        cin>>n;
+        vector<ll>a(n),b(n);
+        cin>>a>>b;
+        ll ans=0;
+        for(ll i=0;i<n;i++){
+            ll curr=n;
+            for(ll j=i;j<n;j++){
+                if(b[j]>=a[i]){
+                    curr=j;
+                    break;
+                }
+            }
+            ans=max(ans,curr-i);
         }
-        
-        ll ans=ncr(n,k);
-        ans*=ans;
-        ll ex=1;
-        for(ll i=1;i<=k;i++) ex*=i;
-        ans*=ex;
         cout<<ans<<nn;
     }
+
     return 0;
 }
 
