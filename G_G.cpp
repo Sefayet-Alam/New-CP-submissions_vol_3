@@ -9,55 +9,24 @@ using namespace __gnu_pbds;
     ios_base::sync_with_stdio(0); \
     cin.tie(0);                   \
     cout.tie(0);
-#define pb push_back
+
 #define ll long long
-#define ff first
-#define ss second
 #define SZ(a) (int)a.size()
 #define UNIQUE(a) (a).erase(unique(all(a)), (a).end())
-#define eb emplace_back
 #define mp make_pair
-
-/// BIT MANIPULATION
-
-#define Set(x, k) (x |= (1LL << k))
-#define Unset(x, k) (x &= ~(1LL << k))
-#define Check(x, k) (x & (1LL << k))
-#define Toggle(x, k) (x ^ (1LL << k))
-
-// LOOPS
-
-#define scl(n) scanf("%lld", &n)
-#define fr(i, n) for (ll i = 0; i < n; i++)
-#define fr1(i, n) for (ll i = 1; i <= n; i++)
-#define Fo(i, k, n) for (i = k; k < n ? i < n : i > n; k < n ? i += 1 : i -= 1)
-
-/// PRINTING
-
-#define deb(x) cout << #x << "=" << x << endl
-#define deb2(x, y) cout << #x << "=" << x << "," << #y << "=" << y << endl
-#define nn '\n'
-#define pfl(x) printf("%lld\n", x)
-#define pcas(i) printf("Case %lld: ", i)
-#define Setpre(n) cout << fixed << setprecision(n)
-#define itr(it, a) for (auto it = a.begin(); it != a.end(); it++)
-#define debug printf("I am here\n")
-
-/// SORTING AND FILLING
-
-#define asort(a) sort(a, a + n)
-#define dsort(a) sort(a, a + n, greater<int>())
-#define vasort(v) sort(v.begin(), v.end());
-#define vdsort(v) sort(v.begin(), v.end(), greater<ll>());
-#define rev(x) reverse(all(x))
-#define sortall(x) sort(all(x))
 #define mem(a, b) memset(a, b, sizeof(a))
 #define all(x) x.begin(), x.end()
-#define rev(x) reverse(all(x))
+
+// Printings & debugging
+#define nn '\n'
+#define Setpre(n) cout << fixed << setprecision(n)
+#define deb(x) cout << #x << "=" << x << endl
+#define deb2(x, y) cout << #x << "=" << x << "," << #y << "=" << y << endl
+#define debug printf("I am here\n")
 
 // CONSTANTS
 #define md 10000007
-#define PI 3.1415926535897932384626
+#define PI acos(-1)
 const double EPS = 1e-9;
 const ll N = 2e5 + 10;
 const ll M = 1e9 + 7;
@@ -65,28 +34,7 @@ const ll M = 1e9 + 7;
 /// INLINE FUNCTIONS
 inline ll GCD(ll a, ll b) { return b == 0 ? a : GCD(b, a % b); }
 inline ll LCM(ll a, ll b) { return a * b / GCD(a, b); }
-inline ll Ceil(ll p, ll q) { return p < 0 ? p / q : p / q + !!(p % q); }
-inline ll Floor(ll p, ll q) { return p > 0 ? p / q : p / q - !!(p % q); }
 inline double logb(ll base, ll num) { return (double)log(num) / (double)log(base); }
-inline bool isPerfectSquare(long double x)
-{
-    if (x >= 0)
-    {
-        long long sr = sqrt(x);
-        return (sr * sr == x);
-    }
-    return false;
-}
-double euclidean_distance(ll x1, ll y1, ll x2, ll y2)
-{
-    double a = (x2 - x1) * (x2 - x1);
-    double b = (y2 - y1) * (y2 - y1);
-    double c = (double)sqrt(a + b);
-    return c;
-}
-int popcount(ll x) { return __builtin_popcountll(x); };
-int poplow(ll x) { return __builtin_ctzll(x); };
-int pophigh(ll x) { return 63 - __builtin_clzll(x); };
 
 /// Data structures
 typedef unsigned long long ull;
@@ -158,7 +106,6 @@ namespace io
         }
         return os;
     }
-
     template <typename First, typename Second>
     istream &operator>>(istream &is, pair<First, Second> &p) { return is >> p.first >> p.second; }
     template <typename First>
@@ -187,11 +134,8 @@ namespace io
         }
         return d * x;
     }
-
     static bool sep = false;
-
     using std::to_string;
-
     string to_string(bool x) { return (x ? "true" : "false"); }
     string to_string(const string &s) { return "\"" + s + "\""; }
     string to_string(const char *s) { return "\"" + string(s) + "\""; }
@@ -201,14 +145,12 @@ namespace io
         s += c;
         return "\'" + s + "\'";
     }
-
     template <typename Type>
     string to_string(vector<Type>);
     template <typename First, typename Second>
     string to_string(pair<First, Second>);
     template <typename Collection>
     string to_string(Collection);
-
     template <typename First, typename Second>
     string to_string(pair<First, Second> p) { return "{" + to_string(p.first) + ", " + to_string(p.second) + "}"; }
     template <typename Type>
@@ -241,7 +183,6 @@ namespace io
         s += "}";
         return s;
     }
-
     void print()
     {
         cerr << endl;
@@ -256,39 +197,121 @@ namespace io
         cerr << to_string(first);
         print(other...);
     }
-
 }
 using namespace io;
 
-/*===================================================================//
+ll n, m;
 
-        ░█▀▀▀█ ░█▀▀▀ ░█▀▀▀ ─█▀▀█ ░█──░█ ░█▀▀▀ ▀▀█▀▀
-        ─▀▀▀▄▄ ░█▀▀▀ ░█▀▀▀ ░█▄▄█ ░█▄▄▄█ ░█▀▀▀ ─░█──
-        ░█▄▄▄█ ░█▄▄▄ ░█─── ░█─░█ ──░█── ░█▄▄▄ ─░█──
-//====================================================================*/
-
-void setIO()
+/// calc calculates maximum subsegment sum from l to r
+struct item
 {
-#ifndef ONLINE_JUDGE
-    freopen("input.txt", "r", stdin);
+    ll val, aj;
+};
 
-    freopen("output.txt", "w", stdout);
-#endif // ONLINE_JUDGE
-}
-
-struct custom_hash
+struct segment_tree
 {
-    static uint64_t splitmix64(uint64_t x)
+    ll size;
+    ll modd;
+    vector<item> tree;
+    ll neutral = M;
+    ll no_op = M ;
+
+    // General operations : O(1)
+
+    item merge(item a, item b)
     {
-        x += 0x9e3779b97f4a7c15;
-        x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
-        x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
-        return x ^ (x >> 31);
+        
+        ll aval=(a.val + a.aj);
+        ll bval=(b.val + b.aj);
+        if(a.val<M) {aval%=m;
+        if(b.val<M) bval%=m;
+        if (aval < bval)
+            return a;
+        else
+            return b;
     }
-    size_t operator()(uint64_t x) const
+
+    // INITIALIZATION: O(log2 n)
+
+    void init(ll n)
     {
-        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
-        return splitmix64(x + FIXED_RANDOM);
+        size = 1;
+        while (size < n)
+            size *= 2;
+        tree.resize(2 * size);
+        tree.assign(2 * size, {M, M});
+    }
+
+    /// BUILD
+    void build(vector<pll> &a, ll x, ll lx, ll rx)
+    {
+        if (rx - lx == 1)
+        {
+            if (lx < a.size())
+            {
+                tree[x] = {a[lx].first, a[lx].second};
+            }
+            return;
+        }
+        ll m = (lx + rx) / 2;
+        build(a, 2 * x + 1, lx, m);
+        build(a, 2 * x + 2, m, rx);
+        tree[x] = merge(tree[2 * x + 1], tree[2 * x + 2]);
+    }
+
+    void build(vector<pll> &a)
+    {
+        // linear time
+        build(a, 0, 0, size);
+    }
+
+    /// RANGE QUERY
+    item RangeQuery(ll l, ll r, ll x, ll lx, ll rx)
+    {
+        if (lx >= r || l >= rx)
+        {
+            return {M, M};
+        }
+        if (lx >= l && rx <= r)
+        {
+            return tree[x];
+        }
+        ll m = (lx + rx) / 2;
+        item s1 = RangeQuery(l, r, 2 * x + 1, lx, m);
+        item s2 = RangeQuery(l, r, 2 * x + 2, m, rx);
+        return merge(s1, s2);
+    }
+
+    item RangeQuery(ll l, ll r)
+    {
+        // returns sum from l to r
+        item p=RangeQuery(l, r, 0, 0, size);
+        return p;
+    }
+
+    /// RANGE ASSIGN
+    void RangeAssign(ll l, ll r, pll v, ll x, ll lx, ll rx)
+    {
+        if (lx >= r || l >= rx)
+        {
+            return;
+        }
+        if (lx >= l && rx <= r)
+        {
+            tree[x].val = v.first;
+            tree[x].aj = v.second;
+            return;
+        }
+        ll m = (lx + rx) / 2;
+        RangeAssign(l, r, v, 2 * x + 1, lx, m);
+        RangeAssign(l, r, v, 2 * x + 2, m, rx);
+        tree[x] = merge(tree[2 * x + 1], tree[2 * x + 2]);
+    }
+
+    void RangeAssign(ll l, ll r, pll v)
+    {
+        // assigns v from l to r-1;
+        RangeAssign(l, r, v, 0, 0, size);
     }
 };
 
@@ -299,71 +322,62 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    ll k;
+    // cin >> t;
 
-    while (1)
+    while (t--)
     {
-        ll n;
-        cin >> n;
-        if (n == 0)
-            break;
-        n *= 2;
+
+        cin >> n >> m;
         vector<ll> vec(n);
         cin >> vec;
-        vector<pll> pars;
+        vector<ll> b(n);
+        cin >> b;
+        vector<ll> dp(n, M);
+        dp[0] = 0;
+        // deb(dp);
+        segment_tree sg;
+        sg.modd=m;
+        sg.init(n);
+        vector<pll> sgt;
         for (ll i = 0; i < n; i++)
         {
-            pars.push_back({vec[i], i + 1});
+            sgt.push_back({dp[i], vec[i]});
         }
-        sort(all(pars));
-        ll maxdiff=0;
-        map<ll,ll>ansf;
-        for(ll i=0;i<n;i+=2){
-            ansf[pars[i].second]=pars[i+1].second;
-            ansf[pars[i+1].second]=pars[i].second;
-            maxdiff=max(maxdiff,abs(pars[i].first-pars[i+1].first));
-        }
+        // for(auto it:sgt) deb(it);
+        sg.build(sgt);
 
-        ll l=0,r=1;
-        map<ll,ll>vis,fst;
-        vector<pll>ans2;
-        while(r+1<n){
-            ll curr=abs(pars[l].first-pars[r+1].first);
-            if(curr<maxdiff) r++;
-            else{
-                ans2.push_back({l,r});
-                vis[l]=vis[r]=1;
-                r++;
-                l=r;
-                r++;
-            }
-        }
-        l=0,r=0;
-        while(l<n && r<n){
-            while(vis[r]) r++;
-            while(vis[l]) l++;
-            if(l==r) r++;
-            ans2.push_back({l,r});
-            l++;
-            r++;
-        }
-        for(auto it:ans2) cout<<it<<nn;
-        for(auto it:ans2){
-            fst[pars[it.first].second]=pars[it.second].second;
-            fst[pars[it.second].second]=pars[it.first].second;
-        }
-        for (ll i = 1; i <= n; i++)
+        for(ll j=0;j<10;j++){
+        for (ll i = 0; i < n; i++)
         {
-            cout << ansf[i] << " ";
-        }
-        cout << nn;
+            ll now = ((sg.RangeQuery(i, i + 1)).val) ;
+            item qry={M,M};
+            item qry2={M,M};
+            if(i) qry=(sg.RangeQuery(0, i));
+            if(i<n-1) qry2=(sg.RangeQuery(i+1,n));
 
-        for (ll i = 1; i <= n; i++)
-        {
-            cout << fst[i] << " ";
+            // deb2(qry.val,qry.aj);
+            // deb2(qry2.val,qry2.aj);
+            // deb(now);
+            ll curr1 = (qry.val + (b[i]+qry.aj)%m) ;
+            ll curr2 = (qry2.val + (b[i]+qry2.aj)%m) ;
+            ll curr=min({curr1,curr2,now});
+            sg.RangeAssign(i, i + 1, {curr, vec[i]});
         }
-        cout << nn;
+        }
+        ll ans = sg.RangeQuery(n - 1, n).val;
+        cout << ans%m << nn;
     }
 
     return 0;
 }
+
+/* Points tO CONSIDER
+    # RTE? -> check array bounds and constraints
+    #TLE? -> thinks about binary search/ dp / optimization techniques
+    # WA?
+    -> overflow,reset global variables
+    -> Check corner cases
+    -> think from different approaches
+    -> bruteforce to find pattern
+    -> use Setpre for precision problems
+*/
