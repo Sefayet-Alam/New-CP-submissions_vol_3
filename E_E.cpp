@@ -17,7 +17,7 @@ using namespace __gnu_pbds;
 #define mem(a, b) memset(a, b, sizeof(a))
 #define all(x) x.begin(), x.end()
 
-//Printings & debugging
+// Printings & debugging
 #define nn '\n'
 #define Setpre(n) cout << fixed << setprecision(n)
 #define deb(x) cout << #x << "=" << x << endl
@@ -36,7 +36,6 @@ inline ll GCD(ll a, ll b) { return b == 0 ? a : GCD(b, a % b); }
 inline ll LCM(ll a, ll b) { return a * b / GCD(a, b); }
 inline double logb(ll base, ll num) { return (double)log(num) / (double)log(base); }
 
-
 /// Data structures
 typedef unsigned long long ull;
 typedef pair<ll, ll> pll;
@@ -49,39 +48,185 @@ template <typename T>
 using QP = priority_queue<T, vector<T>, greater<T>>;
 template <typename T>
 using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
-template <typename T> 
+template <typename T>
 using ordered_multiset = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
 template <typename T, typename R>
 using ordered_map = tree<T, R, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 template <typename T, typename R>
 using ordered_multimap = tree<T, R, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
-namespace io{
-    template<typename First, typename Second> ostream& operator << ( ostream &os, const pair<First, Second> &p ) { return os << p.first << " " << p.second; }
-    template<typename First, typename Second> ostream& operator << ( ostream &os, const map<First, Second> &mp ) { for( auto it : mp ) { os << it << endl;  } return os; }
-    template<typename First> ostream& operator << ( ostream &os, const vector<First> &v ) { bool space = false; for( First x : v ) { if( space ) os << " "; space = true; os << x; } return os; }
-    template<typename First> ostream& operator << ( ostream &os, const set<First> &st ) { bool space = false; for( First x : st ) { if( space ) os << " "; space = true; os << x; } return os; }
-    template<typename First> ostream& operator << ( ostream &os, const multiset<First> &st ) { bool space = false; for( First x : st ) { if( space ) os << " "; space = true; os << x; } return os; }
-    template<typename First, typename Second> istream& operator >> ( istream &is, pair<First, Second> &p ) { return is >> p.first >> p.second; }
-    template<typename First> istream& operator >> ( istream &is, vector<First> &v ) { for( First &x : v ) { is >> x; } return is; }
-    
-    long long fastread(){ char c; long long d = 1, x = 0; do c = getchar(); while( c == ' ' || c == '\n' ); if( c == '-' ) c = getchar(), d = -1; while( isdigit( c ) ){ x = x * 10 + c - '0'; c = getchar(); } return d * x; }
+namespace io
+{
+    template <typename First, typename Second>
+    ostream &operator<<(ostream &os, const pair<First, Second> &p) { return os << p.first << " " << p.second; }
+    template <typename First, typename Second>
+    ostream &operator<<(ostream &os, const map<First, Second> &mp)
+    {
+        for (auto it : mp)
+        {
+            os << it << endl;
+        }
+        return os;
+    }
+    template <typename First>
+    ostream &operator<<(ostream &os, const vector<First> &v)
+    {
+        bool space = false;
+        for (First x : v)
+        {
+            if (space)
+                os << " ";
+            space = true;
+            os << x;
+        }
+        return os;
+    }
+    template <typename First>
+    ostream &operator<<(ostream &os, const set<First> &st)
+    {
+        bool space = false;
+        for (First x : st)
+        {
+            if (space)
+                os << " ";
+            space = true;
+            os << x;
+        }
+        return os;
+    }
+    template <typename First>
+    ostream &operator<<(ostream &os, const multiset<First> &st)
+    {
+        bool space = false;
+        for (First x : st)
+        {
+            if (space)
+                os << " ";
+            space = true;
+            os << x;
+        }
+        return os;
+    }
+    template <typename First, typename Second>
+    istream &operator>>(istream &is, pair<First, Second> &p) { return is >> p.first >> p.second; }
+    template <typename First>
+    istream &operator>>(istream &is, vector<First> &v)
+    {
+        for (First &x : v)
+        {
+            is >> x;
+        }
+        return is;
+    }
+
+    long long fastread()
+    {
+        char c;
+        long long d = 1, x = 0;
+        do
+            c = getchar();
+        while (c == ' ' || c == '\n');
+        if (c == '-')
+            c = getchar(), d = -1;
+        while (isdigit(c))
+        {
+            x = x * 10 + c - '0';
+            c = getchar();
+        }
+        return d * x;
+    }
     static bool sep = false;
     using std::to_string;
-    string to_string( bool x ){ return ( x ? "true" : "false" ); }
-    string to_string( const string & s ){ return "\"" + s + "\""; }
-    string to_string( const char * s ){ return "\"" + string( s ) + "\""; }
-    string to_string ( const char & c ) { string s; s += c; return "\'" + s + "\'"; }
-    template<typename Type> string to_string( vector<Type> );
-    template<typename First, typename Second> string to_string( pair<First, Second> );
-    template<typename Collection> string to_string( Collection );
-    template<typename First, typename Second> string to_string( pair<First, Second> p ){ return "{" + to_string( p.first ) + ", " + to_string( p.second ) + "}"; }
-    template<typename Type> string to_string( vector<Type> v ) { bool sep = false; string s = "["; for( Type x: v ){ if( sep ) s += ", "; sep = true; s += to_string( x ); } s += "]"; return s; }
-    template<typename Collection> string to_string( Collection collection ) { bool sep = false; string s = "{"; for( auto x: collection ){ if( sep ) s += ", "; sep = true; s += to_string( x ); } s += "}"; return s; }
-    void print() { cerr << endl; sep = false; }
-    template <typename First, typename... Other> void print( First first, Other... other ) { if( sep ) cerr << " | "; sep = true; cerr << to_string( first ); print( other... ); }
-} using namespace io;
+    string to_string(bool x) { return (x ? "true" : "false"); }
+    string to_string(const string &s) { return "\"" + s + "\""; }
+    string to_string(const char *s) { return "\"" + string(s) + "\""; }
+    string to_string(const char &c)
+    {
+        string s;
+        s += c;
+        return "\'" + s + "\'";
+    }
+    template <typename Type>
+    string to_string(vector<Type>);
+    template <typename First, typename Second>
+    string to_string(pair<First, Second>);
+    template <typename Collection>
+    string to_string(Collection);
+    template <typename First, typename Second>
+    string to_string(pair<First, Second> p) { return "{" + to_string(p.first) + ", " + to_string(p.second) + "}"; }
+    template <typename Type>
+    string to_string(vector<Type> v)
+    {
+        bool sep = false;
+        string s = "[";
+        for (Type x : v)
+        {
+            if (sep)
+                s += ", ";
+            sep = true;
+            s += to_string(x);
+        }
+        s += "]";
+        return s;
+    }
+    template <typename Collection>
+    string to_string(Collection collection)
+    {
+        bool sep = false;
+        string s = "{";
+        for (auto x : collection)
+        {
+            if (sep)
+                s += ", ";
+            sep = true;
+            s += to_string(x);
+        }
+        s += "}";
+        return s;
+    }
+    void print()
+    {
+        cerr << endl;
+        sep = false;
+    }
+    template <typename First, typename... Other>
+    void print(First first, Other... other)
+    {
+        if (sep)
+            cerr << " | ";
+        sep = true;
+        cerr << to_string(first);
+        print(other...);
+    }
+}
+using namespace io;
 
+vector<int> smallest_factor;
+vector<bool> prime;
+vector<int> primes;
 
+void sieve(int maximum)
+{
+    maximum = max(maximum, 2);
+    smallest_factor.assign(maximum + 1, 0);
+    prime.assign(maximum + 1, true);
+    prime[0] = prime[1] = false;
+    primes = {2};
+
+    for (int p = 2; p <= maximum; p += 2)
+    {
+        prime[p] = p == 2;
+        smallest_factor[p] = 2;
+    }
+
+    for (int p = 3; p * p <= maximum; p += 2)
+        if (prime[p])
+            for (int i = p * p; i <= maximum; i += 2 * p)
+                if (prime[i])
+                {
+                    prime[i] = false;
+                    smallest_factor[i] = p;
+                }
+}
 
 int main()
 {
@@ -90,16 +235,42 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    // cin >> t;
-
-    while (t--)
+    ll n;
+    sieve(N);
+    cin >> n;
+    vector<ll> vec(n);
+    cin >> vec;
+    sort(all(vec));
+    ll maxm = *max_element(all(vec));
+    map<ll, ll> mpp;
+    map<ll,bool>vis;
+    for (ll i = 0; i < n; i++)
     {
-      ll n,k,l;
-      cin>>n>>k>>l;
-      ll tot=n*k;
-      ll ans=(tot+l-1)/l;
-      cout<<ans<<nn;
+        vis[vec[i]]=1;
     }
+    for(ll i=0;i<n;i++){
+        ll a = vec[i];
+        mpp[a]++;
+        while (smallest_factor[a]>1)
+        {
+            a /= smallest_factor[a];
+            if(vis[a]){ mpp[a]++;}
+        }
+    }
+    // for(auto it:mpp){
+        // cout<<it<<nn;
+    // }
+    vector<ll>ans(n+1,1);
+    ans[n+1]=1;
+    ans[1]=n;
+    for(auto it:mpp){
+        ans[it.second]=max(ans[it.second],it.first);
+    }
+    for(ll i=n-1;i>1;i--){
+        if(i<=ans[i+1]) ans[i]=max(ans[i],ans[i+1]);
+    }
+    for(ll i=1;i<=n;i++)cout<<ans[i]<<" ";
+    cout<<nn;
 
     return 0;
 }
@@ -107,7 +278,7 @@ int main()
 /* Points tO CONSIDER
     # RTE? -> check array bounds and constraints
     #TLE? -> thinks about binary search/ dp / optimization techniques
-    # WA? 
+    # WA?
     -> overflow,reset global variables
     -> Check corner cases
     -> think from different approaches

@@ -86,10 +86,10 @@ namespace io{
 int main()
 {
     fast;
-    ll t;
-    string s;
-    cin>>s;
-    cout<<s.size()<<nn;
+    ll d,t,s;
+    cin>>d>>t>>s;
+    if(d>t*s) cout<<"No"<<nn;
+    else cout<<"Yes"<<nn;
     return 0;
 }
 
