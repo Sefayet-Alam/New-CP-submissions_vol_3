@@ -28,7 +28,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI acos(-1)
 const double EPS = 1e-9;
-const ll N = 1e3 + 10;
+const ll N = 1e5 + 10;
 const ll M = 998244353;
 
 /// INLINE FUNCTIONS
@@ -200,44 +200,19 @@ namespace io
 }
 using namespace io;
 
-ll FM[N];
-ll IM[N];
-bool calc[N];
-int is_initialized = 0;
-ll factorialMod(ll n, ll x)
-{
-    if (!is_initialized)
-    {
-        FM[0] = 1 % x;
-        for (int i = 1; i < N; i++)
-            FM[i] = (FM[i - 1] * i) % x;
-        is_initialized = 1;
-    }
-    return FM[n];
-}
 
-ll powerMod(ll x, ll y, ll p)
-{
-    ll res = 1 % p;
-    x = x % p;
-    while (y > 0)
-    {
-        if (y & 1)
-            res = (res * x) % p;
-        y = y >> 1;
-        x = (x * x) % p;
-    }
-    return res;
-}
 
-ll inverseMod(ll a, ll x)
-{
-    return powerMod(a, x - 2, x);
+ll dp1[1005][1005];
+ll ncr(ll n,ll r,ll mod){
+    if(r==1) return n;
+    if(n==r || r==0) return 1;
+    if(dp1[n][r]!=-1) return dp1[n][r];
+    return dp1[n][r]=(ncr(n-1,r,mod)+ncr(n-1,r-1,mod))%mod;
 }
 
 ll dp[N];
 ll k;
-vector<ll> c(27);
+vector<ll> c(28);
 
 int main()
 {
@@ -252,27 +227,27 @@ int main()
     {
         cin >> c[i];
     }
-
+    mem(dp1,-1);
     dp[0] = 1;
     for (ll i = 1; i <= 26; i++)
     {
-        for (ll j = 1; j <= c[i]; j++)
+        vl tmp(k+1,0);
+        for (ll len = k; len >= 0; len--)
         {
-            for (ll len = k; len >= 0; len--)
+            for (ll j = 1; j <= min(len,c[i]); j++)
             {
-                
-                ll now = factorialMod(j,M);
-                ll mult = (inverseMod(now, M) * dp[len]) % M;
-                dp[len+j] = (dp[len+j] + mult) % M;
+                tmp[len]=(tmp[len]+ncr(len,j,M)*dp[len-j])%M;
             }
+
+        }
+        for (int len = 1; len <= k; len++)
+        {
+            dp[len] = (dp[len] + tmp[len]) % M;
         }
     }
     ll ans = 0;
     for (ll i = 1; i <= k; i++)
     {
-        ll now = factorialMod(i, M);
-        dp[i] = (now * dp[i]) % M;
-        // deb2(i, dp[i]);
         ans = (ans + dp[i]) % M;
     }
     cout << ans << nn;
@@ -290,4 +265,3 @@ int main()
     -> bruteforce to find pattern
     -> use Setpre for precision problems
 */
-
