@@ -200,122 +200,47 @@ namespace io
 }
 using namespace io;
 
-struct segment_tree
+const int B = 20;
+int a[1 << B], f[1 << B], g[1 << B];
+int32_t main()
 {
-    ll size;
-    vector<ll> tree;
-    // INITIALIZATION
-    void init(ll n)
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+    int n;
+    cin >> n;
+    for (int i = 1; i <= n; i++)
     {
-        size = 1;
-        while (size < n)
-            size *= 2;
-        tree.assign(2 * size, 0LL);
-    }
-    ll merge(ll a, ll b)
-    {
-        return a + b;
+        cin >> a[i];
+        f[a[i]]++;
+        g[a[i]]++;
     }
 
-    void build(vector<ll> &a, ll x, ll lx, ll rx)
+    // sum over subsets
+    for (int i = 0; i < B; i++)
     {
-        // linear time
-        if (rx - lx == 1)
+        for (int mask = 0; mask < (1 << B); mask++)
         {
-            if (lx < a.size())
+            if ((mask & (1 << i)) != 0)
             {
-                tree[x] = a[lx];
-            }
-            return;
-        }
-        ll m = (lx + rx) / 2;
-        build(a, 2 * x + 1, lx, m);
-        build(a, 2 * x + 2, m, rx);
-        tree[x] = merge(tree[2 * x + 1], tree[2 * x + 2]);
-    }
-    void build(vector<ll> &a)
-    {
-        // linear time
-        build(a, 0, 0, size);
-    }
-
-    /// RANGE SUM
-    ll sum(ll l, ll r, ll x, ll lx, ll rx)
-    {
-        if (lx >= r || l >= rx)
-        {
-            return 0;
-        }
-        if (lx >= l && rx <= r)
-        {
-            return tree[x];
-        }
-        ll m = (lx + rx) / 2;
-        ll s1 = sum(l, r, 2 * x + 1, lx, m);
-        ll s2 = sum(l, r, 2 * x + 2, m, rx);
-        return merge(s1, s2);
-    }
-    ll sum(ll l, ll r)
-    {
-        // returns sum from l to r
-        return sum(l, r, 0, 0, size);
-    }
-};
-
-int main()
-{
-    fast;
-    ll t;
-    // setIO();
-    // ll tno=1;;
-    t = 1;
-    cin >> t;
-
-    while (t--)
-    {
-        ll n, k;
-        cin >> n >> k;
-        vector<ll> a(n), h(n);
-        cin >> a >> h;
-        segment_tree sg;
-        sg.init(n);
-        sg.build(h);
-        ll totalhealth=sg.sum(0,n);
-
-        bool f = 0;
-        vector<bool>isokpre(n,0);
-        if(h[0]<=a[0]) isokpre[0]=1;
-        ll now=0;
-        now+=max(0LL,h[0]-a[0]);
-        for(ll i=1;i<n;i++){
-            if(h[i]<=now+a[i]-a[i-1]) isokpre[i]=1;
-            now+=max(0LL,h[i]-a[i]);
-            isokpre[i]=isokpre[i]&isokpre[i-1];
-        }
-        vector<bool>isoksuf(n,0);
-        for(ll i=n-2;i>=0;i--){
-            
-        }
-        for (ll i = 0; i < n; i++)
-        {
-            ll curr = a[i];
-            ll till = a[i] + 2 * k ;
-            auto pos = lower_bound(all(a), till);
-            while (*pos > till)
-                pos--;
-            ll posi = pos - a.begin();
-
-            if((i>=1?isokpre[i-1]:1) && ((posi+1<n)?isoksuf[posi+1]:1)){
-                f=1;
-                break;
+                f[mask] += f[mask ^ (1 << i)];
             }
         }
-        if (f)
-            cout << "YES" << nn;
-        else
-            cout << "NO" << nn;
     }
 
+    // sum over supersets
+    for (int i = 0; i < B; i++)
+    {
+        for (int mask = (1 << B) - 1; mask >= 0; mask--)
+        {
+            if ((mask & (1 << i)) == 0)
+                g[mask] += g[mask ^ (1 << i)];
+        }
+    }
+
+    for (int i = 1; i <= n; i++)
+    {
+        cout << f[a[i]] << ' ' << g[a[i]] << ' ' << n - f[(1 << B) - 1 - a[i]] << '\n';
+    }
     return 0;
 }
 
@@ -329,3 +254,4 @@ int main()
     -> bruteforce to find pattern
     -> use Setpre for precision problems
 */
+

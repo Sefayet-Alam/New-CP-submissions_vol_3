@@ -200,120 +200,80 @@ namespace io
 }
 using namespace io;
 
-struct segment_tree
+bool vis[17][(1LL << 17)];
+vector<ll> g[17];
+bool ok[(1LL << 17)];
+ll dp[(1LL << 17)];
+void dfs(ll vertex, ll msk)
 {
-    ll size;
-    vector<ll> tree;
-    // INITIALIZATION
-    void init(ll n)
+    /*
+    take action on vertex after entering the vertex
+    */
+    vis[vertex][msk] = true;
+    ok[msk] = 1;
+    for (ll child : g[vertex])
     {
-        size = 1;
-        while (size < n)
-            size *= 2;
-        tree.assign(2 * size, 0LL);
+        /*
+        take action on child before entering the child node
+        */
+        if (vis[child][msk|(1LL << child)])
+            continue;
+        dfs(child, (msk | (1LL << child)));
+        /*
+        take action on child after entering the child node
+        */
     }
-    ll merge(ll a, ll b)
-    {
-        return a + b;
-    }
-
-    void build(vector<ll> &a, ll x, ll lx, ll rx)
-    {
-        // linear time
-        if (rx - lx == 1)
-        {
-            if (lx < a.size())
-            {
-                tree[x] = a[lx];
-            }
-            return;
-        }
-        ll m = (lx + rx) / 2;
-        build(a, 2 * x + 1, lx, m);
-        build(a, 2 * x + 2, m, rx);
-        tree[x] = merge(tree[2 * x + 1], tree[2 * x + 2]);
-    }
-    void build(vector<ll> &a)
-    {
-        // linear time
-        build(a, 0, 0, size);
-    }
-
-    /// RANGE SUM
-    ll sum(ll l, ll r, ll x, ll lx, ll rx)
-    {
-        if (lx >= r || l >= rx)
-        {
-            return 0;
-        }
-        if (lx >= l && rx <= r)
-        {
-            return tree[x];
-        }
-        ll m = (lx + rx) / 2;
-        ll s1 = sum(l, r, 2 * x + 1, lx, m);
-        ll s2 = sum(l, r, 2 * x + 2, m, rx);
-        return merge(s1, s2);
-    }
-    ll sum(ll l, ll r)
-    {
-        // returns sum from l to r
-        return sum(l, r, 0, 0, size);
-    }
-};
+    /*
+    take action on vertex before exiting the vertex
+    */
+}
 
 int main()
 {
     fast;
     ll t;
     // setIO();
-    // ll tno=1;;
+    ll tno = 1;
+    ;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        ll n, k;
-        cin >> n >> k;
-        vector<ll> a(n), h(n);
-        cin >> a >> h;
-        segment_tree sg;
-        sg.init(n);
-        sg.build(h);
-        ll totalhealth=sg.sum(0,n);
-
-        bool f = 0;
-        vector<bool>isokpre(n,0);
-        if(h[0]<=a[0]) isokpre[0]=1;
-        ll now=0;
-        now+=max(0LL,h[0]-a[0]);
-        for(ll i=1;i<n;i++){
-            if(h[i]<=now+a[i]-a[i-1]) isokpre[i]=1;
-            now+=max(0LL,h[i]-a[i]);
-            isokpre[i]=isokpre[i]&isokpre[i-1];
+        cout << "Case " << tno++ << ": ";
+        ll n, m;
+        cin >> n >> m;
+        for (ll i = 0; i < m; i++)
+        {
+            ll u, v;
+            cin >> u >> v;
+            u--, v--;
+            // deb2(u,v);
+            g[u].push_back(v);
+            // g[v].push_back(u);
         }
-        vector<bool>isoksuf(n,0);
-        for(ll i=n-2;i>=0;i--){
-            
-        }
+        mem(ok, 0);
+        mem(vis, 0);
+        mem(dp,M);
         for (ll i = 0; i < n; i++)
         {
-            ll curr = a[i];
-            ll till = a[i] + 2 * k ;
-            auto pos = lower_bound(all(a), till);
-            while (*pos > till)
-                pos--;
-            ll posi = pos - a.begin();
-
-            if((i>=1?isokpre[i-1]:1) && ((posi+1<n)?isoksuf[posi+1]:1)){
-                f=1;
-                break;
+            if (vis[i][1LL << i]) continue;
+            dfs(i, (1LL << i));
+        }
+        dp[0] = 0;
+        for (int i = 0; i < (1 << n); i++)
+        {
+            // iterate over all subsets of i directly
+            for (int j =  i; j > 0; j = (j - 1) & i)
+            {
+                if(!ok[j]) continue;
+                dp[i] =min(dp[i],1+dp[i^j]) ;
             }
         }
-        if (f)
-            cout << "YES" << nn;
-        else
-            cout << "NO" << nn;
+        cout<<dp[(1LL<<n)-1]<<nn;
+         for(ll i=0;i<=n;i++){
+            g[i].clear();
+        }
     }
 
     return 0;

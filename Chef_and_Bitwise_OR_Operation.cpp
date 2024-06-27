@@ -28,7 +28,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI acos(-1)
 const double EPS = 1e-9;
-const ll N = 2e5 + 10;
+const ll N = 5e3 + 10;
 const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
@@ -200,67 +200,35 @@ namespace io
 }
 using namespace io;
 
-struct segment_tree
+vector<ll> a(N);
+ll c[N][N], dp[N][N]; // dp[i][j]=minimum cost for dividing [1...j] into i parts
+ll cost(ll i, ll j)
 {
-    ll size;
-    vector<ll> tree;
-    // INITIALIZATION
-    void init(ll n)
+    return c[i][j];
+}
+void DivideConquer(ll i, ll l, ll r, ll optl, ll optr)
+{
+    if (l > r)
+        return;
+    ll mid = (l + r) / 2;
+    dp[i][mid] = 0; // for minimum cost change it to INF
+    ll opt = -1;
+    for (ll k = optl; k <= min(mid, optr); k++)
     {
-        size = 1;
-        while (size < n)
-            size *= 2;
-        tree.assign(2 * size, 0LL);
-    }
-    ll merge(ll a, ll b)
-    {
-        return a + b;
-    }
-
-    void build(vector<ll> &a, ll x, ll lx, ll rx)
-    {
-        // linear time
-        if (rx - lx == 1)
-        {
-            if (lx < a.size())
-            {
-                tree[x] = a[lx];
-            }
-            return;
+        ll c = dp[i - 1][k] + cost(k + 1, mid);
+        if (c > dp[i][mid])
+        { // for minm cost just change > to < only and rest of the algo should not be changed
+            dp[i][mid] = c;
+            opt = k;
         }
-        ll m = (lx + rx) / 2;
-        build(a, 2 * x + 1, lx, m);
-        build(a, 2 * x + 2, m, rx);
-        tree[x] = merge(tree[2 * x + 1], tree[2 * x + 2]);
     }
-    void build(vector<ll> &a)
-    {
-        // linear time
-        build(a, 0, 0, size);
-    }
-
-    /// RANGE SUM
-    ll sum(ll l, ll r, ll x, ll lx, ll rx)
-    {
-        if (lx >= r || l >= rx)
-        {
-            return 0;
-        }
-        if (lx >= l && rx <= r)
-        {
-            return tree[x];
-        }
-        ll m = (lx + rx) / 2;
-        ll s1 = sum(l, r, 2 * x + 1, lx, m);
-        ll s2 = sum(l, r, 2 * x + 2, m, rx);
-        return merge(s1, s2);
-    }
-    ll sum(ll l, ll r)
-    {
-        // returns sum from l to r
-        return sum(l, r, 0, 0, size);
-    }
-};
+    // for opt[1..j]<=opt[1...j+1] i.e. cost(1,j)<=cost(1,j+1)
+    DivideConquer(i, l, mid - 1, optl, opt);
+    DivideConquer(i, mid + 1, r, opt, optr);
+    // for opt[1...j]>=opt[1...j+1] i.e. cost(1,j)>=cost(1,j+1)
+    // yo(i,l,mid-1,opt,optr);
+    // yo(i,mid+1,r,optl,opt);
+}
 
 int main()
 {
@@ -275,45 +243,24 @@ int main()
     {
         ll n, k;
         cin >> n >> k;
-        vector<ll> a(n), h(n);
-        cin >> a >> h;
-        segment_tree sg;
-        sg.init(n);
-        sg.build(h);
-        ll totalhealth=sg.sum(0,n);
+        for (ll i = 1; i <= n; i++)
+            cin >> a[i];
 
-        bool f = 0;
-        vector<bool>isokpre(n,0);
-        if(h[0]<=a[0]) isokpre[0]=1;
-        ll now=0;
-        now+=max(0LL,h[0]-a[0]);
-        for(ll i=1;i<n;i++){
-            if(h[i]<=now+a[i]-a[i-1]) isokpre[i]=1;
-            now+=max(0LL,h[i]-a[i]);
-            isokpre[i]=isokpre[i]&isokpre[i-1];
-        }
-        vector<bool>isoksuf(n,0);
-        for(ll i=n-2;i>=0;i--){
-            
-        }
-        for (ll i = 0; i < n; i++)
+        for (ll i = 1; i <= n; i++)
         {
-            ll curr = a[i];
-            ll till = a[i] + 2 * k ;
-            auto pos = lower_bound(all(a), till);
-            while (*pos > till)
-                pos--;
-            ll posi = pos - a.begin();
-
-            if((i>=1?isokpre[i-1]:1) && ((posi+1<n)?isoksuf[posi+1]:1)){
-                f=1;
-                break;
+            ll curr = 0;
+            for (ll j = i; j <= n; j++)
+            {
+                curr |= a[j];
+                c[i][j] = curr;
             }
         }
-        if (f)
-            cout << "YES" << nn;
-        else
-            cout << "NO" << nn;
+        for (ll i = 1; i <= n; i++)
+            dp[1][i] = cost(1, i);
+        for (ll i = 2; i <= k; i++)
+            DivideConquer(i, 1, n, 1, n);
+
+        cout << dp[k][n] << nn;
     }
 
     return 0;

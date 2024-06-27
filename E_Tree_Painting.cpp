@@ -200,123 +200,76 @@ namespace io
 }
 using namespace io;
 
-struct segment_tree
+vector<int> g[N];
+long long sz[N], score[N];
+
+void dfs(int u, int p)
 {
-    ll size;
-    vector<ll> tree;
-    // INITIALIZATION
-    void init(ll n)
+    sz[u] = 1;
+    for (int v : g[u])
     {
-        size = 1;
-        while (size < n)
-            size *= 2;
-        tree.assign(2 * size, 0LL);
-    }
-    ll merge(ll a, ll b)
-    {
-        return a + b;
-    }
+        if (v == p)
+            continue;
 
-    void build(vector<ll> &a, ll x, ll lx, ll rx)
-    {
-        // linear time
-        if (rx - lx == 1)
-        {
-            if (lx < a.size())
-            {
-                tree[x] = a[lx];
-            }
-            return;
-        }
-        ll m = (lx + rx) / 2;
-        build(a, 2 * x + 1, lx, m);
-        build(a, 2 * x + 2, m, rx);
-        tree[x] = merge(tree[2 * x + 1], tree[2 * x + 2]);
+        dfs(v, u);
+        sz[u] += sz[v];
+        score[u] += score[v];
     }
-    void build(vector<ll> &a)
-    {
-        // linear time
-        build(a, 0, 0, size);
-    }
+    score[u] += sz[u];
+}
 
-    /// RANGE SUM
-    ll sum(ll l, ll r, ll x, ll lx, ll rx)
+long long ans = 0;
+void change_root(int u, int p)
+{
+    ans = max(ans, score[u]);
+
+    for (int v : g[u])
     {
-        if (lx >= r || l >= rx)
-        {
-            return 0;
-        }
-        if (lx >= l && rx <= r)
-        {
-            return tree[x];
-        }
-        ll m = (lx + rx) / 2;
-        ll s1 = sum(l, r, 2 * x + 1, lx, m);
-        ll s2 = sum(l, r, 2 * x + 2, m, rx);
-        return merge(s1, s2);
+        if (v == p)
+            continue;
+
+        score[u] -= score[v];
+        score[u] -= sz[u];
+        sz[u] -= sz[v];
+        score[u] += sz[u];
+
+        score[v] -= sz[v];
+        sz[v] += sz[u];
+        score[v] += sz[v];
+        score[v] += score[u];
+
+        change_root(v, u);
+
+        score[v] -= score[u];
+        score[v] -= sz[v];
+        sz[v] -= sz[u];
+        score[v] += sz[v];
+
+        score[u] -= sz[u];
+        sz[u] += sz[v];
+        score[u] += sz[u];
+        score[u] += score[v];
     }
-    ll sum(ll l, ll r)
-    {
-        // returns sum from l to r
-        return sum(l, r, 0, 0, size);
-    }
-};
+}
 
 int main()
 {
-    fast;
-    ll t;
-    // setIO();
-    // ll tno=1;;
-    t = 1;
-    cin >> t;
 
-    while (t--)
+    int n;
+    cin >> n;
+
+    for (int i = 0; i < n - 1; i++)
     {
-        ll n, k;
-        cin >> n >> k;
-        vector<ll> a(n), h(n);
-        cin >> a >> h;
-        segment_tree sg;
-        sg.init(n);
-        sg.build(h);
-        ll totalhealth=sg.sum(0,n);
-
-        bool f = 0;
-        vector<bool>isokpre(n,0);
-        if(h[0]<=a[0]) isokpre[0]=1;
-        ll now=0;
-        now+=max(0LL,h[0]-a[0]);
-        for(ll i=1;i<n;i++){
-            if(h[i]<=now+a[i]-a[i-1]) isokpre[i]=1;
-            now+=max(0LL,h[i]-a[i]);
-            isokpre[i]=isokpre[i]&isokpre[i-1];
-        }
-        vector<bool>isoksuf(n,0);
-        for(ll i=n-2;i>=0;i--){
-            
-        }
-        for (ll i = 0; i < n; i++)
-        {
-            ll curr = a[i];
-            ll till = a[i] + 2 * k ;
-            auto pos = lower_bound(all(a), till);
-            while (*pos > till)
-                pos--;
-            ll posi = pos - a.begin();
-
-            if((i>=1?isokpre[i-1]:1) && ((posi+1<n)?isoksuf[posi+1]:1)){
-                f=1;
-                break;
-            }
-        }
-        if (f)
-            cout << "YES" << nn;
-        else
-            cout << "NO" << nn;
+        int u, v;
+        cin >> u >> v;
+        g[u].push_back(v);
+        g[v].push_back(u);
     }
 
-    return 0;
+    dfs(1, 0);
+    change_root(1, 0);
+
+    cout << ans << endl;
 }
 
 /* Points tO CONSIDER

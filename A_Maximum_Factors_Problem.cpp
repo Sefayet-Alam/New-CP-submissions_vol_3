@@ -200,68 +200,40 @@ namespace io
 }
 using namespace io;
 
-struct segment_tree
+vector<int> smallest_factor;
+vector<bool> prime;
+vector<int> primes;
+
+void sieve(int maximum)
 {
-    ll size;
-    vector<ll> tree;
-    // INITIALIZATION
-    void init(ll n)
+    maximum = max(maximum, 2);
+    smallest_factor.assign(maximum + 1, 0);
+    prime.assign(maximum + 1, true);
+    prime[0] = prime[1] = false;
+    primes = {2};
+
+    for (int p = 2; p <= maximum; p += 2)
     {
-        size = 1;
-        while (size < n)
-            size *= 2;
-        tree.assign(2 * size, 0LL);
-    }
-    ll merge(ll a, ll b)
-    {
-        return a + b;
+        prime[p] = p == 2;
+        smallest_factor[p] = 2;
     }
 
-    void build(vector<ll> &a, ll x, ll lx, ll rx)
-    {
-        // linear time
-        if (rx - lx == 1)
-        {
-            if (lx < a.size())
-            {
-                tree[x] = a[lx];
-            }
-            return;
-        }
-        ll m = (lx + rx) / 2;
-        build(a, 2 * x + 1, lx, m);
-        build(a, 2 * x + 2, m, rx);
-        tree[x] = merge(tree[2 * x + 1], tree[2 * x + 2]);
-    }
-    void build(vector<ll> &a)
-    {
-        // linear time
-        build(a, 0, 0, size);
-    }
+    for (int p = 3; p * p <= maximum; p += 2)
+        if (prime[p])
+            for (int i = p * p; i <= maximum; i += 2 * p)
+                if (prime[i])
+                {
+                    prime[i] = false;
+                    smallest_factor[i] = p;
+                }
 
-    /// RANGE SUM
-    ll sum(ll l, ll r, ll x, ll lx, ll rx)
-    {
-        if (lx >= r || l >= rx)
+    for (int p = 3; p <= maximum; p += 2)
+        if (prime[p])
         {
-            return 0;
+            smallest_factor[p] = p;
+            primes.push_back(p);
         }
-        if (lx >= l && rx <= r)
-        {
-            return tree[x];
-        }
-        ll m = (lx + rx) / 2;
-        ll s1 = sum(l, r, 2 * x + 1, lx, m);
-        ll s2 = sum(l, r, 2 * x + 2, m, rx);
-        return merge(s1, s2);
-    }
-    ll sum(ll l, ll r)
-    {
-        // returns sum from l to r
-        return sum(l, r, 0, 0, size);
-    }
-};
-
+}
 int main()
 {
     fast;
@@ -271,49 +243,47 @@ int main()
     t = 1;
     cin >> t;
 
+    sieve(N);
     while (t--)
     {
-        ll n, k;
-        cin >> n >> k;
-        vector<ll> a(n), h(n);
-        cin >> a >> h;
-        segment_tree sg;
-        sg.init(n);
-        sg.build(h);
-        ll totalhealth=sg.sum(0,n);
-
-        bool f = 0;
-        vector<bool>isokpre(n,0);
-        if(h[0]<=a[0]) isokpre[0]=1;
-        ll now=0;
-        now+=max(0LL,h[0]-a[0]);
-        for(ll i=1;i<n;i++){
-            if(h[i]<=now+a[i]-a[i-1]) isokpre[i]=1;
-            now+=max(0LL,h[i]-a[i]);
-            isokpre[i]=isokpre[i]&isokpre[i-1];
-        }
-        vector<bool>isoksuf(n,0);
-        for(ll i=n-2;i>=0;i--){
-            
-        }
-        for (ll i = 0; i < n; i++)
+        ll n;
+        cin >> n;
+        map<ll, ll> freq;
+        for (auto it : primes)
         {
-            ll curr = a[i];
-            ll till = a[i] + 2 * k ;
-            auto pos = lower_bound(all(a), till);
-            while (*pos > till)
-                pos--;
-            ll posi = pos - a.begin();
-
-            if((i>=1?isokpre[i-1]:1) && ((posi+1<n)?isoksuf[posi+1]:1)){
-                f=1;
+            while (n % it == 0)
+            {
+                freq[it]++;
+                n /= it;
+            }
+        }
+        if (n > 1)
+        {
+            freq[n]++;
+        }
+        ll tot = 1;
+        for (auto it : freq)
+        {
+            tot *= (it.second + 1);
+        }
+        ll maxm = -1;
+        for (auto it : freq)
+        {
+            ll now = tot / (it.second + 1);
+            maxm = max(maxm, now * it.second);
+        }
+        ll ans = n;
+        for (auto it : freq)
+        {
+            ll now = tot / (it.second + 1);
+            now *= it.second;
+            if (now == maxm)
+            {
+                ans = it.first;
                 break;
             }
         }
-        if (f)
-            cout << "YES" << nn;
-        else
-            cout << "NO" << nn;
+        cout << ans << nn;
     }
 
     return 0;
