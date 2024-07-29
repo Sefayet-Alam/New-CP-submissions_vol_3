@@ -89,26 +89,17 @@ int main()
     ll t;
     // setIO();
     // ll tno=1;;
-    ll n;
-    cin>>n;
-    vector<pair<string,string>>vec;
-    for(ll i=0;i<n;i++){
-      string s,p;
-      cin>>s>>p;
-      vec.push_back({s,p});
+    t = 1;
+    cin >> t;
+
+    while (t--)
+    {
+      ll n,k;
+      cin>>n>>k;
+      ll need=(k*(k+1))/2+(k-1);
+      if(need<=n) cout<<"YES"<<nn;
+      else cout<<"NO"<<nn;
     }
-    bool f=0;
-    for(ll i=0;i<n;i++){
-      for(ll j=i+1;j<n;j++){
-        if(vec[i].first==vec[j].first && vec[i].second==vec[j].second){
-          f=1;
-          break;
-        }
-      }
-      if(f) break;
-    }
-    if(!f) cout<<"No"<<nn;
-    else cout<<"Yes"<<nn;
 
     return 0;
 }
