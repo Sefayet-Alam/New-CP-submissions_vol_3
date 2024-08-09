@@ -94,30 +94,24 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin>>n;
-      string s,p;
-      cin>>s>>p;
-      ll st=-1;
-      if(s==p){
+      ll n;
+      cin>>n;
+      vector<ll>vec(n);
+      cin>>vec;
+      bool f=0;
+      ll zr=0;
+      map<ll,ll>freq;
+      for(ll i=0;i<n;i++){
+        if(i && vec[i]!=vec[i-1]) f=1;
+        if(vec[i]==0) zr++;
+        freq[vec[i]]++;
+      }
+      if(!f){
         cout<<"YES"<<nn;
         continue;
       }
-      for(ll i=0;i<n;i++){
-        if(s[i]=='1'){
-            st=i;
-            break;
-        }
-      }
-      bool f=0;
-      for(ll i=0;i<st;i++){
-        if(p[i]=='1'){
-            f=1;
-
-        }
-      }
-      if(f || st==-1) cout<<"NO"<<nn;
-      else cout<<"YES"<<nn;
+      else if(freq.size()==2 && freq[0]) cout<<"YES"<<nn;
+      else cout<<"NO"<<nn;
     }
 
     return 0;

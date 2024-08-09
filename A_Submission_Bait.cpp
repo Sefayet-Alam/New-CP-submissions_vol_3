@@ -94,30 +94,33 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin>>n;
-      string s,p;
-      cin>>s>>p;
-      ll st=-1;
-      if(s==p){
-        cout<<"YES"<<nn;
-        continue;
-      }
+      ll n;
+      cin>>n;
+      vector<ll>vec(n);
+      cin>>vec;
+      ll maxm=*max_element(all(vec));
+      ll cnt=0;
       for(ll i=0;i<n;i++){
-        if(s[i]=='1'){
-            st=i;
-            break;
-        }
+        if(vec[i]==maxm) cnt++;
       }
-      bool f=0;
-      for(ll i=0;i<st;i++){
-        if(p[i]=='1'){
-            f=1;
-
+      if(cnt%2) cout<<"YES"<<nn;
+      else{
+        sort(all(vec));
+        ll maxnxt=0;
+        map<ll,ll>freq;
+        bool f=0;
+        for(ll i=n-1;i>=0;i--){
+            freq[vec[i]]++;
         }
+        for(ll i=n-1;i>=0;i--){
+            if(freq[i]%2){
+                f=1;
+                break;
+            }
+        }
+        if(f) cout<<"YES"<<nn;
+        else cout<<"NO"<<nn;
       }
-      if(f || st==-1) cout<<"NO"<<nn;
-      else cout<<"YES"<<nn;
     }
 
     return 0;

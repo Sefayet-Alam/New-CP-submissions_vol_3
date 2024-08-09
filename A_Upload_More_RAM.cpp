@@ -94,30 +94,11 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin>>n;
-      string s,p;
-      cin>>s>>p;
-      ll st=-1;
-      if(s==p){
-        cout<<"YES"<<nn;
-        continue;
-      }
-      for(ll i=0;i<n;i++){
-        if(s[i]=='1'){
-            st=i;
-            break;
-        }
-      }
-      bool f=0;
-      for(ll i=0;i<st;i++){
-        if(p[i]=='1'){
-            f=1;
-
-        }
-      }
-      if(f || st==-1) cout<<"NO"<<nn;
-      else cout<<"YES"<<nn;
+      ll n,k;
+      cin>>n>>k;
+      ll ans=n*k;
+      ans-=max(0LL,k-1);
+      cout<<ans<<nn;
     }
 
     return 0;

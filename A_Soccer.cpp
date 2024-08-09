@@ -94,29 +94,12 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin>>n;
-      string s,p;
-      cin>>s>>p;
-      ll st=-1;
-      if(s==p){
-        cout<<"YES"<<nn;
-        continue;
-      }
-      for(ll i=0;i<n;i++){
-        if(s[i]=='1'){
-            st=i;
-            break;
-        }
-      }
-      bool f=0;
-      for(ll i=0;i<st;i++){
-        if(p[i]=='1'){
-            f=1;
-
-        }
-      }
-      if(f || st==-1) cout<<"NO"<<nn;
+      ll x1,y1,x2,y2;
+      cin>>x1>>y1>>x2>>y2;
+      if(x1>y1 && x2<y2) cout<<"NO"<<nn;
+      else if(x1<y1 && x2>y2) cout<<"NO"<<nn;
+    //   else if(x1<y1 && x2>=y1) cout<<"NO"<<nn;
+    //   else if(x1>y1 && x1<=y2) cout<<"NO"<<nn;
       else cout<<"YES"<<nn;
     }
 

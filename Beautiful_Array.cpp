@@ -83,46 +83,84 @@ namespace io{
 
 
 
-int main()
-{
-    fast;
-    ll t;
-    // setIO();
-    // ll tno=1;;
-    t = 1;
-    cin >> t;
 
-    while (t--)
-    {
-        ll n;
-        cin>>n;
-      string s,p;
-      cin>>s>>p;
-      ll st=-1;
-      if(s==p){
-        cout<<"YES"<<nn;
-        continue;
-      }
-      for(ll i=0;i<n;i++){
-        if(s[i]=='1'){
-            st=i;
+void solved(){
+    int n,q;
+    cin>>n>>q;
+    vector<int> v(n);
+    cin>>v;
+    int total = (1<<25)-1;
+    for(int i=0;i<n;i++){
+        total = total&v[i];
+    }
+    vector<pair<pll,pll>> ans;
+    for(int i=0;i<=23;i++){
+        int cnt = 0;
+        int oneand = ((1<<25)-1);
+        int zeroand = ((1<<25)-1);
+        int orValue = 0;
+        int temp = (1<<i);
+        bool isok = true;
+        for(int j=0;j<n;j++){
+            if((temp&v[j]) == 0){
+                zeroand = (zeroand&v[j]);
+                orValue = orValue|v[j];
+                if(isok) cnt++;
+                isok = false;
+            }else{
+                oneand = oneand&v[j];
+                isok = true;
+            }
+        }
+        ans.push_back({{cnt,oneand},{zeroand,orValue}});
+    }
+    
+    while(q--){
+        int x,k;
+        cin>>k>>x;
+        int final = total;
+        for(int i=22;i>=0;i--){
+            int temp = (1<<i);
+            if((x&temp) == 0)continue;
+
+            if((total&temp) != 0){
+                break;
+            }
+            if((ans[i].first).first>k) continue;
+            int andValue = ans[i].second.first;
+            int orValue = ans[i].second.second;
+            int p = 0;
+            // cout<<andValue<<" "<<orValue<<" "<<x<<endl;
+            for(int i=0;i<20;i++){
+                int temp = (1<<i);
+                if((temp&andValue) == 0){
+                    if(((temp&orValue) == 0) && ((x&temp) !=0)){
+                        p+=temp;
+                    }
+                }else{
+                    if((temp&x) == 0){
+                        p += temp;
+                    }
+                }
+            }
+            // cout<<final<<"**"<<endl;
+            final = p&ans[i].first.second;
             break;
         }
-      }
-      bool f=0;
-      for(ll i=0;i<st;i++){
-        if(p[i]=='1'){
-            f=1;
-
-        }
-      }
-      if(f || st==-1) cout<<"NO"<<nn;
-      else cout<<"YES"<<nn;
+        cout<<final<<endl;
     }
-
-    return 0;
 }
 
+signed main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+    int t = 1;
+    cin>>t;
+    while(t--){
+        solved();
+    }
+    return 0;
+}
 /* Points tO CONSIDER
     # RTE? -> check array bounds and constraints
     #TLE? -> thinks about binary search/ dp / optimization techniques

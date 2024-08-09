@@ -83,6 +83,33 @@ namespace io{
 
 
 
+
+ll powerMod(ll x, ll y, ll p){
+    ll res = 1 % p;
+    x = x % p;
+    while (y > 0){
+        if (y & 1) res = (res * x) % p;
+        y = y >> 1;
+        x = (x * x) % p;
+    }
+    return res;
+}
+
+ll inverseMod(ll a, ll x){
+    return powerMod(a, x - 2, x);
+}
+
+
+//Fermat's Little Theorem tells us that  a^{p - 1} == 1mod{p}...
+// so we can calculate 
+//a^{b^c(mod{1e9 + 7 - 1)}(mod{1e9+7})
+//with modular exponentiation.
+ll sqsum(ll n){
+    ll up=((n*(n+1)*(2*n+1))/6);
+    up=up%M;
+    return up;
+}
+
 int main()
 {
     fast;
@@ -94,30 +121,17 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin>>n;
-      string s,p;
-      cin>>s>>p;
-      ll st=-1;
-      if(s==p){
-        cout<<"YES"<<nn;
-        continue;
+      ll n;
+      cin>>n;
+      ll ans=0;
+      for(ll i=1;i<=n-1;i++){
+        ll now= (i*i)%M;
+        ll mult=powerMod(2LL,n-i,M);
+        mult=(mult*(n-i))%M;
+        now=(now*mult)%M;
+        ans=(ans+now)%M;
       }
-      for(ll i=0;i<n;i++){
-        if(s[i]=='1'){
-            st=i;
-            break;
-        }
-      }
-      bool f=0;
-      for(ll i=0;i<st;i++){
-        if(p[i]=='1'){
-            f=1;
-
-        }
-      }
-      if(f || st==-1) cout<<"NO"<<nn;
-      else cout<<"YES"<<nn;
+      cout<<ans<<nn;
     }
 
     return 0;

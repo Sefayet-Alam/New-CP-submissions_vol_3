@@ -13,7 +13,7 @@ using namespace __gnu_pbds;
 #define ll long long
 #define SZ(a) (int)a.size()
 #define UNIQUE(a) (a).erase(unique(all(a)), (a).end())
-#define mp make_pair
+
 #define mem(a, b) memset(a, b, sizeof(a))
 #define all(x) x.begin(), x.end()
 
@@ -82,6 +82,90 @@ namespace io{
 } using namespace io;
 
 
+void getCount(string s, map<char,int> &mp, int &ans) {
+	int count = 0;
+	int sz = s.size();
+	int availableOperations = mp[s[sz-1]];
+	ans -= (sz-1)*mp[s[sz-1]];
+	for(ll i=sz-2;i>=0;i--) {
+		int requiredChar = sz-1-i;
+		while(mp[s[i]] > 0 && availableOperations >= requiredChar) {
+			availableOperations -= requiredChar;
+			mp[s[i]]--;
+			availableOperations++;
+			ans -= (sz-1);
+		}
+	}
+
+	int requiredChar = sz;
+	while(availableOperations >= requiredChar) {
+		availableOperations -= requiredChar;
+		ans -= (sz-1);
+		availableOperations++;
+	}
+}
+
+void solve() {
+    ll n;
+    string s;
+    cin>>n>>s;
+	map<char, int> mp;
+	// create dp of back
+	// create dp of front
+	for(ll i=n-1;i>=0;i--) {
+		if(s[i] == 'k') {
+			mp['k']++;
+		} else if(s[i] == 'c' && mp['k'] > 0) {
+			mp['k']--;
+			mp['c']++;
+		} else if (s[i] == 'a' && mp['c'] > 0) {
+			mp['c']--;
+			mp['a']++;
+		} else if (s[i] == 'b' && mp['a'] > 0) {
+			mp['a']--;
+			mp['b']++;
+		}
+	}
+
+	// create dp for front now
+	for(ll i=0;i<=n-1;i++) {
+		if(s[i] == 'f') {
+			mp['f']++;
+		} else if(s[i] == 'r' && mp['f'] > 0) {
+			mp['f']--;
+			mp['r']++;
+		} else if (s[i] == 'o' && mp['r'] > 0) {
+			mp['r']--;
+			mp['o']++;
+		} else if (s[i] == 'n' && mp['o'] > 0) {
+			mp['o']--;
+			mp['n']++;
+		} else if (s[i] == 't' && mp['n'] > 0) {
+			mp['n']--;
+			mp['t']++;
+		}
+	}
+
+	// print the values of dp for front
+	// string temp = "front";
+	// for(auto x : temp) {
+	// 	cout << x << " " << mp[x] << endl;
+	// }
+
+	// // print the values of dp for back
+	// temp = "kcab";
+	// for(auto x : temp) {
+	// 	cout << x << " " << mp[x] << endl;
+	// }
+
+	int ans = n;
+	getCount("front",mp,ans);
+	getCount("kcab",mp,ans);
+
+	cout << ans << endl;
+
+}
+
 
 int main()
 {
@@ -94,30 +178,7 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin>>n;
-      string s,p;
-      cin>>s>>p;
-      ll st=-1;
-      if(s==p){
-        cout<<"YES"<<nn;
-        continue;
-      }
-      for(ll i=0;i<n;i++){
-        if(s[i]=='1'){
-            st=i;
-            break;
-        }
-      }
-      bool f=0;
-      for(ll i=0;i<st;i++){
-        if(p[i]=='1'){
-            f=1;
-
-        }
-      }
-      if(f || st==-1) cout<<"NO"<<nn;
-      else cout<<"YES"<<nn;
+      solve();
     }
 
     return 0;

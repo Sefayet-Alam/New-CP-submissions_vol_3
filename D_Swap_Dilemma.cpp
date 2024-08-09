@@ -94,29 +94,30 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin>>n;
-      string s,p;
-      cin>>s>>p;
-      ll st=-1;
-      if(s==p){
-        cout<<"YES"<<nn;
-        continue;
+      ll n;
+      cin>>n;
+      vector<ll>a(n+1),b(n+1);
+      for(ll i=1;i<=n;i++) cin>>a[i];
+      for(ll i=1;i<=n;i++) cin>>b[i];
+      map<ll,ll>pos;
+      for(ll i=1;i<=n;i++){
+        pos[a[i]]=i;
       }
-      for(ll i=0;i<n;i++){
-        if(s[i]=='1'){
-            st=i;
-            break;
-        }
-      }
+      ll tot=0;
       bool f=0;
-      for(ll i=0;i<st;i++){
-        if(p[i]=='1'){
-            f=1;
-
+      for(ll i=1;i<=n;i++){
+        if(a[i]!=b[i]){
+            if(pos[b[i]]==0){f=1;break;}
+            tot+=2*(pos[b[i]]-i)-1;
+            ll now=i;
+            ll sendto=pos[b[i]];
+            pos[a[i]]=sendto;
+            pos[b[i]]=now;
+            swap(a[now],a[sendto]);
         }
       }
-      if(f || st==-1) cout<<"NO"<<nn;
+      if(tot%2) f=1;
+      if(f) cout<<"NO"<<nn;
       else cout<<"YES"<<nn;
     }
 

@@ -82,7 +82,6 @@ namespace io{
 } using namespace io;
 
 
-
 int main()
 {
     fast;
@@ -94,30 +93,31 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin>>n;
+      ll n;
       string s,p;
       cin>>s>>p;
-      ll st=-1;
-      if(s==p){
-        cout<<"YES"<<nn;
-        continue;
-      }
-      for(ll i=0;i<n;i++){
-        if(s[i]=='1'){
-            st=i;
-            break;
+      n=s.size();
+      ll m=p.size();
+      ll l=0,r=0;
+      string ans="";
+      while(l<n && r<m){
+        if(s[l]=='?' || s[l]==p[r]){
+            ans+=p[r];
+            l++;
+            r++;
+        }
+        else{
+            ans+=s[l];
+            l++;
         }
       }
-      bool f=0;
-      for(ll i=0;i<st;i++){
-        if(p[i]=='1'){
-            f=1;
-
-        }
+      while(l<n){
+        ans+=s[l]=='?'?'b':s[l];
+        l++;
       }
-      if(f || st==-1) cout<<"NO"<<nn;
-      else cout<<"YES"<<nn;
+    //   deb2(l,r);
+      if(r==m) cout<<"YES"<<nn<<ans<<nn;
+      else cout<<"NO"<<nn;
     }
 
     return 0;

@@ -94,30 +94,26 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin>>n;
-      string s,p;
-      cin>>s>>p;
-      ll st=-1;
-      if(s==p){
-        cout<<"YES"<<nn;
-        continue;
+      ll n;
+      cin>>n;
+      vector<ll>vec(n);
+      cin>>vec;
+      vector<ll>ops(n,0);
+      for(ll i=1;i<n;i++){
+        ops[i]=max(0LL,vec[i-1]-vec[i]);
+        vec[i]+=ops[i];
       }
+      sort(all(ops));
+    //   deb(ops);
+      ll ans=0;
+      ll prev=0;
       for(ll i=0;i<n;i++){
-        if(s[i]=='1'){
-            st=i;
-            break;
-        }
+        if(ops[i]==0) continue;
+        ans+=(ops[i]-prev)*(n-i+1);
+        prev=ops[i];
       }
-      bool f=0;
-      for(ll i=0;i<st;i++){
-        if(p[i]=='1'){
-            f=1;
-
-        }
-      }
-      if(f || st==-1) cout<<"NO"<<nn;
-      else cout<<"YES"<<nn;
+    //   deb(ops);
+      cout<<ans<<nn;
     }
 
     return 0;

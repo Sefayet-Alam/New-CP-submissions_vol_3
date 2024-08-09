@@ -94,30 +94,29 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin>>n;
-      string s,p;
-      cin>>s>>p;
-      ll st=-1;
-      if(s==p){
-        cout<<"YES"<<nn;
-        continue;
-      }
-      for(ll i=0;i<n;i++){
-        if(s[i]=='1'){
-            st=i;
-            break;
+      ll n;
+      cin>>n;
+      string s;
+      cin>>s;
+      ll zr=0;
+      ll on=0;
+      ll r=0;
+      while(r<n){
+        if(s[r]=='1'){
+            on++;
+            r++;
         }
-      }
-      bool f=0;
-      for(ll i=0;i<st;i++){
-        if(p[i]=='1'){
-            f=1;
-
+        else if(s[r]=='0'){
+            zr++;
+            r++;
         }
+        while(r<n && s[r]==s[r-1]) r++;
       }
-      if(f || st==-1) cout<<"NO"<<nn;
-      else cout<<"YES"<<nn;
+    //   deb2(on,zr);
+      if(zr==0) cout<<0<<nn;
+      else if(on>zr) cout<<0<<nn;
+      else if(zr>on) cout<<min(n,2LL)<<nn;
+      else cout<<1<<nn;
     }
 
     return 0;

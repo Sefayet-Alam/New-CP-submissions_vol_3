@@ -94,30 +94,26 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin>>n;
-      string s,p;
-      cin>>s>>p;
-      ll st=-1;
-      if(s==p){
-        cout<<"YES"<<nn;
-        continue;
-      }
-      for(ll i=0;i<n;i++){
-        if(s[i]=='1'){
-            st=i;
-            break;
+      ll tot=0;
+      vector<ll>vec(16);
+      cin>>vec;
+    //   deb(vec);
+      for(ll i=0;i<16;i++){
+        ll curr=1;
+        for(ll j=0;j<16;j++){
+            if(i==j) continue;
+            if(vec[j]<vec[i]) curr++;
         }
-      }
-      bool f=0;
-      for(ll i=0;i<st;i++){
-        if(p[i]=='1'){
-            f=1;
-
+        // deb2(i,curr);
+        ll ans=0;
+        while(curr>1){
+            ans++;
+            curr/=2;
         }
+        
+        cout<<ans<<" ";
       }
-      if(f || st==-1) cout<<"NO"<<nn;
-      else cout<<"YES"<<nn;
+      cout<<nn;
     }
 
     return 0;

@@ -94,30 +94,30 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin>>n;
-      string s,p;
-      cin>>s>>p;
-      ll st=-1;
-      if(s==p){
-        cout<<"YES"<<nn;
-        continue;
+      ll n;
+      cin>>n;
+      vector<ll>vec(n);
+      cin>>vec;
+      vector<ll>pref(n,0);
+      vector<ll>suff(n,0);
+      pref[0]=vec[0];
+      suff[n-1]=vec[n-1];
+      for(ll i=1;i<n;i++){
+        pref[i]+=vec[i];
+        pref[i]+=pref[i-1];
       }
+      for(ll i=n-2;i>=0;i--){
+        suff[i]+=vec[i];
+        suff[i]+=suff[i+1];
+      }
+      ll ans=0;
       for(ll i=0;i<n;i++){
-        if(s[i]=='1'){
-            st=i;
-            break;
+        if(vec[i]==0){
+            if(pref[i]==suff[i]) ans+=2;
+            else if(abs(pref[i]-suff[i])==1) ans++;
         }
       }
-      bool f=0;
-      for(ll i=0;i<st;i++){
-        if(p[i]=='1'){
-            f=1;
-
-        }
-      }
-      if(f || st==-1) cout<<"NO"<<nn;
-      else cout<<"YES"<<nn;
+      cout<<ans<<nn;
     }
 
     return 0;

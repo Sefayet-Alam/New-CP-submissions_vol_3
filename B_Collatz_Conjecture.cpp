@@ -94,30 +94,19 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin>>n;
-      string s,p;
-      cin>>s>>p;
-      ll st=-1;
-      if(s==p){
-        cout<<"YES"<<nn;
-        continue;
-      }
-      for(ll i=0;i<n;i++){
-        if(s[i]=='1'){
-            st=i;
-            break;
+      ll x,y,k;
+      cin>>x>>y>>k;
+      ll cnt=0;
+      while(k){
+        ll minm=min(k,y-x%y);
+        k-=minm;
+        x+=minm;
+        while(x%y==0){
+            x=x/y;
         }
+        if(x==1) break;
       }
-      bool f=0;
-      for(ll i=0;i<st;i++){
-        if(p[i]=='1'){
-            f=1;
-
-        }
-      }
-      if(f || st==-1) cout<<"NO"<<nn;
-      else cout<<"YES"<<nn;
+      cout<<x+k%(y-1)<<nn;
     }
 
     return 0;

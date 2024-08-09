@@ -94,30 +94,35 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin>>n;
-      string s,p;
-      cin>>s>>p;
-      ll st=-1;
-      if(s==p){
-        cout<<"YES"<<nn;
+      ll n,m;
+      cin>>n>>m;
+      vector<ll>vec(n);
+      cin>>vec;
+      sort(all(vec));
+      if(m<vec[0]){
+        cout<<0<<nn;
         continue;
       }
-      for(ll i=0;i<n;i++){
-        if(s[i]=='1'){
-            st=i;
-            break;
+    //   deb(vec);
+      ll l=0,r=0;
+      ll bud=m;
+      ll curr=0;
+      ll ans=0;
+      while(r<n){
+        if(r<l) r++;
+        else if(vec[r]<=bud && vec[r]-vec[l]<=1){
+            bud-=vec[r];
+            curr+=vec[r];
+            ans=max(ans,curr);
+            r++;
+        }
+        else{
+            bud+=vec[l];
+            curr-=vec[l];
+            l++;
         }
       }
-      bool f=0;
-      for(ll i=0;i<st;i++){
-        if(p[i]=='1'){
-            f=1;
-
-        }
-      }
-      if(f || st==-1) cout<<"NO"<<nn;
-      else cout<<"YES"<<nn;
+      cout<<ans<<nn;
     }
 
     return 0;

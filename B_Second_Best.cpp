@@ -90,34 +90,23 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
-        ll n;
-        cin>>n;
-      string s,p;
-      cin>>s>>p;
-      ll st=-1;
-      if(s==p){
-        cout<<"YES"<<nn;
-        continue;
-      }
+      ll n;
+      cin>>n;
+      vector<pll>vec;
       for(ll i=0;i<n;i++){
-        if(s[i]=='1'){
-            st=i;
-            break;
-        }
+        ll x;
+        cin>>x;
+        vec.push_back({x,i+1});
       }
-      bool f=0;
-      for(ll i=0;i<st;i++){
-        if(p[i]=='1'){
-            f=1;
-
-        }
-      }
-      if(f || st==-1) cout<<"NO"<<nn;
-      else cout<<"YES"<<nn;
+      sort(all(vec));
+    //   for(auto it:vec) deb(it);
+      
+      ll ans=vec[n-2].second;
+      cout<<ans<<nn;
     }
 
     return 0;

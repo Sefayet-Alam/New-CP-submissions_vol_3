@@ -83,44 +83,75 @@ namespace io{
 
 
 
-int main()
-{
-    fast;
-    ll t;
-    // setIO();
-    // ll tno=1;;
-    t = 1;
-    cin >> t;
+#define int ll
 
-    while (t--)
-    {
-        ll n;
-        cin>>n;
-      string s,p;
-      cin>>s>>p;
-      ll st=-1;
-      if(s==p){
-        cout<<"YES"<<nn;
-        continue;
-      }
-      for(ll i=0;i<n;i++){
-        if(s[i]=='1'){
-            st=i;
-            break;
-        }
-      }
-      bool f=0;
-      for(ll i=0;i<st;i++){
-        if(p[i]=='1'){
-            f=1;
+using pii = pair<int, int>;
+ 
+int t;
+ 
 
-        }
-      }
-      if(f || st==-1) cout<<"NO"<<nn;
-      else cout<<"YES"<<nn;
-    }
-
-    return 0;
+int n, val[3][N];
+ 
+int tot, ord[3], ans[6];
+ 
+int32_t main() {
+	ios::sync_with_stdio(false); cin.tie(0); cout.tie(0);
+ 
+	cin >> t;
+	while (t--) {
+		tot = 0;
+ 
+		cin >> n;
+ 
+		for (int j = 0; j < 3; j++)
+			for (int i = 0; i < n; i++) {
+				cin >> val[j][i];
+				if (!j) tot += val[j][i];
+			}
+ 
+		iota(ord, ord + 3, 0);
+ 
+		bool flag = false;
+ 
+		do {
+			int cur = 0, ptr = 0, sum = 0;
+			vector <int> vec;
+ 
+			while (ptr < n) {
+				sum += val[ord[cur]][ptr];
+				if (3 * sum >= tot) {
+					vec.push_back(ptr);
+					cur++;
+					sum = 0;
+				}
+				if (cur == 3) break;
+ 
+				ptr++;
+			}
+ 
+			// cout << '\t' << vec.size() << '\n';
+			// for (int x: vec) cout << '\t' << x;
+			// cout << '\n';
+ 
+			if (cur == 3) {
+				vec[2] = n - 1;
+				int last = 0;
+				for (int i = 0; i < 3; i++) {
+					ans[2 * ord[i]] = last;
+					ans[2 * ord[i] + 1] = vec[i];
+					last = vec[i] + 1;
+				}
+ 
+				for (int i = 0; i < 6; i++) cout << ans[i] + 1 << ' ';
+				cout << '\n';
+ 
+				flag = true;
+				break;
+			}
+		} while (next_permutation(ord, ord + 3));
+ 
+		if (!flag) cout << "-1\n";
+	}
 }
 
 /* Points tO CONSIDER

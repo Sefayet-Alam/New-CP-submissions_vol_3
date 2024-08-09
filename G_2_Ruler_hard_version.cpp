@@ -18,7 +18,7 @@ using namespace __gnu_pbds;
 #define all(x) x.begin(), x.end()
 
 //Printings & debugging
-#define nn '\n'
+#define nn endl
 #define Setpre(n) cout << fixed << setprecision(n)
 #define deb(x) cout << #x << "=" << x << endl
 #define deb2(x, y) cout << #x << "=" << x << "," << #y << "=" << y << endl
@@ -94,30 +94,36 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin>>n;
-      string s,p;
-      cin>>s>>p;
-      ll st=-1;
-      if(s==p){
-        cout<<"YES"<<nn;
-        continue;
-      }
-      for(ll i=0;i<n;i++){
-        if(s[i]=='1'){
-            st=i;
-            break;
+      ll l=1,r=999;
+      ll ans;
+      while(r-l>2){
+        ll mid1=(2*l+r)/3;
+        ll mid2=(2*r+l)/3;
+        cout<<"? "<<mid1<<" "<<mid2<<endl;
+        
+        cin>>ans;
+        if(ans==mid1*mid2){
+            l=mid2;
+        }
+        else if(ans==(mid1+1)*(mid2+1)){
+            r=mid1;
+        }
+        else{
+            l=mid1;
+            r=mid2;
         }
       }
-      bool f=0;
-      for(ll i=0;i<st;i++){
-        if(p[i]=='1'){
-            f=1;
-
+      if(r-l==2){
+        cout<<"?"<<" 1 "<<l+1<<endl;
+        cin>>ans;
+        if(ans==l+1){
+            l=l+1;
+        }
+        else{
+            r=l+1;
         }
       }
-      if(f || st==-1) cout<<"NO"<<nn;
-      else cout<<"YES"<<nn;
+      cout<<"!"<<" "<<r<<endl;
     }
 
     return 0;

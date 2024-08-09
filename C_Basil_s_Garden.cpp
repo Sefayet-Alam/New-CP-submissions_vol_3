@@ -94,30 +94,30 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin>>n;
-      string s,p;
-      cin>>s>>p;
-      ll st=-1;
-      if(s==p){
-        cout<<"YES"<<nn;
-        continue;
-      }
-      for(ll i=0;i<n;i++){
-        if(s[i]=='1'){
-            st=i;
-            break;
+      ll n;
+      cin>>n;
+      vector<ll>h(n);
+      cin>>h;
+      vector<ll>tims(n);
+      tims[n-1]=h[n-1];
+      ll stag=0;
+      for(ll i=n-2;i>=0;i--){
+        if(h[i]==h[i+1]){
+            stag++;
+            tims[i]=h[i]+stag;
+        }
+        else if(h[i]>h[i+1]){
+            stag=max(0LL,h[i+1]+stag+1-h[i]);
+            tims[i]=h[i]+stag;
+        }
+        else{
+            stag+=h[i+1]-h[i]+1;
+            tims[i]=h[i]+stag;
         }
       }
-      bool f=0;
-      for(ll i=0;i<st;i++){
-        if(p[i]=='1'){
-            f=1;
-
-        }
-      }
-      if(f || st==-1) cout<<"NO"<<nn;
-      else cout<<"YES"<<nn;
+    //   deb(tims);
+      ll ans=*max_element(all(tims));
+      cout<<ans<<nn;
     }
 
     return 0;

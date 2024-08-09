@@ -81,7 +81,33 @@ namespace io{
     template <typename First, typename... Other> void print( First first, Other... other ) { if( sep ) cerr << " | "; sep = true; cerr << to_string( first ); print( other... ); }
 } using namespace io;
 
+ll n,m;
+vector<ll>vec(N);
 
+
+bool func(ll pos){
+    ll curr=0;
+    for(ll i=0;i<n;i++){
+        curr+=min(vec[i],pos);
+    }
+    return curr<=m;
+}
+ll bs(ll low,ll high){
+    ll mid;
+    ll ans=low;
+    while(low<=high){
+        mid=low+(high-low)/2;
+        //cout<<mid<<" "<<func(mid)<<endl;
+        if(func(mid)){
+            ans=mid;
+            low=mid+1;
+        }
+        else{
+            high=mid-1;
+        }
+    }
+    return ans;
+}
 
 int main()
 {
@@ -90,34 +116,19 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
-        ll n;
-        cin>>n;
-      string s,p;
-      cin>>s>>p;
-      ll st=-1;
-      if(s==p){
-        cout<<"YES"<<nn;
-        continue;
-      }
-      for(ll i=0;i<n;i++){
-        if(s[i]=='1'){
-            st=i;
-            break;
-        }
-      }
-      bool f=0;
-      for(ll i=0;i<st;i++){
-        if(p[i]=='1'){
-            f=1;
-
-        }
-      }
-      if(f || st==-1) cout<<"NO"<<nn;
-      else cout<<"YES"<<nn;
+    
+      cin>>n>>m;
+      vec.resize(n);
+      cin>>vec;
+      ll tot=accumulate(all(vec),0);
+      ll l=0,r=1e18;
+      ll ans=bs(l,r);
+      if(ans<=2e14+7) cout<<ans<<nn;
+      else cout<<"infinite"<<nn;
     }
 
     return 0;

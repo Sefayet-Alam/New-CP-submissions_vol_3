@@ -81,7 +81,32 @@ namespace io{
     template <typename First, typename... Other> void print( First first, Other... other ) { if( sep ) cerr << " | "; sep = true; cerr << to_string( first ); print( other... ); }
 } using namespace io;
 
+ll n;
+string s;
+ll dp[N][4];
+ll func(ll i,ll prev){
+    if(i==n) return 0;
+    if(dp[i][prev]!=-1) return dp[i][prev];
 
+    ll ret=0;
+    ll curr=0,curr2=0;
+    if(s[i]=='R'){
+        curr=1;
+        curr2=2;
+    }
+    else if(s[i]=='P'){
+        curr=2;
+        curr2=3;
+    }
+    else{
+        curr=3;
+        curr2=1;
+    }
+    if(prev!=curr) ret=max(ret,func(i+1,curr));
+    if(prev!=curr2) ret=max(ret,1+func(i+1,curr2));
+
+    return dp[i][prev]=ret;
+}
 
 int main()
 {
@@ -90,34 +115,15 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
-
+    // cin >> t;
+    mem(dp,-1);
     while (t--)
     {
-        ll n;
-        cin>>n;
-      string s,p;
-      cin>>s>>p;
-      ll st=-1;
-      if(s==p){
-        cout<<"YES"<<nn;
-        continue;
-      }
-      for(ll i=0;i<n;i++){
-        if(s[i]=='1'){
-            st=i;
-            break;
-        }
-      }
-      bool f=0;
-      for(ll i=0;i<st;i++){
-        if(p[i]=='1'){
-            f=1;
+      cin>>n;
 
-        }
-      }
-      if(f || st==-1) cout<<"NO"<<nn;
-      else cout<<"YES"<<nn;
+      cin>>s;
+      ll ans=func(0,0);
+      cout<<ans<<nn;
     }
 
     return 0;

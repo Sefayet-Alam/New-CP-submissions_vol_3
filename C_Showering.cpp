@@ -94,30 +94,24 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin>>n;
-      string s,p;
-      cin>>s>>p;
-      ll st=-1;
-      if(s==p){
-        cout<<"YES"<<nn;
-        continue;
-      }
+      ll n,s,m;
+      cin>>n>>s>>m;
+      vector<pll>vec;
       for(ll i=0;i<n;i++){
-        if(s[i]=='1'){
-            st=i;
-            break;
-        }
+        ll l,r;
+        cin>>l>>r;
+        vec.push_back({l,r});
       }
-      bool f=0;
-      for(ll i=0;i<st;i++){
-        if(p[i]=='1'){
-            f=1;
-
-        }
+      sort(all(vec));
+      ll currmax=max(0LL,vec[0].first);
+      for(ll i=1;i<n;i++){
+        ll now=vec[i].first-vec[i-1].second;
+        currmax=max(currmax,now);
       }
-      if(f || st==-1) cout<<"NO"<<nn;
-      else cout<<"YES"<<nn;
+      ll last=m-vec[n-1].second;
+      currmax=max(currmax,last);
+      if(currmax>=s) cout<<"YES"<<nn;
+      else cout<<"NO"<<nn;
     }
 
     return 0;

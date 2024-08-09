@@ -94,29 +94,37 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin>>n;
-      string s,p;
-      cin>>s>>p;
-      ll st=-1;
-      if(s==p){
-        cout<<"YES"<<nn;
-        continue;
+      ll n,m;
+      cin>>n>>m;
+      char a[n][m],b[n][m];
+      ll row[n],row2[n],col2[m],col[m];
+      mem(row,0);
+      mem(col,0);
+      mem(row2,0);
+      mem(col2,0);
+      for(ll i=0;i<n;i++){
+        for(ll j=0;j<m;j++){
+            cin>>a[i][j];
+            row[i]+=a[i][j];
+            col[j]+=a[i][j];
+        }
       }
       for(ll i=0;i<n;i++){
-        if(s[i]=='1'){
-            st=i;
-            break;
+
+        for(ll j=0;j<m;j++){
+            cin>>b[i][j];
+            row2[i]+=b[i][j];
+            col2[j]+=b[i][j];
         }
       }
       bool f=0;
-      for(ll i=0;i<st;i++){
-        if(p[i]=='1'){
-            f=1;
-
-        }
+      for(ll i=0;i<n;i++){
+        if(row[i]%3!=row2[i]%3) f=1;
       }
-      if(f || st==-1) cout<<"NO"<<nn;
+      for(ll j=0;j<m;j++){
+        if(col[j]%3!=col2[j]%3) f=1;
+      }
+      if(f) cout<<"NO"<<nn;
       else cout<<"YES"<<nn;
     }
 
