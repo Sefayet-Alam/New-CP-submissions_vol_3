@@ -90,15 +90,26 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
-      ll n,k;
-      cin>>n>>k;
-      ll need=(k*(k+1))/2+(k-1);
-      if(need<=n) cout<<"YES"<<nn;
-      else cout<<"NO"<<nn;
+      ll n;
+      cin>>n;
+      vector<ll>vec(n);
+      cin>>vec;
+      ll ans=LLONG_MAX;
+      for(ll i=0;i<n;i++){
+        ll x=vec[i];
+        ll curr=0;
+        while(x%2==0){
+            x/=2;
+            curr++;
+        }
+        ans=min(ans,curr);
+      }
+      if(ans==LLONG_MAX) cout<<0<<nn;
+      else cout<<ans<<nn;
     }
 
     return 0;

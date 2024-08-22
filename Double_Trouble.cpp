@@ -5,10 +5,10 @@ using namespace std;
 using namespace __gnu_pbds;
 
 // VVI
-#define fast                      \
-    ios_base::sync_with_stdio(0); \
-    cin.tie(0);                   \
-    cout.tie(0);
+#define fast                    \
+  ios_base::sync_with_stdio(0); \
+  cin.tie(0);                   \
+  cout.tie(0);
 
 #define ll long long
 #define SZ(a) (int)a.size()
@@ -17,7 +17,7 @@ using namespace __gnu_pbds;
 #define mem(a, b) memset(a, b, sizeof(a))
 #define all(x) x.begin(), x.end()
 
-//Printings & debugging
+// Printings & debugging
 #define nn '\n'
 #define Setpre(n) cout << fixed << setprecision(n)
 #define deb(x) cout << #x << "=" << x << endl
@@ -36,7 +36,6 @@ inline ll GCD(ll a, ll b) { return b == 0 ? a : GCD(b, a % b); }
 inline ll LCM(ll a, ll b) { return a * b / GCD(a, b); }
 inline double logb(ll base, ll num) { return (double)log(num) / (double)log(base); }
 
-
 /// Data structures
 typedef unsigned long long ull;
 typedef pair<ll, ll> pll;
@@ -49,105 +48,291 @@ template <typename T>
 using QP = priority_queue<T, vector<T>, greater<T>>;
 template <typename T>
 using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
-template <typename T> 
+template <typename T>
 using ordered_multiset = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
 template <typename T, typename R>
 using ordered_map = tree<T, R, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 template <typename T, typename R>
 using ordered_multimap = tree<T, R, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
-namespace io{
-    template<typename First, typename Second> ostream& operator << ( ostream &os, const pair<First, Second> &p ) { return os << p.first << " " << p.second; }
-    template<typename First, typename Second> ostream& operator << ( ostream &os, const map<First, Second> &mp ) { for( auto it : mp ) { os << it << endl;  } return os; }
-    template<typename First> ostream& operator << ( ostream &os, const vector<First> &v ) { bool space = false; for( First x : v ) { if( space ) os << " "; space = true; os << x; } return os; }
-    template<typename First> ostream& operator << ( ostream &os, const set<First> &st ) { bool space = false; for( First x : st ) { if( space ) os << " "; space = true; os << x; } return os; }
-    template<typename First> ostream& operator << ( ostream &os, const multiset<First> &st ) { bool space = false; for( First x : st ) { if( space ) os << " "; space = true; os << x; } return os; }
-    template<typename First, typename Second> istream& operator >> ( istream &is, pair<First, Second> &p ) { return is >> p.first >> p.second; }
-    template<typename First> istream& operator >> ( istream &is, vector<First> &v ) { for( First &x : v ) { is >> x; } return is; }
-    
-    long long fastread(){ char c; long long d = 1, x = 0; do c = getchar(); while( c == ' ' || c == '\n' ); if( c == '-' ) c = getchar(), d = -1; while( isdigit( c ) ){ x = x * 10 + c - '0'; c = getchar(); } return d * x; }
-    static bool sep = false;
-    using std::to_string;
-    string to_string( bool x ){ return ( x ? "true" : "false" ); }
-    string to_string( const string & s ){ return "\"" + s + "\""; }
-    string to_string( const char * s ){ return "\"" + string( s ) + "\""; }
-    string to_string ( const char & c ) { string s; s += c; return "\'" + s + "\'"; }
-    template<typename Type> string to_string( vector<Type> );
-    template<typename First, typename Second> string to_string( pair<First, Second> );
-    template<typename Collection> string to_string( Collection );
-    template<typename First, typename Second> string to_string( pair<First, Second> p ){ return "{" + to_string( p.first ) + ", " + to_string( p.second ) + "}"; }
-    template<typename Type> string to_string( vector<Type> v ) { bool sep = false; string s = "["; for( Type x: v ){ if( sep ) s += ", "; sep = true; s += to_string( x ); } s += "]"; return s; }
-    template<typename Collection> string to_string( Collection collection ) { bool sep = false; string s = "{"; for( auto x: collection ){ if( sep ) s += ", "; sep = true; s += to_string( x ); } s += "}"; return s; }
-    void print() { cerr << endl; sep = false; }
-    template <typename First, typename... Other> void print( First first, Other... other ) { if( sep ) cerr << " | "; sep = true; cerr << to_string( first ); print( other... ); }
-} using namespace io;
+namespace io
+{
+  template <typename First, typename Second>
+  ostream &operator<<(ostream &os, const pair<First, Second> &p) { return os << p.first << " " << p.second; }
+  template <typename First, typename Second>
+  ostream &operator<<(ostream &os, const map<First, Second> &mp)
+  {
+    for (auto it : mp)
+    {
+      os << it << endl;
+    }
+    return os;
+  }
+  template <typename First>
+  ostream &operator<<(ostream &os, const vector<First> &v)
+  {
+    bool space = false;
+    for (First x : v)
+    {
+      if (space)
+        os << " ";
+      space = true;
+      os << x;
+    }
+    return os;
+  }
+  template <typename First>
+  ostream &operator<<(ostream &os, const set<First> &st)
+  {
+    bool space = false;
+    for (First x : st)
+    {
+      if (space)
+        os << " ";
+      space = true;
+      os << x;
+    }
+    return os;
+  }
+  template <typename First>
+  ostream &operator<<(ostream &os, const multiset<First> &st)
+  {
+    bool space = false;
+    for (First x : st)
+    {
+      if (space)
+        os << " ";
+      space = true;
+      os << x;
+    }
+    return os;
+  }
+  template <typename First, typename Second>
+  istream &operator>>(istream &is, pair<First, Second> &p) { return is >> p.first >> p.second; }
+  template <typename First>
+  istream &operator>>(istream &is, vector<First> &v)
+  {
+    for (First &x : v)
+    {
+      is >> x;
+    }
+    return is;
+  }
 
+  long long fastread()
+  {
+    char c;
+    long long d = 1, x = 0;
+    do
+      c = getchar();
+    while (c == ' ' || c == '\n');
+    if (c == '-')
+      c = getchar(), d = -1;
+    while (isdigit(c))
+    {
+      x = x * 10 + c - '0';
+      c = getchar();
+    }
+    return d * x;
+  }
+  static bool sep = false;
+  using std::to_string;
+  string to_string(bool x) { return (x ? "true" : "false"); }
+  string to_string(const string &s) { return "\"" + s + "\""; }
+  string to_string(const char *s) { return "\"" + string(s) + "\""; }
+  string to_string(const char &c)
+  {
+    string s;
+    s += c;
+    return "\'" + s + "\'";
+  }
+  template <typename Type>
+  string to_string(vector<Type>);
+  template <typename First, typename Second>
+  string to_string(pair<First, Second>);
+  template <typename Collection>
+  string to_string(Collection);
+  template <typename First, typename Second>
+  string to_string(pair<First, Second> p) { return "{" + to_string(p.first) + ", " + to_string(p.second) + "}"; }
+  template <typename Type>
+  string to_string(vector<Type> v)
+  {
+    bool sep = false;
+    string s = "[";
+    for (Type x : v)
+    {
+      if (sep)
+        s += ", ";
+      sep = true;
+      s += to_string(x);
+    }
+    s += "]";
+    return s;
+  }
+  template <typename Collection>
+  string to_string(Collection collection)
+  {
+    bool sep = false;
+    string s = "{";
+    for (auto x : collection)
+    {
+      if (sep)
+        s += ", ";
+      sep = true;
+      s += to_string(x);
+    }
+    s += "}";
+    return s;
+  }
+  void print()
+  {
+    cerr << endl;
+    sep = false;
+  }
+  template <typename First, typename... Other>
+  void print(First first, Other... other)
+  {
+    if (sep)
+      cerr << " | ";
+    sep = true;
+    cerr << to_string(first);
+    print(other...);
+  }
+}
+using namespace io;
 
+ll power(ll a, ll b, ll mod)
+{
+  ll res = 1;
+  a = a % mod;
+  if (a == 0)
+    return 0;
+  while (b > 0)
+  {
+    if (b & 1)
+      res = (res * a) % mod;
+    b /= 2;
+    a = (a * a) % mod;
+  }
+  return res;
+}
+// Fermat's Little Theorem tells us that  a^{p - 1} == 1mod{p}...
+//  so we can calculate
+// a^{b^c(mod{1e9 + 7 - 1)}(mod{1e9+7})
+// with modular exponentiation.
 
 int main()
 {
-    fast;
-    ll t;
-    // setIO();
-    // ll tno=1;;
-    t = 1;
-    cin >> t;
+  fast;
+  ll t;
+  // setIO();
+  // ll tno=1;;
+  t = 1;
+  cin >> t;
 
-    while (t--)
+  while (t--)
+  {
+    ll n, k;
+    cin >> n >> k;
+    vector<ll> vec(n);
+    cin >> vec;
+    sort(all(vec));
+    vector<ll> supp(n);
+    for (ll i = 0; i < n; i++)
     {
-      ll n;
-      cin>>n;
-      vector<ll>x(n),p(n);
-      cin>>x>>p;
-      ll lef=0;
-    
-      vector<ll>left(n),right(n);
-      left[0]=lef;
-      for(ll i=1;i<n;i++){
-        ll dist=x[i]-x[i-1];
-        ll pow=p[i];
-        if(pow>=dist){
-            left[i]=lef;
-        }
-        else{
-            left[i]=i;
-            lef=i;
-        }
+      ll low = vec[i];
+      ll high = vec[n - 1];
+      ll cnt = 0;
+      while (low  <= high)
+      {
+        low *= 2;
+        cnt++;
       }
-      ll rig=n-1;
-      right[n-1]=n-1;
-
-      for(ll i=n-2;i>=0;i--){
-        ll dist=x[i+1]-x[i];
-        ll pow=p[i];
-        if(pow>=dist){
-            right[i]=rig;
-        }
-        else{
-            right[i]=i;
-            rig=i;
-        }
-      }
-    //   deb2(left,right);
-      bool f=0;
-      if(right[0]==n-1 || left[n-1]==0 || right[0]+n-left[n-1]>=n-1) f=1;
-      for(ll i=0;i<n-1;i++){
-        if(left[i]==0 && right[i+1]==n-1) f=1;
-      }
-      ll curr=right[0]+1;
-      if(curr<n && right[curr]==n-1) f=1;
-      curr=left[n-1]-1;
-      if(curr>=0 && left[curr]==0) f=1;
-      if(f) cout<<"YES"<<nn;
-      else cout<<"NO"<<nn;
+      supp[i] = cnt;
     }
+    ll need = 0;
+    for (ll i = 0; i < n; i++)
+      need = (need + supp[i]);
+    // deb(need);
+    if (need >= k)
+    {
+      QP<ll> pqq;
+      for (auto it : vec)
+      {
+        pqq.push(it);
+      }
+      while (k)
+      {
+        ll now = pqq.top();
+        pqq.pop();
+        ll now2 = pqq.top();
+        // deb2(now,now2);
+        while (now <= now2 && k)
+        {
+          now *= 2;
+          k--;
+        }
+        pqq.push(now);
+      }
+      ll sum = 0;
+      while (pqq.size())
+      {
+        ll curr = pqq.top();
+        pqq.pop();
+        sum = (sum + curr) % M;
+      }
+      cout << sum << nn;
+    }
+    else
+    {
+      ll remaining = k - need;
+      ll expw = (k - need) / n;
+      ll ex = power(2LL, expw, M);
+      ll rem = (k - need) % n;
+      for (ll i = 0; i < n; i++)
+      {
+        ll nowpw =(1LL<<supp[i]);
+        ll val = (vec[i] * nowpw);
+        vec[i] = val;
+      }
+      // deb(vec);
+      QP<ll> pqq;
+      for (auto it : vec)
+      {
+        pqq.push(it);
+      }
+      while (rem)
+      {
+        ll now = pqq.top();
+        pqq.pop();
+        ll now2 = pqq.top();
+        // deb2(now,now2);
+        while (now <= now2 && rem)
+        {
+          now = (now*2);
+          rem--;
+        }
+        pqq.push(now);
+      }
+      ll sum = 0;
+      while (pqq.size())
+      {
+        ll curr = pqq.top();
+        // deb(curr);
+        pqq.pop();
+        sum = (sum + curr) % M;
+      }
+      sum=(sum*ex)%M;
+      cout << sum << nn;
+    }
+  }
 
-    return 0;
+  return 0;
 }
 
 /* Points tO CONSIDER
     # RTE? -> check array bounds and constraints
     #TLE? -> thinks about binary search/ dp / optimization techniques
-    # WA? 
+    # WA?
     -> overflow,reset global variables
     -> Check corner cases
     -> think from different approaches

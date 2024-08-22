@@ -213,12 +213,10 @@ int main()
     {
         ll x, y;
         cin >> x >> y;
-        if (y>=0)
-            cout << "YES" << nn;
-        else if(abs(y)<=abs(x)){
+        if(y<-1) cout<<"NO"<<nn;
+        else{
             cout<<"YES"<<nn;
         }
-        else    cout << "NO" << nn;
     }
 
     return 0;
