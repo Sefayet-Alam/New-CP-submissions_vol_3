@@ -10,7 +10,7 @@ using namespace __gnu_pbds;
     cin.tie(0);                   \
     cout.tie(0);
 
-#define ll int
+#define ll long long
 #define SZ(a) (int)a.size()
 #define UNIQUE(a) (a).erase(unique(all(a)), (a).end())
 #define mp make_pair
@@ -28,7 +28,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI acos(-1)
 const double EPS = 1e-9;
-const ll N = 1e6 + 10;
+const ll N = 2e5 + 10;
 const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
@@ -200,75 +200,93 @@ namespace io
 }
 using namespace io;
 
-vector<ll> g[N];
-ll dep[N], dep2[N];
-ll nownod;
-ll ans;
-void dfs(ll u, ll p = -1)
-{
-
-    for (auto v : g[u])
-    {
-        if (v != p)
-        {
-            dep[v] = dep[u] + 1;
-            dfs(v, u);
-            dep2[u] = max(dep2[u], dep2[v] + 1);
-        }
-    }
-}
-
-void dfs2(ll u, ll p=-1)
-{
-    for (auto v : g[u])
-    {
-        if (v != p)
-        {
-            dfs2(v, u);
-            ans += min(dep[u], dep2[v] + 1);
-        }
-    }
-    ans -= min(dep[u], dep2[u]);
-}
-
-void reset(ll n)
-{
-    for (ll i = 0; i <= n; i++)
-    {
-        g[i].clear();
-        dep[i] = 0;
-        dep2[i] = 0;
-    }
-}
-
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        cout << "Case #" << tno++ << ": ";
         ll n;
         cin >> n;
-        reset(n);
-        for (ll i = 2; i <= n; i++)
+        string s;
+        cin >> s;
+        unordered_map<char, ll> odd, evv;
+        for (ll i = 0; i < n; i++)
         {
-            ll u;
-            cin >> u;
-            g[u].push_back(i);
-            g[i].push_back(u);
+            if (i % 2 == 0)
+            {
+                odd[s[i]]++;
+            }
+            else
+            {
+                evv[s[i]]++;
+            }
         }
-        dfs(1);
-        ans = n - 1;
-        // deb(ans);
-        dfs2(1);
-        cout << ans << nn;
+        if (odd.size() == 1 && evv.size() == 1)
+        {
+            cout << n % 2 << nn;
+            continue;
+        }
+        if (n % 2)
+        {
+            ll minm = n;
+            unordered_map<char, ll> prefod, prefev;
+            for (ll i = 0; i < n; i++)
+            {
+                if (i % 2 == 0)
+                {
+                    odd[s[i]]--;
+                }
+                else
+                {
+                    evv[s[i]]--;
+                }
+                ll minconv1 = INT_MAX;
+                for (char j = 'a'; j <= 'z'; j++)
+                {
+                    ll conv1 = (n / 2) - (prefod[j] + (evv[j] - prefev[j]));
+                    minconv1 = min(minconv1, conv1);
+                }
+                ll minconv2 = INT_MAX;
+                for (char j = 'a'; j <= 'z'; j++)
+                {
+
+                    ll conv2 = (n / 2) - (prefev[j] + (odd[j] - prefod[j]));
+                    minconv2 = min(minconv2, conv2);
+                }
+                minm = min(minm, minconv1 + minconv2 + 1);
+                if (i % 2 == 0)
+                {
+                    odd[s[i]]++;
+                    prefod[s[i]]++;
+                }
+                else
+                {
+                    evv[s[i]]++;
+                    prefev[s[i]]++;
+                }
+            }
+            cout << minm << nn;
+        }
+        else
+        {
+            ll minm = INT_MAX;
+            for (char j = 'a'; j <= 'z'; j++)
+            {
+                for (char k = 'a'; k <= 'z'; k++)
+                {
+                    ll conv1 = (n / 2) - odd[j];
+                    ll conv2 = (n / 2) - evv[k];
+                    minm = min(minm, conv1 + conv2);
+                }
+            }
+            cout << minm << nn;
+        }
     }
 
     return 0;

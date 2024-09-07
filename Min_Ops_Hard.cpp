@@ -10,7 +10,7 @@ using namespace __gnu_pbds;
     cin.tie(0);                   \
     cout.tie(0);
 
-#define ll int
+#define ll long long
 #define SZ(a) (int)a.size()
 #define UNIQUE(a) (a).erase(unique(all(a)), (a).end())
 #define mp make_pair
@@ -28,7 +28,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI acos(-1)
 const double EPS = 1e-9;
-const ll N = 1e6 + 10;
+const ll N = 2e5 + 10;
 const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
@@ -200,75 +200,60 @@ namespace io
 }
 using namespace io;
 
-vector<ll> g[N];
-ll dep[N], dep2[N];
-ll nownod;
-ll ans;
-void dfs(ll u, ll p = -1)
-{
-
-    for (auto v : g[u])
-    {
-        if (v != p)
-        {
-            dep[v] = dep[u] + 1;
-            dfs(v, u);
-            dep2[u] = max(dep2[u], dep2[v] + 1);
-        }
-    }
-}
-
-void dfs2(ll u, ll p=-1)
-{
-    for (auto v : g[u])
-    {
-        if (v != p)
-        {
-            dfs2(v, u);
-            ans += min(dep[u], dep2[v] + 1);
-        }
-    }
-    ans -= min(dep[u], dep2[u]);
-}
-
-void reset(ll n)
-{
-    for (ll i = 0; i <= n; i++)
-    {
-        g[i].clear();
-        dep[i] = 0;
-        dep2[i] = 0;
-    }
-}
 
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        cout << "Case #" << tno++ << ": ";
-        ll n;
-        cin >> n;
-        reset(n);
-        for (ll i = 2; i <= n; i++)
+        ll n, q;
+        cin >> n >> q;
+        vector<ll> arr(n);
+        cin >> arr;
+        // deb(arr);
+        ll prefix[n][3];
+        mem(prefix,0);
+        for (ll i = 1; i < n; i++)
         {
-            ll u;
-            cin >> u;
-            g[u].push_back(i);
-            g[i].push_back(u);
+            prefix[i][0] = prefix[i - 1][0] + abs(arr[i] - arr[i - 1]);
+            prefix[i][1] = prefix[i - 1][1] + (arr[i] > arr[i - 1]);
+            prefix[i][2] = prefix[i - 1][2] + (arr[i] < arr[i - 1]);
         }
-        dfs(1);
-        ans = n - 1;
-        // deb(ans);
-        dfs2(1);
-        cout << ans << nn;
+        while (q--)
+        {
+            ll l, r, k;
+            cin >> l >> r >> k;
+            l--, r--;
+            // deb2(l,r);
+            ll g = prefix[r][0] - prefix[l][0];
+            ll a = prefix[r][1] - prefix[l][1];
+            ll b = prefix[r][2] - prefix[l][2];
+            // deb2(a,b);
+            // deb(g);
+            if (g <= k)
+                cout << 0 << "\n";
+            else
+            {
+                ll op = abs(arr[r] - arr[l]);
+                if (a && b)
+                {
+                    if (k > op)
+                        cout << (g - k + 1) / 2 << "\n";
+                    else
+                        cout << (g - op + 1) / 2 + op - k << "\n";
+                }
+                else
+                {
+                    cout << g - k << "\n";
+                }
+            }
+        }
     }
 
     return 0;

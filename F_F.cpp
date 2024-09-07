@@ -9,55 +9,24 @@ using namespace __gnu_pbds;
     ios_base::sync_with_stdio(0); \
     cin.tie(0);                   \
     cout.tie(0);
-#define pb push_back
+
 #define ll long long
-#define ff first
-#define ss second
 #define SZ(a) (int)a.size()
 #define UNIQUE(a) (a).erase(unique(all(a)), (a).end())
-#define eb emplace_back
 #define mp make_pair
-
-/// BIT MANIPULATION
-
-#define Set(x, k) (x |= (1LL << k))
-#define Unset(x, k) (x &= ~(1LL << k))
-#define Check(x, k) (x & (1LL << k))
-#define Toggle(x, k) (x ^ (1LL << k))
-
-// LOOPS
-
-#define scl(n) scanf("%lld", &n)
-#define fr(i, n) for (ll i = 0; i < n; i++)
-#define fr1(i, n) for (ll i = 1; i <= n; i++)
-#define Fo(i, k, n) for (i = k; k < n ? i < n : i > n; k < n ? i += 1 : i -= 1)
-
-/// PRINTING
-
-#define deb(x) cout << #x << "=" << x << endl
-#define deb2(x, y) cout << #x << "=" << x << "," << #y << "=" << y << endl
-#define nn '\n'
-#define pfl(x) printf("%lld\n", x)
-#define pcas(i) printf("Case %lld: ", i)
-#define Setpre(n) cout << fixed << setprecision(n)
-#define itr(it, a) for (auto it = a.begin(); it != a.end(); it++)
-#define debug printf("I am here\n")
-
-/// SORTING AND FILLING
-
-#define asort(a) sort(a, a + n)
-#define dsort(a) sort(a, a + n, greater<int>())
-#define vasort(v) sort(v.begin(), v.end());
-#define vdsort(v) sort(v.begin(), v.end(), greater<ll>());
-#define rev(x) reverse(all(x))
-#define sortall(x) sort(all(x))
 #define mem(a, b) memset(a, b, sizeof(a))
 #define all(x) x.begin(), x.end()
-#define rev(x) reverse(all(x))
+
+// Printings & debugging
+#define nn '\n'
+#define Setpre(n) cout << fixed << setprecision(n)
+#define deb(x) cout << #x << "=" << x << endl
+#define deb2(x, y) cout << #x << "=" << x << "," << #y << "=" << y << endl
+#define debug printf("I am here\n")
 
 // CONSTANTS
 #define md 10000007
-#define PI 3.1415926535897932384626
+#define PI acos(-1)
 const double EPS = 1e-9;
 const ll N = 2e5 + 10;
 const ll M = 1e9 + 7;
@@ -65,28 +34,7 @@ const ll M = 1e9 + 7;
 /// INLINE FUNCTIONS
 inline ll GCD(ll a, ll b) { return b == 0 ? a : GCD(b, a % b); }
 inline ll LCM(ll a, ll b) { return a * b / GCD(a, b); }
-inline ll Ceil(ll p, ll q) { return p < 0 ? p / q : p / q + !!(p % q); }
-inline ll Floor(ll p, ll q) { return p > 0 ? p / q : p / q - !!(p % q); }
 inline double logb(ll base, ll num) { return (double)log(num) / (double)log(base); }
-inline bool isPerfectSquare(long double x)
-{
-    if (x >= 0)
-    {
-        long long sr = sqrt(x);
-        return (sr * sr == x);
-    }
-    return false;
-}
-double euclidean_distance(ll x1, ll y1, ll x2, ll y2)
-{
-    double a = (x2 - x1) * (x2 - x1);
-    double b = (y2 - y1) * (y2 - y1);
-    double c = (double)sqrt(a + b);
-    return c;
-}
-int popcount(ll x) { return __builtin_popcountll(x); };
-int poplow(ll x) { return __builtin_ctzll(x); };
-int pophigh(ll x) { return 63 - __builtin_clzll(x); };
 
 /// Data structures
 typedef unsigned long long ull;
@@ -158,7 +106,6 @@ namespace io
         }
         return os;
     }
-
     template <typename First, typename Second>
     istream &operator>>(istream &is, pair<First, Second> &p) { return is >> p.first >> p.second; }
     template <typename First>
@@ -187,11 +134,8 @@ namespace io
         }
         return d * x;
     }
-
     static bool sep = false;
-
     using std::to_string;
-
     string to_string(bool x) { return (x ? "true" : "false"); }
     string to_string(const string &s) { return "\"" + s + "\""; }
     string to_string(const char *s) { return "\"" + string(s) + "\""; }
@@ -201,14 +145,12 @@ namespace io
         s += c;
         return "\'" + s + "\'";
     }
-
     template <typename Type>
     string to_string(vector<Type>);
     template <typename First, typename Second>
     string to_string(pair<First, Second>);
     template <typename Collection>
     string to_string(Collection);
-
     template <typename First, typename Second>
     string to_string(pair<First, Second> p) { return "{" + to_string(p.first) + ", " + to_string(p.second) + "}"; }
     template <typename Type>
@@ -241,7 +183,6 @@ namespace io
         s += "}";
         return s;
     }
-
     void print()
     {
         cerr << endl;
@@ -256,41 +197,8 @@ namespace io
         cerr << to_string(first);
         print(other...);
     }
-
 }
 using namespace io;
-
-/*===================================================================//
-
-        ░█▀▀▀█ ░█▀▀▀ ░█▀▀▀ ─█▀▀█ ░█──░█ ░█▀▀▀ ▀▀█▀▀
-        ─▀▀▀▄▄ ░█▀▀▀ ░█▀▀▀ ░█▄▄█ ░█▄▄▄█ ░█▀▀▀ ─░█──
-        ░█▄▄▄█ ░█▄▄▄ ░█─── ░█─░█ ──░█── ░█▄▄▄ ─░█──
-//====================================================================*/
-
-void setIO()
-{
-#ifndef ONLINE_JUDGE
-    freopen("input.txt", "r", stdin);
-
-    freopen("output.txt", "w", stdout);
-#endif // ONLINE_JUDGE
-}
-
-struct custom_hash
-{
-    static uint64_t splitmix64(uint64_t x)
-    {
-        x += 0x9e3779b97f4a7c15;
-        x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
-        x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
-        return x ^ (x >> 31);
-    }
-    size_t operator()(uint64_t x) const
-    {
-        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
-        return splitmix64(x + FIXED_RANDOM);
-    }
-};
 
 int main()
 {
@@ -299,40 +207,48 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
-      string s,p;
-      cin>>s>>p;
-      if(s.size()!=p.size()){
-        cout<<"NO"<<nn;
-        continue;
-      }
-      string a="",b="",c="",d="";
-      ll n=s.size();
-      // if(n==1){
-      //   cout<<"NO"<<nn;
-      //   continue;
-      // }
-      for(ll i=0;i<n;i++){
-        if(i%2){
-        a+=s[i];
-        b+=p[i];
-        }
-        else{
-          c+=s[i];
-          d+=p[i];
-        }
-      }
 
-      sort(all(a));
-      sort(all(b));
-      sort(all(c));
-      sort(all(d));
-      if(a==b && c==d) cout<<"YES"<<nn;
-      else cout<<"NO"<<nn;
+        ll n;
+        cin >> n;
+        vector<ll> vec(n);
+        cin >> vec;
+        sort(all(vec));
+        // cout<<vec<<endl;
+        sort(vec.begin()+1,vec.end(),greater<ll>());
+        // deb(vec);
+        ll x;
+        cin >> x;
+        ll ans = 0;
+        for (ll i = 0; i < (1 << n); i++)
+        {
+            ll now = x;
+            for (ll j = 0; j < n; j++)
+            {
+                if ((i & (1 << j)))
+                {
+                    now=((now%vec[j]));
+                }
+            }
+            now%=vec[0];
+            ans=max(ans,now);
+        }
+        cout<<ans<<nn;
     }
 
     return 0;
 }
+
+/* Points tO CONSIDER
+    # RTE? -> check array bounds and constraints
+    #TLE? -> thinks about binary search/ dp / optimization techniques
+    # WA?
+    -> overflow,reset global variables
+    -> Check corner cases
+    -> think from different approaches
+    -> bruteforce to find pattern
+    -> use Setpre for precision problems
+*/

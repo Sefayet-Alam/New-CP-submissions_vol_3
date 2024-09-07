@@ -10,7 +10,7 @@ using namespace __gnu_pbds;
     cin.tie(0);                   \
     cout.tie(0);
 
-#define ll int
+#define ll long long
 #define SZ(a) (int)a.size()
 #define UNIQUE(a) (a).erase(unique(all(a)), (a).end())
 #define mp make_pair
@@ -28,7 +28,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI acos(-1)
 const double EPS = 1e-9;
-const ll N = 1e6 + 10;
+const ll N = 2e5 + 10;
 const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
@@ -200,44 +200,162 @@ namespace io
 }
 using namespace io;
 
-vector<ll> g[N];
-ll dep[N], dep2[N];
-ll nownod;
-ll ans;
-void dfs(ll u, ll p = -1)
+vector<int> adj[N];
+bool visited[N];
+bool color[N];
+int parent[N];
+int child_black[N];
+int one = 0, two = 0, three = 0;
+int parent_white = 0;
+void dfs(int s, int p)
 {
-
-    for (auto v : g[u])
+    if (visited[s])
+        return;
+    visited[s] = true;
+    parent[s] = p;
+    if (color[s])
     {
-        if (v != p)
-        {
-            dep[v] = dep[u] + 1;
-            dfs(v, u);
-            dep2[u] = max(dep2[u], dep2[v] + 1);
-        }
+        child_black[p]++;
+    }
+    for (auto u : adj[s])
+    {
+        dfs(u, s);
+    }
+}
+void clean(int n)
+{
+    for (int i = 0; i <= n; ++i)
+    {
+        adj[i].clear();
+        visited[i] = 0;
+        parent[i] = 0;
+        child_black[i] = 0;
+        color[i] = 0;
     }
 }
 
-void dfs2(ll u, ll p=-1)
+void solve()
 {
-    for (auto v : g[u])
+    int n, q;
+    cin >> n >> q;
+    clean(n);
+    for (int i = 0; i < n; ++i)
     {
-        if (v != p)
-        {
-            dfs2(v, u);
-            ans += min(dep[u], dep2[v] + 1);
-        }
+        int tmp;
+        cin >> tmp;
+        color[i + 1] = tmp;
     }
-    ans -= min(dep[u], dep2[u]);
-}
-
-void reset(ll n)
-{
-    for (ll i = 0; i <= n; i++)
+    for (int i = 1; i < n; ++i)
     {
-        g[i].clear();
-        dep[i] = 0;
-        dep2[i] = 0;
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    one = 0, two = 0, three = 0;
+    parent_white = 0;
+    int tot = 0;
+    set<int> node_two;
+    dfs(1, 0);
+    for (int i = 0; i <= n; ++i)
+    {
+        if (child_black[i] == 1)
+            ++one;
+        if (child_black[i] == 2)
+        {
+            ++two;
+            node_two.insert(i);
+        }
+        if (child_black[i] >= 3)
+            ++three;
+        if (color[i] and color[parent[i]] == 0)
+        {
+            parent_white++;
+        }
+        if (color[i])
+            ++tot;
+    }
+    while (q--)
+    {
+        int u;
+        cin >> u;
+        int p = parent[u];
+        if (color[u])
+        {
+            if (child_black[p] == 1)
+            {
+                --one; //
+            }
+            else if (child_black[p] == 2)
+            {
+                --two;
+                node_two.erase(p);
+                ++one;
+            }
+            else if (child_black[p] == 3)
+            {
+                --three;
+                ++two;
+                node_two.insert(p);
+            }
+            child_black[p]--;
+        }
+        else
+        {
+            if (child_black[p] == 0)
+            {
+                ++one;
+            }
+            if (child_black[p] == 1)
+            {
+                --one;
+                ++two;
+                node_two.insert(p);
+            }
+            if (child_black[p] == 2)
+            {
+                --two;
+                node_two.erase(p);
+                ++three;
+            }
+            child_black[p]++;
+        }
+        color[u] ^= 1;
+        if (color[u])
+            ++tot;
+        else
+            --tot;
+        if (color[u] and color[p] == 0)
+            ++parent_white;
+        else if (color[u] == 0 and color[p] == 0)
+            --parent_white;
+
+        if (color[u])
+        {
+            parent_white -= child_black[u];
+        }
+        else
+        {
+            parent_white += child_black[u];
+        }
+
+        if (three or two > 1 or !tot or parent_white > 1)
+        {
+            cout << "No" << endl;
+        }
+        else if (two == 0)
+        {
+            cout << "YES" << endl;
+        }
+        else // if(two==1)
+        {
+            if (color[parent[*node_two.begin()]] == 0 and color[*node_two.begin()])
+            {
+                cout << "YES" << endl;
+            }
+            else
+                cout << "No" << endl;
+        }
     }
 }
 
@@ -246,29 +364,13 @@ int main()
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        cout << "Case #" << tno++ << ": ";
-        ll n;
-        cin >> n;
-        reset(n);
-        for (ll i = 2; i <= n; i++)
-        {
-            ll u;
-            cin >> u;
-            g[u].push_back(i);
-            g[i].push_back(u);
-        }
-        dfs(1);
-        ans = n - 1;
-        // deb(ans);
-        dfs2(1);
-        cout << ans << nn;
+        solve();
     }
 
     return 0;

@@ -10,7 +10,7 @@ using namespace __gnu_pbds;
     cin.tie(0);                   \
     cout.tie(0);
 
-#define ll int
+#define ll long long
 #define SZ(a) (int)a.size()
 #define UNIQUE(a) (a).erase(unique(all(a)), (a).end())
 #define mp make_pair
@@ -28,7 +28,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI acos(-1)
 const double EPS = 1e-9;
-const ll N = 1e6 + 10;
+const ll N = 2e5 + 10;
 const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
@@ -200,80 +200,100 @@ namespace io
 }
 using namespace io;
 
-vector<ll> g[N];
-ll dep[N], dep2[N];
-ll nownod;
-ll ans;
-void dfs(ll u, ll p = -1)
-{
+ll n, a[N], dp[30], b[N];
 
-    for (auto v : g[u])
+ll Calc(int i)
+{
+    if (i > n)
     {
-        if (v != p)
-        {
-            dep[v] = dep[u] + 1;
-            dfs(v, u);
-            dep2[u] = max(dep2[u], dep2[v] + 1);
-        }
+        return 0;
     }
+    ll &res = dp[i];
+    if (res != -1)
+    {
+        return res;
+    }
+    res = a[i] + Calc(i + 1);
+    for (ll j = i; j <= n; ++j)
+    {
+        res = max(res, (j - i + 1) * (j - i + 1) + Calc(j + 1));
+    }
+    return res;
 }
 
-void dfs2(ll u, ll p=-1)
+vector<pll> Operations;
+
+void Make(int l, int r, int Mex) /// will make 3 2 1 0
 {
-    for (auto v : g[u])
+    if (l > r)
+        return;
+    if (a[l])
     {
-        if (v != p)
-        {
-            dfs2(v, u);
-            ans += min(dep[u], dep2[v] + 1);
-        }
+        Operations.push_back({l, l});
+        a[l] = 0; /// will make 0 x x x
     }
-    ans -= min(dep[u], dep2[u]);
+    if (l == r)
+    {
+        return; /// will make 0 x x x
+    }
+    Make(l + 1, r, Mex - 1); /// will make 0 2 1 0
+
+    Operations.push_back({l, r});
+    for (int i = l; i <= r; i++)
+    {
+        a[i] = Mex; /// will make 3 3 3 3
+    }
+    Make(l + 1, r, Mex - 1); /// finally we have 3 2 1 0
 }
 
-void reset(ll n)
-{
-    for (ll i = 0; i <= n; i++)
-    {
-        g[i].clear();
-        dep[i] = 0;
-        dep2[i] = 0;
-    }
-}
-
-int main()
+int32_t main()
 {
     fast;
-    ll t;
-    // setIO();
-    ll tno = 1;
-    ;
-    t = 1;
-    cin >> t;
+    cin>>n;
 
-    while (t--)
+    for (int i = 1; i <= n; i++)
     {
-        cout << "Case #" << tno++ << ": ";
-        ll n;
-        cin >> n;
-        reset(n);
-        for (ll i = 2; i <= n; i++)
+        cin >> a[i];
+        b[i] = a[i];
+    }
+
+    memset(dp, -1, sizeof(dp));
+
+    int ans = Calc(1);
+
+    cout << ans << ' ';
+
+    for (int i = 1; i <= n; i++)
+    {
+        if (Calc(i + 1) + b[i] == ans)
         {
-            ll u;
-            cin >> u;
-            g[u].push_back(i);
-            g[i].push_back(u);
+            ans -= b[i];
         }
-        dfs(1);
-        ans = n - 1;
-        // deb(ans);
-        dfs2(1);
-        cout << ans << nn;
+        else
+        {
+            for (int j = i; j <= n; ++j)
+            {
+                if ((j - i + 1) * (j - i + 1) + Calc(j + 1) == ans)
+                {
+                    ans -= (j - i + 1) * (j - i + 1);
+                    Make(i, j, (j - i + 1));
+                    Operations.push_back({i, j});
+                    i = j;
+                    break;
+                }
+            }
+        }
+    }
+
+    cout << Operations.size() << endl;
+
+    for (auto p : Operations)
+    {
+        cout <<p<<nn;
     }
 
     return 0;
 }
-
 /* Points tO CONSIDER
     # RTE? -> check array bounds and constraints
     #TLE? -> thinks about binary search/ dp / optimization techniques

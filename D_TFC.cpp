@@ -10,7 +10,7 @@ using namespace __gnu_pbds;
     cin.tie(0);                   \
     cout.tie(0);
 
-#define ll int
+#define ll long long
 #define SZ(a) (int)a.size()
 #define UNIQUE(a) (a).erase(unique(all(a)), (a).end())
 #define mp make_pair
@@ -200,45 +200,56 @@ namespace io
 }
 using namespace io;
 
-vector<ll> g[N];
-ll dep[N], dep2[N];
-ll nownod;
-ll ans;
-void dfs(ll u, ll p = -1)
-{
 
-    for (auto v : g[u])
+vector<ll> g(N);
+
+vector<ll> smallest_factor;
+vector<bool> prime;
+vector<ll> primes;
+
+void sieve(ll maximum)
+{
+    maximum = max(maximum, 2LL);
+    smallest_factor.assign(maximum + 1, 0LL);
+    prime.assign(maximum + 1, true);
+    prime[0] = prime[1] = false;
+    primes = {2};
+
+    for (ll p = 2; p <= maximum; p += 2)
     {
-        if (v != p)
-        {
-            dep[v] = dep[u] + 1;
-            dfs(v, u);
-            dep2[u] = max(dep2[u], dep2[v] + 1);
-        }
+        prime[p] = p == 2;
+        smallest_factor[p] = 2;
     }
+
+    for (int p = 3; p * p <= maximum; p += 2)
+        if (prime[p])
+            for (int i = p * p; i <= maximum; i += 2 * p)
+                if (prime[i])
+                {
+                    prime[i] = false;
+                    smallest_factor[i] = p;
+                }
+
+    for (ll p = 3; p <= maximum; p += 2)
+        if (prime[p])
+        {
+            smallest_factor[p] = p;
+            primes.push_back(p);
+        }
 }
 
-void dfs2(ll u, ll p=-1)
+ll powerMod(ll x, ll y, ll p)
 {
-    for (auto v : g[u])
+    ll res = 1 % p;
+    x = x % p;
+    while (y > 0)
     {
-        if (v != p)
-        {
-            dfs2(v, u);
-            ans += min(dep[u], dep2[v] + 1);
-        }
+        if (y & 1)
+            res = (res * x) % p;
+        y = y >> 1;
+        x = (x * x) % p;
     }
-    ans -= min(dep[u], dep2[u]);
-}
-
-void reset(ll n)
-{
-    for (ll i = 0; i <= n; i++)
-    {
-        g[i].clear();
-        dep[i] = 0;
-        dep2[i] = 0;
-    }
+    return res;
 }
 
 int main()
@@ -246,29 +257,84 @@ int main()
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
-    cin >> t;
-
+    // cin >> t;
+    sieve(N);
+    ll lim = 1e3;
     while (t--)
     {
-        cout << "Case #" << tno++ << ": ";
         ll n;
         cin >> n;
-        reset(n);
-        for (ll i = 2; i <= n; i++)
+        vector<ll> vec(n);
+        cin>>vec;
+        for (ll i = 0; i < n; i++)
         {
-            ll u;
-            cin >> u;
-            g[u].push_back(i);
-            g[i].push_back(u);
+            // cin >> vec[i];
+            ll curr=vec[i];
+            for (ll j = 1; j * j <= curr; j++)
+            {
+                if (vec[i] % j == 0)
+                {
+                    g[j]++;
+                    ll oth = curr / j;
+                    if (oth != j)
+                    {
+                        g[oth]++;
+                    }
+                }
+            }
         }
-        dfs(1);
-        ans = n - 1;
-        // deb(ans);
-        dfs2(1);
-        cout << ans << nn;
+        ll q;
+        cin >> q;
+        while (q--)
+        {
+            ll x;
+            cin >> x;
+            vector<ll> tmp;
+            while (x > 1)
+            {
+                tmp.push_back(smallest_factor[x]);
+                ll now = smallest_factor[x];
+                while (x % now == 0)
+                {
+                    x /= now;
+                }
+            }
+            // deb(tmp);
+            ll k = 0;
+            if (tmp.size() == 0)
+            {
+                k = n;
+            }
+            else
+            {
+                // UNIQUE(tmp);
+                k = g[tmp[0]];
+                vector<ll>prev[20];
+                prev[0].push_back(tmp[0]);
+                for (ll i = 1; i < tmp.size(); i++)
+                {
+                    k+=g[tmp[i]];
+                    for(ll j=i-1;j>=0;j--){
+                        ll ex=0;
+                        for(auto it:prev[j]){
+                            ll lc=tmp[i]*it;
+                            ex+=g[lc];
+                            prev[j+1].push_back(lc);
+                        }
+                        if(j%2==0) k-=ex;
+                        else k+=ex;
+                    }
+                    prev[0].push_back(tmp[i]);
+                }
+                // deb(k);
+                k = max(0LL,n - k);
+            }
+            // deb(k);
+            ll ans = powerMod(2LL, k, M);
+            cout << ans << nn;
+        }
     }
 
     return 0;

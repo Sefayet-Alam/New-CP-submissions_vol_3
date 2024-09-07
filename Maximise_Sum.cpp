@@ -10,7 +10,7 @@ using namespace __gnu_pbds;
     cin.tie(0);                   \
     cout.tie(0);
 
-#define ll int
+#define ll long long
 #define SZ(a) (int)a.size()
 #define UNIQUE(a) (a).erase(unique(all(a)), (a).end())
 #define mp make_pair
@@ -28,7 +28,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI acos(-1)
 const double EPS = 1e-9;
-const ll N = 1e6 + 10;
+const ll N = 2e5 + 10;
 const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
@@ -200,75 +200,53 @@ namespace io
 }
 using namespace io;
 
-vector<ll> g[N];
-ll dep[N], dep2[N];
-ll nownod;
-ll ans;
-void dfs(ll u, ll p = -1)
-{
-
-    for (auto v : g[u])
-    {
-        if (v != p)
-        {
-            dep[v] = dep[u] + 1;
-            dfs(v, u);
-            dep2[u] = max(dep2[u], dep2[v] + 1);
-        }
-    }
-}
-
-void dfs2(ll u, ll p=-1)
-{
-    for (auto v : g[u])
-    {
-        if (v != p)
-        {
-            dfs2(v, u);
-            ans += min(dep[u], dep2[v] + 1);
-        }
-    }
-    ans -= min(dep[u], dep2[u]);
-}
-
-void reset(ll n)
-{
-    for (ll i = 0; i <= n; i++)
-    {
-        g[i].clear();
-        dep[i] = 0;
-        dep2[i] = 0;
-    }
-}
-
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        cout << "Case #" << tno++ << ": ";
         ll n;
         cin >> n;
-        reset(n);
-        for (ll i = 2; i <= n; i++)
+        vector<ll> vec(n);
+        cin >> vec;
+        vector<ll> negs,poses;
+        // ll sum = 0;
+        for (ll i = 0; i < n; i++)
         {
-            ll u;
-            cin >> u;
-            g[u].push_back(i);
-            g[i].push_back(u);
+            if (vec[i] < 0)
+                negs.push_back(vec[i]);
+            else{
+                poses.push_back(vec[i]);
+            }
         }
-        dfs(1);
-        ans = n - 1;
-        // deb(ans);
-        dfs2(1);
-        cout << ans << nn;
+        sort(all(poses));
+        reverse(all(poses));
+        sort(all(negs));
+        // deb2(poses,negs);
+        ll sum=0;
+        if(negs.size()%2 && poses.size()){
+            if( -poses.back() + abs(negs.back())> poses.back()+negs.back()){
+                sum+=(-poses.back());
+                sum+=abs(negs.back());
+                poses.pop_back();
+                negs.pop_back();
+            }
+        }
+        // deb2(poses,negs);
+        for(auto it:poses) sum+=it;
+        ll cnt=(negs.size()/2)*2;
+        for(auto it:negs){
+            if(cnt) sum+=abs(it);
+            else sum+=it;
+            cnt--;
+        }
+        cout << sum << nn;
     }
 
     return 0;

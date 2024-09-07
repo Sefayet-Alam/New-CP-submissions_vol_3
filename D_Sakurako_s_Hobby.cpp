@@ -10,7 +10,7 @@ using namespace __gnu_pbds;
     cin.tie(0);                   \
     cout.tie(0);
 
-#define ll int
+#define ll long long
 #define SZ(a) (int)a.size()
 #define UNIQUE(a) (a).erase(unique(all(a)), (a).end())
 #define mp make_pair
@@ -28,7 +28,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI acos(-1)
 const double EPS = 1e-9;
-const ll N = 1e6 + 10;
+const ll N = 2e5 + 10;
 const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
@@ -200,44 +200,36 @@ namespace io
 }
 using namespace io;
 
-vector<ll> g[N];
-ll dep[N], dep2[N];
-ll nownod;
-ll ans;
-void dfs(ll u, ll p = -1)
+ll par[N];
+ll sz[N];
+// multiset<int> sizes;
+ll col[N];
+void make(ll v)
 {
-
-    for (auto v : g[u])
-    {
-        if (v != p)
-        {
-            dep[v] = dep[u] + 1;
-            dfs(v, u);
-            dep2[u] = max(dep2[u], dep2[v] + 1);
-        }
-    }
+    par[v] = v;
+    sz[v] = 1;
+    col[v] = 0;
 }
 
-void dfs2(ll u, ll p=-1)
+ll find(ll v)
 {
-    for (auto v : g[u])
-    {
-        if (v != p)
-        {
-            dfs2(v, u);
-            ans += min(dep[u], dep2[v] + 1);
-        }
-    }
-    ans -= min(dep[u], dep2[u]);
+    if (v == par[v])
+        return v;
+    return par[v] = find(par[v]);
 }
 
-void reset(ll n)
+void Union(int a, int b)
 {
-    for (ll i = 0; i <= n; i++)
+    a = find(a);
+    b = find(b);
+    if (a != b)
     {
-        g[i].clear();
-        dep[i] = 0;
-        dep2[i] = 0;
+        if (sz[a] < sz[b])
+            swap(a, b);
+        par[b] = a;
+        // merge(a,b);
+        sz[a] += sz[b];
+        col[a] += col[b];
     }
 }
 
@@ -246,29 +238,39 @@ int main()
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        cout << "Case #" << tno++ << ": ";
         ll n;
         cin >> n;
-        reset(n);
-        for (ll i = 2; i <= n; i++)
+        vector<ll> vec(n);
+        cin >> vec;
+        string p;
+        cin >> p;
+        for (ll i = 1; i <= n; i++)
         {
-            ll u;
-            cin >> u;
-            g[u].push_back(i);
-            g[i].push_back(u);
+            make(i);
         }
-        dfs(1);
-        ans = n - 1;
-        // deb(ans);
-        dfs2(1);
-        cout << ans << nn;
+        for (ll i = 0; i < n; i++)
+        {
+            col[vec[i]] = (p[i] == '0') ? 1 : 0;
+        }
+        // for(ll i=1;i<=n;i++) cout<<col[i]<<nn;
+        for (ll i = 0; i < n; i++)
+        {
+            Union(i + 1, vec[i]);
+        }
+        for (ll i = 1; i <= n; i++)
+        {
+            ll par = find(i);
+            ll ans = col[par];
+            // deb2(par,ans);
+            cout << ans << " ";
+        }
+        cout << nn;
     }
 
     return 0;

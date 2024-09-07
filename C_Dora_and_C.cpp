@@ -10,7 +10,7 @@ using namespace __gnu_pbds;
     cin.tie(0);                   \
     cout.tie(0);
 
-#define ll int
+#define ll long long
 #define SZ(a) (int)a.size()
 #define UNIQUE(a) (a).erase(unique(all(a)), (a).end())
 #define mp make_pair
@@ -28,7 +28,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI acos(-1)
 const double EPS = 1e-9;
-const ll N = 1e6 + 10;
+const ll N = 2e5 + 10;
 const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
@@ -200,74 +200,67 @@ namespace io
 }
 using namespace io;
 
-vector<ll> g[N];
-ll dep[N], dep2[N];
-ll nownod;
-ll ans;
-void dfs(ll u, ll p = -1)
-{
-
-    for (auto v : g[u])
-    {
-        if (v != p)
-        {
-            dep[v] = dep[u] + 1;
-            dfs(v, u);
-            dep2[u] = max(dep2[u], dep2[v] + 1);
-        }
-    }
-}
-
-void dfs2(ll u, ll p=-1)
-{
-    for (auto v : g[u])
-    {
-        if (v != p)
-        {
-            dfs2(v, u);
-            ans += min(dep[u], dep2[v] + 1);
-        }
-    }
-    ans -= min(dep[u], dep2[u]);
-}
-
-void reset(ll n)
-{
-    for (ll i = 0; i <= n; i++)
-    {
-        g[i].clear();
-        dep[i] = 0;
-        dep2[i] = 0;
-    }
-}
-
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        cout << "Case #" << tno++ << ": ";
-        ll n;
-        cin >> n;
-        reset(n);
-        for (ll i = 2; i <= n; i++)
+        ll n, a, b;
+        cin >> n >> a >> b;
+        vector<ll> vec(n);
+        cin >> vec;
+        if (n == 1)
         {
-            ll u;
-            cin >> u;
-            g[u].push_back(i);
-            g[i].push_back(u);
+            cout << 0 << nn;
+            continue;
         }
-        dfs(1);
-        ans = n - 1;
-        // deb(ans);
-        dfs2(1);
+        ll g = GCD(a, b);
+        // deb(g);
+        sort(all(vec));
+        // deb(vec);
+        ll maxm = vec[n - 1];
+        vector<pll> tmp;
+        for (ll i = 0; i < n - 1; i++)
+        {
+            ll mdiff = (maxm - vec[i]) % g;
+            tmp.push_back({mdiff, g - mdiff});
+        }
+        ll ans1 = 0, ans2 = 0;
+        for (auto it : tmp)
+        {
+            // deb(it);
+            ans1 = max(ans1, it.first);
+            ans2 = max(ans2, it.second);
+        }
+        sort(all(tmp));
+        ll ans = min(ans1, ans2);
+        n--;
+        ll suffmax[n][2];
+        mem(suffmax,0);
+        // deb2(tmp[n-1].first,tmp[n-1].second);
+        suffmax[n-1][0]=tmp[n-1].first;
+        suffmax[n-1][1]=tmp[n-1].second;
+        for(ll i=n-2;i>=0;i--){
+            // deb(tmp[i]);
+            // deb2(suffmax[i+1][0],suffmax[i+1][1]);
+            suffmax[i][0]=max(suffmax[i+1][0],tmp[i].first);
+            suffmax[i][1]=max(suffmax[i+1][1],tmp[i].second);
+        }
+        ll currmax1=0,currmax2=0;
+        for(ll i=0;i<n-1;i++){
+            currmax1=max(currmax1,tmp[i].first);
+            currmax2=max(currmax2,tmp[i].second);
+            ll now1=currmax1+suffmax[i+1][1];
+            ll now2=currmax2+suffmax[i+1][0];
+            // deb2(now1,now2);
+            ans=min({ans,now1,now2});
+        }
         cout << ans << nn;
     }
 

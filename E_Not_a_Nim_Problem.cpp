@@ -10,7 +10,7 @@ using namespace __gnu_pbds;
     cin.tie(0);                   \
     cout.tie(0);
 
-#define ll int
+#define ll long long
 #define SZ(a) (int)a.size()
 #define UNIQUE(a) (a).erase(unique(all(a)), (a).end())
 #define mp make_pair
@@ -28,7 +28,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI acos(-1)
 const double EPS = 1e-9;
-const ll N = 1e6 + 10;
+const ll N = 1e7 + 10;
 const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
@@ -200,45 +200,45 @@ namespace io
 }
 using namespace io;
 
-vector<ll> g[N];
-ll dep[N], dep2[N];
-ll nownod;
-ll ans;
-void dfs(ll u, ll p = -1)
-{
+vector<int> smallest_factor;
+vector<bool> prime;
 
-    for (auto v : g[u])
+vector<ll>grundy(N,0);
+
+void sieve(int maximum)
+{
+    maximum = max(maximum, 2);
+    smallest_factor.assign(maximum + 1, 0);
+    prime.assign(maximum + 1, true);
+    prime[0] = prime[1] = false;
+
+    for (int p = 2; p <= maximum; p += 2)
     {
-        if (v != p)
+        prime[p] = p == 2;
+        smallest_factor[p] = 2;
+    }
+
+    for (int p = 3; p * p <= maximum; p += 2)
+        if (prime[p])
+            for (int i = p * p; i <= maximum; i += 2 * p)
+                if (prime[i])
+                {
+                    prime[i] = false;
+                    smallest_factor[i] = p;
+                }
+
+    for (int p = 3; p <= maximum; p += 2)
+        if (prime[p])
         {
-            dep[v] = dep[u] + 1;
-            dfs(v, u);
-            dep2[u] = max(dep2[u], dep2[v] + 1);
+            smallest_factor[p] = p;
         }
+    ll cnt=1;
+    for(ll i=2;i<maximum;i++){
+        if(i%2==0) grundy[i]=0;
+        else if(prime[i]) grundy[i]=++cnt;
+        else grundy[i]=grundy[smallest_factor[i]];
     }
-}
-
-void dfs2(ll u, ll p=-1)
-{
-    for (auto v : g[u])
-    {
-        if (v != p)
-        {
-            dfs2(v, u);
-            ans += min(dep[u], dep2[v] + 1);
-        }
-    }
-    ans -= min(dep[u], dep2[u]);
-}
-
-void reset(ll n)
-{
-    for (ll i = 0; i <= n; i++)
-    {
-        g[i].clear();
-        dep[i] = 0;
-        dep2[i] = 0;
-    }
+    grundy[1]=1;
 }
 
 int main()
@@ -246,29 +246,23 @@ int main()
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
-
+    ll lim=1e7+2;
+    sieve(lim);
     while (t--)
     {
-        cout << "Case #" << tno++ << ": ";
         ll n;
-        cin >> n;
-        reset(n);
-        for (ll i = 2; i <= n; i++)
-        {
-            ll u;
-            cin >> u;
-            g[u].push_back(i);
-            g[i].push_back(u);
+        cin>>n;
+        vector<ll>vec(n);
+        cin>>vec;
+        ll xr=0;
+        for(ll i=0;i<n;i++){
+            xr=(xr^grundy[vec[i]]);
         }
-        dfs(1);
-        ans = n - 1;
-        // deb(ans);
-        dfs2(1);
-        cout << ans << nn;
+        if(xr) cout<<"Alice"<<nn;
+        else cout<<"Bob"<<nn;
     }
 
     return 0;

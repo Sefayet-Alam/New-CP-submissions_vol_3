@@ -10,7 +10,7 @@ using namespace __gnu_pbds;
     cin.tie(0);                   \
     cout.tie(0);
 
-#define ll int
+#define ll long long
 #define SZ(a) (int)a.size()
 #define UNIQUE(a) (a).erase(unique(all(a)), (a).end())
 #define mp make_pair
@@ -28,7 +28,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI acos(-1)
 const double EPS = 1e-9;
-const ll N = 1e6 + 10;
+const ll N = 2e5 + 10;
 const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
@@ -200,45 +200,13 @@ namespace io
 }
 using namespace io;
 
-vector<ll> g[N];
-ll dep[N], dep2[N];
-ll nownod;
-ll ans;
-void dfs(ll u, ll p = -1)
-{
+ll n, m;
 
-    for (auto v : g[u])
-    {
-        if (v != p)
-        {
-            dep[v] = dep[u] + 1;
-            dfs(v, u);
-            dep2[u] = max(dep2[u], dep2[v] + 1);
-        }
-    }
-}
+vpll Move = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
-void dfs2(ll u, ll p=-1)
+bool isValid(ll x, ll y)
 {
-    for (auto v : g[u])
-    {
-        if (v != p)
-        {
-            dfs2(v, u);
-            ans += min(dep[u], dep2[v] + 1);
-        }
-    }
-    ans -= min(dep[u], dep2[u]);
-}
-
-void reset(ll n)
-{
-    for (ll i = 0; i <= n; i++)
-    {
-        g[i].clear();
-        dep[i] = 0;
-        dep2[i] = 0;
-    }
+    return (x >= 1 && y >= 1 && x <= n && y <= m);
 }
 
 int main()
@@ -246,28 +214,86 @@ int main()
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
-        cout << "Case #" << tno++ << ": ";
-        ll n;
-        cin >> n;
-        reset(n);
-        for (ll i = 2; i <= n; i++)
+        cin >> n >> m;
+        ll q;
+        cin >> q;
+        ll ans = (n * m);
+        set<ll> rows[n + 5];
+        set<ll> cols[m + 5];
+        for (ll i = 1; i <= n; i++)
         {
-            ll u;
-            cin >> u;
-            g[u].push_back(i);
-            g[i].push_back(u);
+            for (ll j = 1; j <= m; j++)
+            {
+                rows[i].insert(j);
+                cols[j].insert(i);
+            }
         }
-        dfs(1);
-        ans = n - 1;
-        // deb(ans);
-        dfs2(1);
+        
+        while (q--)
+        {
+            ll l, r;
+            cin >> l >> r;
+            if (rows[l].find(r)!=rows[l].end() && cols[r].find(l)!=cols[r].end())
+            {
+                ans--;
+                cols[r].erase(l);
+                rows[l].erase(r);
+            }
+            else
+            {
+                auto rw = cols[r].upper_bound(l);
+                auto cl = rows[l].upper_bound(r);
+                ll r1 = -1, r2 = -1, c1 = -1, c2 = -1;
+                if (rw != cols[r].end())
+                {
+                    r1 = *rw;
+                }
+                if (rw != cols[r].begin())
+                {
+                    rw--;
+                    r2 = *rw;
+                }
+                if (r1 != -1)
+                {
+                    ans--;
+                    cols[r].erase(r1);
+                    rows[r1].erase(r);
+                }
+                if (r2 != -1)
+                {
+                    ans--;
+                    cols[r].erase(r2);
+                    rows[r2].erase(r);
+                }
+                if (cl != rows[l].end())
+                {
+                    c1 = *cl;
+                }
+                if (cl != rows[l].begin())
+                {
+                    cl--;
+                    c2 = *cl;
+                }
+                if (c1 != -1)
+                {
+                    ans--;
+                    rows[l].erase(c1);
+                    cols[c1].erase(l);
+                }
+                if (c2 != -1)
+                {
+                    ans--;
+                    rows[l].erase(c2);
+                    cols[c2].erase(l);
+                }
+            }
+        }
         cout << ans << nn;
     }
 
