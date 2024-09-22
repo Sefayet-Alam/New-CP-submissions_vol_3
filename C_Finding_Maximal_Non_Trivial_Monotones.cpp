@@ -200,25 +200,6 @@ namespace io
 }
 using namespace io;
 
-ll power(ll a, ll n)
-{
-    ll res = 1;
-    while (n)
-    {
-        if (n % 2)
-        {
-            res *= a;
-            n--;
-        }
-        else
-        {
-            a *= a;
-            n /= 2;
-        }
-    }
-    return res;
-}
-
 int main()
 {
     fast;
@@ -226,35 +207,42 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
         ll n;
         cin >> n;
-        if(n==1) cout<<1<<nn;
-        else{
-            vector<string>vec={"169","196","961"};
-            for(ll i=5;i<=n;i+=2){
-                // string s=vec[i];
-                for(ll j=0;j<vec.size();j++){
-                vec[j]+="00";
-                // deb(vec[j]);
+        string s;
+        cin >> s;
+        vector<ll> vec;
+        ll curr = 1;
+        map<char, ll> mpp;
+        for (ll i = 1; i < n; i++)
+        {
+            if (s[i] == s[i - 1])
+                curr++;
+            else
+            {
+                if (curr > 1)
+                {
+                    mpp[s[i - 1]]++;
+                    if (s[i - 1] == 'a')
+                        vec.push_back(curr);
                 }
-                string s(i,'0');
-                // deb(s);
-                s[0]='1';
-                s[i-1]='9';
-                s[(i)/2]='6';
-                vec.push_back(s);
-                s[0]='9';
-                s[i-1]='1';
-                s[(i)/2]='6';
-                vec.push_back(s);
+                curr = 1;
             }
-            for(auto it:vec) cout<<it<<nn;
         }
-
+        if (curr > 1)
+        {
+            mpp[s[n - 1]]++;
+            if (s[n - 1] == 'a')
+                vec.push_back(curr);
+        }
+        // deb(vec);
+        ll ans=0;
+        for(auto it:vec) ans+=it;
+        cout<<ans<<nn;
     }
 
     return 0;

@@ -200,25 +200,6 @@ namespace io
 }
 using namespace io;
 
-ll power(ll a, ll n)
-{
-    ll res = 1;
-    while (n)
-    {
-        if (n % 2)
-        {
-            res *= a;
-            n--;
-        }
-        else
-        {
-            a *= a;
-            n /= 2;
-        }
-    }
-    return res;
-}
-
 int main()
 {
     fast;
@@ -226,35 +207,63 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
         ll n;
         cin >> n;
-        if(n==1) cout<<1<<nn;
-        else{
-            vector<string>vec={"169","196","961"};
-            for(ll i=5;i<=n;i+=2){
-                // string s=vec[i];
-                for(ll j=0;j<vec.size();j++){
-                vec[j]+="00";
-                // deb(vec[j]);
-                }
-                string s(i,'0');
-                // deb(s);
-                s[0]='1';
-                s[i-1]='9';
-                s[(i)/2]='6';
-                vec.push_back(s);
-                s[0]='9';
-                s[i-1]='1';
-                s[(i)/2]='6';
-                vec.push_back(s);
-            }
-            for(auto it:vec) cout<<it<<nn;
+        vector<ll> a(n), b(n);
+        cin >> a >> b;
+        ll k, l;
+        cin >> k >> l;
+        ordered_multiset<ll> ms;
+        ll tomin = 0;
+        ll ans = 0;
+        for (ll i = n - k; i < n; i++)
+        {
+            ms.insert(-b[i]);
         }
-
+        
+        ll cnt = 0;
+        for (auto it : ms)
+        {
+            if (cnt == l)
+                break; 
+            tomin += -it;
+            cnt++;
+        }
+        ll curr = 0;
+        for (ll i = n - k; i < n; i++)
+        {
+            curr += a[i];
+        }
+        ans = curr + tomin;
+        ll L = 0, R = n-k;
+        while (R<n)
+        {
+            if(ms.order_of_key(-b[R])<l){
+                tomin-=(b[R]);
+                ms.erase(ms.upper_bound(-b[R]));
+                if(ms.size()>=l) tomin+=-(*ms.find_by_order(l-1));
+            }
+            else ms.erase(ms.upper_bound(-b[R]));
+            ms.insert(-b[L]);
+            if(ms.order_of_key(-b[L])<l){
+                if(ms.size()>=l+1) tomin-=-(*ms.find_by_order(l));
+                tomin+=(b[L]);
+                // deb2(*ms.find_by_order(l-1),nowtomin);
+            }
+            
+            curr -= a[R];
+            curr += a[L];
+            // deb2(curr,tomin);
+            R++;
+            L++;
+            ll now=curr+tomin;
+            ans=max(ans,now);
+        }
+        cout<<ans<<nn;
     }
 
     return 0;

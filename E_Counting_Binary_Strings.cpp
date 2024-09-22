@@ -29,7 +29,7 @@ using namespace __gnu_pbds;
 #define PI acos(-1)
 const double EPS = 1e-9;
 const ll N = 2e5 + 10;
-const ll M = 1e9 + 7;
+const ll M = 998244353;
 
 /// INLINE FUNCTIONS
 inline ll GCD(ll a, ll b) { return b == 0 ? a : GCD(b, a % b); }
@@ -200,24 +200,8 @@ namespace io
 }
 using namespace io;
 
-ll power(ll a, ll n)
-{
-    ll res = 1;
-    while (n)
-    {
-        if (n % 2)
-        {
-            res *= a;
-            n--;
-        }
-        else
-        {
-            a *= a;
-            n /= 2;
-        }
-    }
-    return res;
-}
+
+ll dp[2508][2508];
 
 int main()
 {
@@ -230,31 +214,25 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        if(n==1) cout<<1<<nn;
-        else{
-            vector<string>vec={"169","196","961"};
-            for(ll i=5;i<=n;i+=2){
-                // string s=vec[i];
-                for(ll j=0;j<vec.size();j++){
-                vec[j]+="00";
-                // deb(vec[j]);
+        ll n, k;
+        cin >> n >> k;
+        ll ans = 0;
+        fill(dp[0] + 1, dp[0] + k + 1, 1);
+        for (ll sum = 1; sum <= n; sum++)
+        {
+            for (ll cur = 1; cur <= k; cur++)
+            {
+                for (ll prv = 1; cur * prv <= sum && cur + prv - 1 <= k; prv++){
+                    dp[sum][cur] = (dp[sum][cur] + dp[sum - cur * prv][prv]) % M;
                 }
-                string s(i,'0');
-                // deb(s);
-                s[0]='1';
-                s[i-1]='9';
-                s[(i)/2]='6';
-                vec.push_back(s);
-                s[0]='9';
-                s[i-1]='1';
-                s[(i)/2]='6';
-                vec.push_back(s);
+                if (sum == n)
+                    ans = (ans + dp[sum][cur]) % M;
             }
-            for(auto it:vec) cout<<it<<nn;
         }
-
+        cout << ans << nn;
+        for(ll i=0;i<=n;i++){
+            for(ll j=0;j<=k;j++) dp[i][j]=0;
+        }
     }
 
     return 0;

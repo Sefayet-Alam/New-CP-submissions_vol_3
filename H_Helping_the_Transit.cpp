@@ -28,7 +28,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI acos(-1)
 const double EPS = 1e-9;
-const ll N = 1e4 + 10;
+const ll N = 2e5 + 10;
 const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
@@ -81,76 +81,83 @@ namespace io{
     template <typename First, typename... Other> void print( First first, Other... other ) { if( sep ) cerr << " | "; sep = true; cerr << to_string( first ); print( other... ); }
 } using namespace io;
 
-ll n;
 
-vector<ll>vec(N);
-ll tot;
-ll dp[105][N];
 
-vector<ll>a1,b1;
-ll func(ll i,ll sum){
-    if(i==n){
-        if(tot==sum*2) return 1;
-        else return 0;
-    }
-    if(dp[i][sum]!=-1) return dp[i][sum];
-    ll a=func(i+1,sum+vec[i]);
-    ll b=func(i+1,sum);
-    return dp[i][sum]=(a|b);
+// given a directed graph return the minimum number of edges to be added so that the whole graph  become an SCC
+bool vis[N];
+vector<int> g[N], r[N], G[N], vec; // G is the condensed graph
+void dfs1(int u)
+{
+    vis[u] = 1;
+    for (auto v : g[u])
+        if (!vis[v])
+            dfs1(v);
+    vec.push_back(u);
 }
-void path(ll i,ll sum){
-    if(i==n) return;
-    if(func(i+1,sum+vec[i])){
-        a1.push_back(vec[i]);
-        path(i+1,sum+vec[i]);
-    }
-    else{
-        b1.push_back(vec[i]);
-        path(i+1,sum);
-    }
+
+vector<int> comp;
+void dfs2(int u)
+{
+    comp.push_back(u);
+    vis[u] = 1;
+    for (auto v : r[u])
+        if (!vis[v])
+            dfs2(v);
 }
+
+int idx[N], in[N], out[N];
 int main()
 {
     fast;
-    ll t;
-    // setIO();
-    // ll tno=1;;
-    t = 1;
-    // cin >> t;
-
-    while (t--)
+    int n, m;
+    cin >> n >> m;
+    for (int i = 1; i <= m; i++)
     {
-      cin>>n;
-      vec.resize(n);
-      cin>>vec;
-      tot=0;
-      for(ll i=0;i<n;i++) tot+=vec[i];
-      mem(dp,-1);
-      ll ans=func(0,0);
-      if(ans){
-        path(0,0);
-        ll s1=0,s2=0;
-        vector<ll>ans;
-        ll l=0,r=0;
-        // sort(all(a1));
-        // sort(all(b1));
-        while(ans.size()<n){
-            if(s1<=s2){
-                s1+=a1[l];
-                ans.push_back(a1[l]);
-                l++;
-            }
-            else{
-                s2+=b1[r];
-                ans.push_back(b1[r]);
-                r++;
+        int u, v;
+        cin >> u >> v;
+        g[u].push_back(v);
+        r[v].push_back(u);
+    }
+    for (int i = 1; i <= n; i++)
+        if (!vis[i])
+            dfs1(i);
+    reverse(vec.begin(), vec.end());
+    memset(vis, 0, sizeof vis);
+    int scc = 0;
+    for (auto u : vec)
+    {
+        if (!vis[u])
+        {
+            comp.clear();
+            dfs2(u);
+            scc++;
+            for (auto x : comp)
+                idx[x] = scc;
+        }
+    }
+    for (int u = 1; u <= n; u++)
+    {
+        for (auto v : g[u])
+        {
+            if (idx[u] != idx[v])
+            {
+                in[idx[v]]++, out[idx[u]]++;
+                G[idx[u]].push_back(idx[v]);
             }
         }
-        cout<<ans<<nn;
-      }
-      else cout<<-1<<nn;
     }
-
+    int needed_in = 0, needed_out = 0;
+    for (int i = 1; i <= scc; i++)
+    {
+        if (!in[i])
+            needed_in++;
+        if (!out[i])
+            needed_out++;
+    }
+    int ans = max(needed_in, needed_out);
+    if (scc == 1)
+        ans = 0;
+    cout << ans << '\n';
     return 0;
 }
 

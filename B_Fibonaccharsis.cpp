@@ -28,7 +28,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI acos(-1)
 const double EPS = 1e-9;
-const ll N = 1e4 + 10;
+const ll N = 2e5 + 10;
 const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
@@ -81,33 +81,48 @@ namespace io{
     template <typename First, typename... Other> void print( First first, Other... other ) { if( sep ) cerr << " | "; sep = true; cerr << to_string( first ); print( other... ); }
 } using namespace io;
 
-ll n;
 
-vector<ll>vec(N);
-ll tot;
-ll dp[105][N];
 
-vector<ll>a1,b1;
-ll func(ll i,ll sum){
-    if(i==n){
-        if(tot==sum*2) return 1;
-        else return 0;
+#define REP(i, n) for (int i = 0; i < (n); i++)
+struct Matrix
+{
+    double a[2][2] = {{0, 0}, {0, 0}};
+    Matrix operator*(const Matrix &other)
+    {
+        Matrix product;
+        REP(i, 2)
+        REP(j, 2) REP(k, 2)
+        {
+            product.a[i][k] += a[i][j] * other.a[j][k];
+        }
+        return product;
     }
-    if(dp[i][sum]!=-1) return dp[i][sum];
-    ll a=func(i+1,sum+vec[i]);
-    ll b=func(i+1,sum);
-    return dp[i][sum]=(a|b);
+};
+Matrix expo_power(Matrix a, ll k)
+{
+    Matrix product;
+    REP(i, 2)
+    product.a[i][i] = 1;
+    while (k > 0)
+    {
+        if (k % 2)
+        {
+            product = product * a;
+        }
+        a = a * a;
+        k /= 2;
+    }
+    return product;
 }
-void path(ll i,ll sum){
-    if(i==n) return;
-    if(func(i+1,sum+vec[i])){
-        a1.push_back(vec[i]);
-        path(i+1,sum+vec[i]);
-    }
-    else{
-        b1.push_back(vec[i]);
-        path(i+1,sum);
-    }
+ll fib(ll n){
+    if(n==0) return 0;
+    Matrix Mat;
+    Mat.a[0][0]=0;
+    Mat.a[0][1]=1;
+    Mat.a[1][1]=1;
+    Mat.a[1][0]=1;
+    Matrix p=expo_power(Mat,n);
+    return p.a[1][0];
 }
 int main()
 {
@@ -116,39 +131,25 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    // cin >> t;
+    cin >> t;
 
     while (t--)
     {
-      cin>>n;
-      vec.resize(n);
-      cin>>vec;
-      tot=0;
-      for(ll i=0;i<n;i++) tot+=vec[i];
-      mem(dp,-1);
-      ll ans=func(0,0);
-      if(ans){
-        path(0,0);
-        ll s1=0,s2=0;
-        vector<ll>ans;
-        ll l=0,r=0;
-        // sort(all(a1));
-        // sort(all(b1));
-        while(ans.size()<n){
-            if(s1<=s2){
-                s1+=a1[l];
-                ans.push_back(a1[l]);
-                l++;
-            }
-            else{
-                s2+=b1[r];
-                ans.push_back(b1[r]);
-                r++;
-            }
+      ll n,k;
+      cin>>n>>k;
+      ll a=fib(k-2);
+      ll b=fib(k-1);
+      ll ans=0;
+    //   deb2(a,b);
+      for(ll a0=0;a0<=n;a0++){
+        if(b>0 && (n-a*a0)%b==0){
+            ll a1=(n-a*a0)/b;
+            // deb2(a0,a1);
+            // deb2(a,b);
+            if(a1>=a0 && a*a0+b*a1==n) ans++;
         }
-        cout<<ans<<nn;
       }
-      else cout<<-1<<nn;
+      cout<<ans<<nn;
     }
 
     return 0;

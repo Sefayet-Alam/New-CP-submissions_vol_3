@@ -13,7 +13,6 @@ using namespace __gnu_pbds;
 #define ll long long
 #define SZ(a) (int)a.size()
 #define UNIQUE(a) (a).erase(unique(all(a)), (a).end())
-#define mp make_pair
 #define mem(a, b) memset(a, b, sizeof(a))
 #define all(x) x.begin(), x.end()
 
@@ -200,25 +199,6 @@ namespace io
 }
 using namespace io;
 
-ll power(ll a, ll n)
-{
-    ll res = 1;
-    while (n)
-    {
-        if (n % 2)
-        {
-            res *= a;
-            n--;
-        }
-        else
-        {
-            a *= a;
-            n /= 2;
-        }
-    }
-    return res;
-}
-
 int main()
 {
     fast;
@@ -230,31 +210,47 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        if(n==1) cout<<1<<nn;
-        else{
-            vector<string>vec={"169","196","961"};
-            for(ll i=5;i<=n;i+=2){
-                // string s=vec[i];
-                for(ll j=0;j<vec.size();j++){
-                vec[j]+="00";
-                // deb(vec[j]);
-                }
-                string s(i,'0');
-                // deb(s);
-                s[0]='1';
-                s[i-1]='9';
-                s[(i)/2]='6';
-                vec.push_back(s);
-                s[0]='9';
-                s[i-1]='1';
-                s[(i)/2]='6';
-                vec.push_back(s);
-            }
-            for(auto it:vec) cout<<it<<nn;
+        ll n, k, q;
+        cin >> n >> k >> q;
+        vector<ll> arr(n);
+        cin >> arr;
+        map<ll,ll>mp;
+        set<pair<ll,ll>>s;
+        for(ll i=0;i<k;i++){
+            pair<ll,ll>now={mp[arr[i]-i],arr[i]-i};
+            s.erase(now);
+            mp[arr[i]-i]++;
+            s.insert({mp[arr[i]-i],arr[i]-i});
         }
+        ll ans[n];
+        for (int i = k - 1; i < n; i++)
+        {
+            pair<ll, ll> now = *s.rbegin();
+            ans[i - (k - 1)] = k - now.first;
 
+            ll j = i - (k - 1);
+            now = {mp[arr[j] - j], arr[j] - j};
+            s.erase(now);
+            mp[arr[j] - j]--;
+            s.insert({mp[arr[j] - j], arr[j] - j});
+
+            if (i + 1 < n)
+            {
+                j = i + 1;
+                now = {mp[arr[j] - j], arr[j] - j};
+                s.erase(now);
+                mp[arr[j] - j]++;
+                s.insert({mp[arr[j] - j], arr[j] - j});
+            }
+        }
+        while (q--)
+        {
+            ll l,r;
+            cin>>l>>r;
+            l--,r--;
+            cout<<ans[l]<<nn;
+        }
+        
     }
 
     return 0;

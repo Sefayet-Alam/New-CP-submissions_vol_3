@@ -28,7 +28,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI acos(-1)
 const double EPS = 1e-9;
-const ll N = 1e4 + 10;
+const ll N = 2e5 + 10;
 const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
@@ -81,34 +81,40 @@ namespace io{
     template <typename First, typename... Other> void print( First first, Other... other ) { if( sep ) cerr << " | "; sep = true; cerr << to_string( first ); print( other... ); }
 } using namespace io;
 
-ll n;
 
+vector<ll>g[N];
+ll dp[N][2];
 vector<ll>vec(N);
-ll tot;
-ll dp[105][N];
+ll n,c;
+ll dfs(ll vertex,ll par,ll f){
+    if(dp[vertex][f]!=-1) return dp[vertex][f];
+    ll ret=0;
+    
+    ll a=0;
+    ll b=0;
+    for(ll child: g[vertex]){
+        if(child==par) continue;
+        a+=dfs(child,vertex,0);
+        b+=dfs(child,vertex,1);
+    }
+    ll nowval=vec[vertex];
+    if(f) nowval-=c;
+    //nibona
+    ret=max(ret,a);
+    //nibo
+    if(f) nowval-=c;
+    ret=max(ret,nowval+b);
+    return dp[vertex][f]=ret;
+}
 
-vector<ll>a1,b1;
-ll func(ll i,ll sum){
-    if(i==n){
-        if(tot==sum*2) return 1;
-        else return 0;
-    }
-    if(dp[i][sum]!=-1) return dp[i][sum];
-    ll a=func(i+1,sum+vec[i]);
-    ll b=func(i+1,sum);
-    return dp[i][sum]=(a|b);
-}
-void path(ll i,ll sum){
-    if(i==n) return;
-    if(func(i+1,sum+vec[i])){
-        a1.push_back(vec[i]);
-        path(i+1,sum+vec[i]);
-    }
-    else{
-        b1.push_back(vec[i]);
-        path(i+1,sum);
+ll reset(ll n){
+    for(ll i=0;i<=n;i++){
+        dp[i][0]=dp[i][1]=-1;
+        g[i].clear();
+        vec[i]=0;
     }
 }
+
 int main()
 {
     fast;
@@ -116,39 +122,25 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    // cin >> t;
+    cin >> t;
 
     while (t--)
     {
-      cin>>n;
-      vec.resize(n);
-      cin>>vec;
-      tot=0;
-      for(ll i=0;i<n;i++) tot+=vec[i];
-      mem(dp,-1);
-      ll ans=func(0,0);
-      if(ans){
-        path(0,0);
-        ll s1=0,s2=0;
-        vector<ll>ans;
-        ll l=0,r=0;
-        // sort(all(a1));
-        // sort(all(b1));
-        while(ans.size()<n){
-            if(s1<=s2){
-                s1+=a1[l];
-                ans.push_back(a1[l]);
-                l++;
-            }
-            else{
-                s2+=b1[r];
-                ans.push_back(b1[r]);
-                r++;
-            }
+        cin>>n>>c;
+        reset(n);
+        vec.resize(n+1);
+        for(ll i=1;i<=n;i++){
+            cin>>vec[i];
         }
+        for(ll i=0;i<n-1;i++){
+            ll u,v;
+            cin>>u>>v;
+            g[u].push_back(v);
+            g[v].push_back(u);
+        }
+        // deb(vec);
+        ll ans=dfs(1,-1,0);
         cout<<ans<<nn;
-      }
-      else cout<<-1<<nn;
     }
 
     return 0;

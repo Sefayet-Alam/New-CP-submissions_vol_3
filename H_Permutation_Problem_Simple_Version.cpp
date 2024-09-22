@@ -28,7 +28,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI acos(-1)
 const double EPS = 1e-9;
-const ll N = 2e5 + 10;
+const ll N = 1e5 + 10;
 const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
@@ -200,23 +200,17 @@ namespace io
 }
 using namespace io;
 
-ll power(ll a, ll n)
+vl divisors[N];
+
+void divisor_store()
 {
-    ll res = 1;
-    while (n)
+    for (int i = 1; i < N; i++)
     {
-        if (n % 2)
+        for (int j = i; j < N; j += i)
         {
-            res *= a;
-            n--;
-        }
-        else
-        {
-            a *= a;
-            n /= 2;
+            divisors[j].push_back(i);
         }
     }
-    return res;
 }
 
 int main()
@@ -227,34 +221,34 @@ int main()
     // ll tno=1;;
     t = 1;
     cin >> t;
-
+    divisor_store();
+    // deb(divisors[4]);
     while (t--)
     {
         ll n;
         cin >> n;
-        if(n==1) cout<<1<<nn;
-        else{
-            vector<string>vec={"169","196","961"};
-            for(ll i=5;i<=n;i+=2){
-                // string s=vec[i];
-                for(ll j=0;j<vec.size();j++){
-                vec[j]+="00";
-                // deb(vec[j]);
-                }
-                string s(i,'0');
-                // deb(s);
-                s[0]='1';
-                s[i-1]='9';
-                s[(i)/2]='6';
-                vec.push_back(s);
-                s[0]='9';
-                s[i-1]='1';
-                s[(i)/2]='6';
-                vec.push_back(s);
+        map<pll, ll> mpp;
+        ll ans = 0;
+        vector<ll> vec(n + 1);
+        for (ll i = 1; i <= n; i++)
+        {
+            ll x;
+            cin >> x;
+            // deb(x);
+            vec[i] = x;
+            ll g = GCD(x, i);
+            x = x / g;
+            ll d = i / g;
+            // deb2(x,d);
+            // deb(mpp[{d,x}]);
+            for (auto it : divisors[x])
+            {
+                if(mpp.count({d,it}) )ans += mpp[{d, it}];
+                mpp[{it, d}]++;
             }
-            for(auto it:vec) cout<<it<<nn;
         }
-
+        //   deb(vec);
+        cout << ans << nn;
     }
 
     return 0;

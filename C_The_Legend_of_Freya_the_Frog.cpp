@@ -28,7 +28,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI acos(-1)
 const double EPS = 1e-9;
-const ll N = 1e4 + 10;
+const ll N = 2e5 + 10;
 const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
@@ -81,34 +81,8 @@ namespace io{
     template <typename First, typename... Other> void print( First first, Other... other ) { if( sep ) cerr << " | "; sep = true; cerr << to_string( first ); print( other... ); }
 } using namespace io;
 
-ll n;
 
-vector<ll>vec(N);
-ll tot;
-ll dp[105][N];
 
-vector<ll>a1,b1;
-ll func(ll i,ll sum){
-    if(i==n){
-        if(tot==sum*2) return 1;
-        else return 0;
-    }
-    if(dp[i][sum]!=-1) return dp[i][sum];
-    ll a=func(i+1,sum+vec[i]);
-    ll b=func(i+1,sum);
-    return dp[i][sum]=(a|b);
-}
-void path(ll i,ll sum){
-    if(i==n) return;
-    if(func(i+1,sum+vec[i])){
-        a1.push_back(vec[i]);
-        path(i+1,sum+vec[i]);
-    }
-    else{
-        b1.push_back(vec[i]);
-        path(i+1,sum);
-    }
-}
 int main()
 {
     fast;
@@ -116,39 +90,19 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    // cin >> t;
+    cin >> t;
 
     while (t--)
     {
-      cin>>n;
-      vec.resize(n);
-      cin>>vec;
-      tot=0;
-      for(ll i=0;i<n;i++) tot+=vec[i];
-      mem(dp,-1);
-      ll ans=func(0,0);
-      if(ans){
-        path(0,0);
-        ll s1=0,s2=0;
-        vector<ll>ans;
-        ll l=0,r=0;
-        // sort(all(a1));
-        // sort(all(b1));
-        while(ans.size()<n){
-            if(s1<=s2){
-                s1+=a1[l];
-                ans.push_back(a1[l]);
-                l++;
-            }
-            else{
-                s2+=b1[r];
-                ans.push_back(b1[r]);
-                r++;
-            }
-        }
-        cout<<ans<<nn;
-      }
-      else cout<<-1<<nn;
+      ll x,y,k;
+      cin>>x>>y>>k;
+    //   k--;
+      ll xjmp=(x+k-1)/k;
+      ll yjmp=(y+k-1)/k;
+      ll ans=2*max(xjmp,yjmp);
+    //   deb2(xjmp,yjmp);
+      if(xjmp>yjmp) ans--;
+      cout<<ans<<nn;
     }
 
     return 0;

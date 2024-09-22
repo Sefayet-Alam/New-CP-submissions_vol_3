@@ -200,25 +200,6 @@ namespace io
 }
 using namespace io;
 
-ll power(ll a, ll n)
-{
-    ll res = 1;
-    while (n)
-    {
-        if (n % 2)
-        {
-            res *= a;
-            n--;
-        }
-        else
-        {
-            a *= a;
-            n /= 2;
-        }
-    }
-    return res;
-}
-
 int main()
 {
     fast;
@@ -232,29 +213,51 @@ int main()
     {
         ll n;
         cin >> n;
-        if(n==1) cout<<1<<nn;
-        else{
-            vector<string>vec={"169","196","961"};
-            for(ll i=5;i<=n;i+=2){
-                // string s=vec[i];
-                for(ll j=0;j<vec.size();j++){
-                vec[j]+="00";
-                // deb(vec[j]);
-                }
-                string s(i,'0');
-                // deb(s);
-                s[0]='1';
-                s[i-1]='9';
-                s[(i)/2]='6';
-                vec.push_back(s);
-                s[0]='9';
-                s[i-1]='1';
-                s[(i)/2]='6';
-                vec.push_back(s);
-            }
-            for(auto it:vec) cout<<it<<nn;
+        map<ll, ll> mppx, mppy;
+        map<pll, ll> mpp;
+        for (ll i = 0; i < n; i++)
+        {
+            ll x, y;
+            cin >> x >> y;
+            mpp[{x, y}]++;
+            mppx[x]++;
+            mppy[y]++;
         }
-
+        ll ans = 0;
+        for (ll i = 0; i <= n; i++)
+        {
+            if (mppx[i] == 2)
+            {
+                ans += max(0LL, n - 2);
+            }
+        }
+        for (auto it : mpp)
+        {
+            ll x=it.first.first;
+            ll y=it.first.second;
+            // deb2(x,y);
+            if (y == 1)
+            {
+                ll x1 = x - 1;
+                ll y1 = y - 1;
+                ll x2 = x + 1;
+                ll y2 = y - 1;
+                if (mpp.count({x1, y1}) && mpp.count({x2, y2})){
+                    ans++;
+                }
+            }
+            else
+            {
+                ll x1 = x - 1;
+                ll y1 = y + 1;
+                ll x2 = x + 1;
+                ll y2 = y + 1;
+                if (mpp.count({x1, y1}) && mpp.count({x2, y2})){
+                    ans++;
+                }
+            }
+        }
+        cout << ans << nn;
     }
 
     return 0;

@@ -1,2 +1,2 @@
-deb2(curr1,curr2);
-                deb2(curri,currj);
+cout<<i<<" "<<bam[now]<<" "<<dan[now]<<endl;
+        cout<<i<<" "<<left<<" "<<right<<endl;

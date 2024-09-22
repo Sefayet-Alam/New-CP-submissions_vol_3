@@ -28,7 +28,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI acos(-1)
 const double EPS = 1e-9;
-const ll N = 1e4 + 10;
+const ll N = 2e5 + 10;
 const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
@@ -82,33 +82,49 @@ namespace io{
 } using namespace io;
 
 ll n;
-
-vector<ll>vec(N);
-ll tot;
-ll dp[105][N];
-
-vector<ll>a1,b1;
-ll func(ll i,ll sum){
-    if(i==n){
-        if(tot==sum*2) return 1;
-        else return 0;
+vector<ll> arr(100005);
+bool check(ll s) {
+    vector<vector<ll>> dp(2, vector<ll>(n + 1 , 1e17));
+    dp[0][0] = dp[0][1] = 0;
+ 
+    ll curSum = 0 , j = 0;
+    multiset<ll> st;
+    st.insert(0);
+    for(int i = 1;i <= n;i++) {
+        if(arr[i] > s) return false;
+        dp[0][i] = min(dp[0][i - 1], dp[1][i - 1]) + arr[i];
+        curSum += arr[i];
+        while(curSum > s) {
+            curSum -= arr[j];
+            if(j - 1 >= 0) st.erase(st.find(dp[0][j - 1]));
+            j++;
+        }
+        dp[1][i] = *st.begin();
+        st.insert(dp[0][i]);
     }
-    if(dp[i][sum]!=-1) return dp[i][sum];
-    ll a=func(i+1,sum+vec[i]);
-    ll b=func(i+1,sum);
-    return dp[i][sum]=(a|b);
+    //debug() ,dbg(s), dbg(dp);
+    if(dp[0][n] <= s || dp[1][n] <= s) return true;
+    else return false;
+ 
 }
-void path(ll i,ll sum){
-    if(i==n) return;
-    if(func(i+1,sum+vec[i])){
-        a1.push_back(vec[i]);
-        path(i+1,sum+vec[i]);
+ 
+void solve() {
+    cin >> n;
+    for(int i = 1;i <= n;i++) {
+        cin >> arr[i];
     }
-    else{
-        b1.push_back(vec[i]);
-        path(i+1,sum);
+    ll lo = 1, hi = 1e15 ,res = -1;
+    while(lo <= hi) {
+        ll mid = (lo + hi) / 2;
+        //debug() , dbg(mid);
+        if(check(mid)) {
+            res = mid;
+            hi = mid - 1;
+        }else lo = mid + 1;
     }
+    cout << res << endl;
 }
+
 int main()
 {
     fast;
@@ -116,39 +132,11 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    // cin >> t;
+    cin >> t;
 
     while (t--)
     {
-      cin>>n;
-      vec.resize(n);
-      cin>>vec;
-      tot=0;
-      for(ll i=0;i<n;i++) tot+=vec[i];
-      mem(dp,-1);
-      ll ans=func(0,0);
-      if(ans){
-        path(0,0);
-        ll s1=0,s2=0;
-        vector<ll>ans;
-        ll l=0,r=0;
-        // sort(all(a1));
-        // sort(all(b1));
-        while(ans.size()<n){
-            if(s1<=s2){
-                s1+=a1[l];
-                ans.push_back(a1[l]);
-                l++;
-            }
-            else{
-                s2+=b1[r];
-                ans.push_back(b1[r]);
-                r++;
-            }
-        }
-        cout<<ans<<nn;
-      }
-      else cout<<-1<<nn;
+      solve();
     }
 
     return 0;

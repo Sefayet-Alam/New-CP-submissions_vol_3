@@ -28,8 +28,8 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI acos(-1)
 const double EPS = 1e-9;
-const ll N = 2e5 + 10;
-const ll M = 1e9 + 7;
+const ll N = 1e5 + 7;
+const ll M = 2e6 + 7;
 
 /// INLINE FUNCTIONS
 inline ll GCD(ll a, ll b) { return b == 0 ? a : GCD(b, a % b); }
@@ -200,21 +200,73 @@ namespace io
 }
 using namespace io;
 
-ll power(ll a, ll n)
+inline ll Ceil(ll p, ll q) { return p < 0 ? p / q : p / q + !!(p % q); }
+
+vector<ll> smallest_factor;
+vector<ll> prime;
+vector<ll> primes;
+
+void sieve(ll maximum)
 {
-    ll res = 1;
-    while (n)
+    maximum = max(maximum, 2LL);
+    smallest_factor.assign(maximum + 1, 0);
+    prime.assign(maximum + 1, true);
+    prime[0] = prime[1] = false;
+    primes = {2};
+
+    for (ll p = 2; p <= maximum; p += 2)
     {
-        if (n % 2)
+        prime[p] = p == 2;
+        smallest_factor[p] = 2;
+    }
+
+    for (ll p = 3; p * p <= maximum; p += 2)
+        if (prime[p])
+            for (int i = p * p; i <= maximum; i += 2 * p)
+                if (prime[i])
+                {
+                    prime[i] = false;
+                    smallest_factor[i] = p;
+                }
+
+    for (ll p = 3; p <= maximum; p += 2)
+        if (prime[p])
         {
-            res *= a;
-            n--;
+            smallest_factor[p] = p;
+            primes.push_back(p);
         }
-        else
+}
+
+ll segmentSieve(ll l, ll r)
+{
+    // vector<bool> isPrime(r-l+1,1);
+    vector<ll> conv(r - l + 1, 1);
+    vector<ll> divs(r - l + 1, 0);
+    ll res = 0;
+    // if (l==1) isPrime[0]=false;
+    for (ll i = 0; i < primes.size(); i++)
+    {
+        ll p = primes[i];
+        ll k = Ceil(l, p) * p;
+        for (ll j = k; j <= r; j += p)
         {
-            a *= a;
-            n /= 2;
+            ll curr = j;
+            while (curr % p == 0)
+            {
+                conv[j - l] *= p;
+                divs[j - l]++;
+                curr /= p;
+            }
         }
+    }
+    for (ll i = 0; i < r - l + 1; ++i)
+    {
+        // deb2(i,conv[/i]);
+        ll now = ((i+l) / conv[i]);
+        if (now > 1)
+            divs[i]++;
+        if (prime[divs[i]])
+            res++;
     }
     return res;
 }
@@ -226,35 +278,15 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
-
+    // cin >> t;
+    sieve(N);
+    // deb(primes.size());
     while (t--)
     {
-        ll n;
-        cin >> n;
-        if(n==1) cout<<1<<nn;
-        else{
-            vector<string>vec={"169","196","961"};
-            for(ll i=5;i<=n;i+=2){
-                // string s=vec[i];
-                for(ll j=0;j<vec.size();j++){
-                vec[j]+="00";
-                // deb(vec[j]);
-                }
-                string s(i,'0');
-                // deb(s);
-                s[0]='1';
-                s[i-1]='9';
-                s[(i)/2]='6';
-                vec.push_back(s);
-                s[0]='9';
-                s[i-1]='1';
-                s[(i)/2]='6';
-                vec.push_back(s);
-            }
-            for(auto it:vec) cout<<it<<nn;
-        }
-
+        ll l, r;
+        cin >> l >> r;
+        ll ans = segmentSieve(l, r);
+        cout << ans << nn;
     }
 
     return 0;

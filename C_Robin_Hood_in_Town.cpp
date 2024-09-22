@@ -28,7 +28,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI acos(-1)
 const double EPS = 1e-9;
-const ll N = 1e4 + 10;
+const ll N = 2e5 + 10;
 const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
@@ -82,33 +82,44 @@ namespace io{
 } using namespace io;
 
 ll n;
-
-vector<ll>vec(N);
-ll tot;
-ll dp[105][N];
-
-vector<ll>a1,b1;
-ll func(ll i,ll sum){
-    if(i==n){
-        if(tot==sum*2) return 1;
-        else return 0;
+vector<ll>a(N);
+bool func(ll pos){
+    vector<ll>vec(n);
+    vec=a;
+    ll maxm=*max_element(all(vec));
+    for(ll i=0;i<n;i++){
+        if(vec[i]==maxm){
+            vec[i]+=pos;
+            break;
+        }
     }
-    if(dp[i][sum]!=-1) return dp[i][sum];
-    ll a=func(i+1,sum+vec[i]);
-    ll b=func(i+1,sum);
-    return dp[i][sum]=(a|b);
+    ll tot=0;
+    for(ll i=0;i<n;i++) tot+=vec[i];
+    ll unhap=0;
+    for(ll i=0;i<n;i++){
+        if(vec[i]*2*n<tot)unhap++;
+    }
+    ll hap=n-unhap;
+    return unhap>hap;
 }
-void path(ll i,ll sum){
-    if(i==n) return;
-    if(func(i+1,sum+vec[i])){
-        a1.push_back(vec[i]);
-        path(i+1,sum+vec[i]);
+ll bs(ll low,ll high){
+    ll mid;
+    ll ans=-1;
+    while(low<=high){
+        mid=low+(high-low)/2;
+        //cout<<mid<<" "<<func(mid)<<endl;
+        if(func(mid)){
+            ans=mid;
+            high=mid-1;
+        }
+        else{
+            low=mid+1;
+        }
     }
-    else{
-        b1.push_back(vec[i]);
-        path(i+1,sum);
-    }
+    return ans;
 }
+
+
 int main()
 {
     fast;
@@ -116,39 +127,16 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    // cin >> t;
+    cin >> t;
 
     while (t--)
     {
-      cin>>n;
-      vec.resize(n);
-      cin>>vec;
-      tot=0;
-      for(ll i=0;i<n;i++) tot+=vec[i];
-      mem(dp,-1);
-      ll ans=func(0,0);
-      if(ans){
-        path(0,0);
-        ll s1=0,s2=0;
-        vector<ll>ans;
-        ll l=0,r=0;
-        // sort(all(a1));
-        // sort(all(b1));
-        while(ans.size()<n){
-            if(s1<=s2){
-                s1+=a1[l];
-                ans.push_back(a1[l]);
-                l++;
-            }
-            else{
-                s2+=b1[r];
-                ans.push_back(b1[r]);
-                r++;
-            }
-        }
+        cin>>n;
+        a.resize(n);
+        cin>>a;
+        ll l=0,r=1e18;
+        ll ans=bs(l,r);
         cout<<ans<<nn;
-      }
-      else cout<<-1<<nn;
     }
 
     return 0;

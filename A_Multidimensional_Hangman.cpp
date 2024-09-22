@@ -200,24 +200,78 @@ namespace io
 }
 using namespace io;
 
-ll power(ll a, ll n)
+/***
+ *
+ * 64-bit hashing for vectors or strings
+ * Get the forward and reverse hash of any segment
+ * Base is chosen randomly to prevent anti-hash cases from being constructed
+ *
+ * Complexity - O(n) to build, O(1) for each hash query
+ *
+ ***/
+
+#define MAXLEN 100
+constexpr uint64_t mod = (1ULL << 61) - 1;
+
+const uint64_t seed = chrono::system_clock::now().time_since_epoch().count();
+const uint64_t base = mt19937_64(seed)() % (mod / 3) + (mod / 3);
+
+uint64_t base_pow[MAXLEN];
+
+int64_t modmul(uint64_t a, uint64_t b)
 {
-    ll res = 1;
-    while (n)
+    uint64_t l1 = (uint32_t)a, h1 = a >> 32, l2 = (uint32_t)b, h2 = b >> 32;
+    uint64_t l = l1 * l2, m = l1 * h2 + l2 * h1, h = h1 * h2;
+    uint64_t ret = (l & mod) + (l >> 61) + (h << 3) + (m >> 29) + (m << 35 >> 3) + 1;
+    ret = (ret & mod) + (ret >> 61);
+    ret = (ret & mod) + (ret >> 61);
+    return ret - 1;
+}
+
+void init()
+{
+    base_pow[0] = 1;
+    for (int i = 1; i < MAXLEN; i++)
     {
-        if (n % 2)
+        base_pow[i] = modmul(base_pow[i - 1], base);
+    }
+}
+
+struct PolyHash
+{
+    /// Remove suff vector and usage if reverse hash is not required for more speed
+    vector<int64_t> pref, suff;
+
+    PolyHash() {}
+
+    template <typename T>
+    PolyHash(const vector<T> &ar)
+    {
+        if (!base_pow[0])
+            init();
+
+        int n = ar.size();
+        assert(n < MAXLEN);
+        pref.resize(n + 3, 0);
+
+        for (int i = 1; i <= n; i++)
         {
-            res *= a;
-            n--;
-        }
-        else
-        {
-            a *= a;
-            n /= 2;
+            pref[i] = modmul(pref[i - 1], base) + ar[i - 1] + 997;
+            if (pref[i] >= mod)
+                pref[i] -= mod;
         }
     }
-    return res;
-}
+
+    PolyHash(const char *str)
+        : PolyHash(vector<char>(str, str + strlen(str))) {}
+    PolyHash(string str)
+        : PolyHash(vector<char>(all(str))) {}
+    uint64_t get_hash(int l, int r)
+    {
+        int64_t h = pref[r + 1] - modmul(base_pow[r - l + 1], pref[l]);
+        return h < 0 ? h + mod : h;
+    }
+};
 
 int main()
 {
@@ -226,35 +280,68 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        if(n==1) cout<<1<<nn;
-        else{
-            vector<string>vec={"169","196","961"};
-            for(ll i=5;i<=n;i+=2){
-                // string s=vec[i];
-                for(ll j=0;j<vec.size();j++){
-                vec[j]+="00";
-                // deb(vec[j]);
+        init();
+        vector<string> vec;
+        ll n, m;
+        cin >> n >> m;
+        map<ll, ll> mpp;
+        for (ll i = 0; i < n; i++)
+        {
+            string s;
+            cin >> s;
+            vec.push_back(s);
+            ll pos = -1;
+            for (ll j = 0; j < m; j++)
+            {
+                if (s[j] == '*')
+                {
+                    pos = j;
+                    break;
                 }
-                string s(i,'0');
-                // deb(s);
-                s[0]='1';
-                s[i-1]='9';
-                s[(i)/2]='6';
-                vec.push_back(s);
-                s[0]='9';
-                s[i-1]='1';
-                s[(i)/2]='6';
-                vec.push_back(s);
             }
-            for(auto it:vec) cout<<it<<nn;
+            for (char a = 'a'; a <= 'z'; a++)
+            {
+                s[pos] = a;
+                PolyHash ps(s);
+                ll now = ps.get_hash(0, m - 1);
+                mpp[now]++;
+            }
         }
-
+        ll maxm=0;
+        string ans="";
+        for (auto it : vec)
+        {
+            string s = it;
+            ll pos = -1;
+            for (ll j = 0; j < m; j++)
+            {
+                if (s[j] == '*')
+                {
+                    pos = j;
+                    break;
+                }
+            }
+            for (char a = 'a'; a <= 'z'; a++)
+            {
+                s[pos] = a;
+                PolyHash ps(s);
+                ll now = ps.get_hash(0, m - 1);
+                if(mpp[now]>maxm){
+                    maxm=mpp[now];
+                    ans=s;
+                }
+                else if(mpp[now]==maxm){
+                    if(s<ans){
+                        ans=s;
+                    }
+                }
+            }
+        }
+        cout<<ans<<" "<<maxm<<nn;
     }
 
     return 0;

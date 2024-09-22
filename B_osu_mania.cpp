@@ -94,7 +94,16 @@ int main()
 
     while (t--)
     {
-      
+      vector<ll>vec;
+      ll n;
+      cin>>n;
+      for(ll i=0;i<n;i++){
+        string s;
+        cin>>s;
+        for(ll j=0;j<4;j++) if(s[j]=='#') vec.push_back(j+1);
+      }
+      reverse(all(vec));
+      cout<<vec<<nn;
     }
 
     return 0;

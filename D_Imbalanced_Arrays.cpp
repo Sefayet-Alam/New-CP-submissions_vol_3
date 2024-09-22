@@ -200,25 +200,6 @@ namespace io
 }
 using namespace io;
 
-ll power(ll a, ll n)
-{
-    ll res = 1;
-    while (n)
-    {
-        if (n % 2)
-        {
-            res *= a;
-            n--;
-        }
-        else
-        {
-            a *= a;
-            n /= 2;
-        }
-    }
-    return res;
-}
-
 int main()
 {
     fast;
@@ -232,29 +213,40 @@ int main()
     {
         ll n;
         cin >> n;
-        if(n==1) cout<<1<<nn;
-        else{
-            vector<string>vec={"169","196","961"};
-            for(ll i=5;i<=n;i+=2){
-                // string s=vec[i];
-                for(ll j=0;j<vec.size();j++){
-                vec[j]+="00";
-                // deb(vec[j]);
-                }
-                string s(i,'0');
-                // deb(s);
-                s[0]='1';
-                s[i-1]='9';
-                s[(i)/2]='6';
-                vec.push_back(s);
-                s[0]='9';
-                s[i-1]='1';
-                s[(i)/2]='6';
-                vec.push_back(s);
-            }
-            for(auto it:vec) cout<<it<<nn;
+        vector<pll> vec;
+        for (ll i = 0; i < n; i++)
+        {
+            ll x;
+            cin >> x;
+            vec.push_back({x, i});
         }
-
+        sort(all(vec));
+        ll l = 0, r = n - 1;
+        bool f=0;
+        vector<ll>ans(n);
+        ll sz=n;
+        while (l <= r)
+        {
+            if ((vec[r].first == n - l) ^ (vec[l].first == n - 1 - r))
+            {
+                if (vec[r].first == n - l)
+                {
+                    ans[vec[r--].second] = sz--;
+                }
+                else
+                {
+                    ans[vec[l++].second] = -(sz--);
+                }
+            }
+            else{
+                f=1;break;
+            }
+        }
+        if(f) cout<<"NO"<<nn;
+        else{
+            cout<<"YES"<<nn;
+            cout<<ans<<nn;
+        }
     }
 
     return 0;

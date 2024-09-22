@@ -28,7 +28,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI acos(-1)
 const double EPS = 1e-9;
-const ll N = 1e4 + 10;
+const ll N = 2e5 + 10;
 const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
@@ -81,34 +81,8 @@ namespace io{
     template <typename First, typename... Other> void print( First first, Other... other ) { if( sep ) cerr << " | "; sep = true; cerr << to_string( first ); print( other... ); }
 } using namespace io;
 
-ll n;
 
-vector<ll>vec(N);
-ll tot;
-ll dp[105][N];
 
-vector<ll>a1,b1;
-ll func(ll i,ll sum){
-    if(i==n){
-        if(tot==sum*2) return 1;
-        else return 0;
-    }
-    if(dp[i][sum]!=-1) return dp[i][sum];
-    ll a=func(i+1,sum+vec[i]);
-    ll b=func(i+1,sum);
-    return dp[i][sum]=(a|b);
-}
-void path(ll i,ll sum){
-    if(i==n) return;
-    if(func(i+1,sum+vec[i])){
-        a1.push_back(vec[i]);
-        path(i+1,sum+vec[i]);
-    }
-    else{
-        b1.push_back(vec[i]);
-        path(i+1,sum);
-    }
-}
 int main()
 {
     fast;
@@ -116,39 +90,35 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    // cin >> t;
+    cin >> t;
 
     while (t--)
     {
+      ll n;
       cin>>n;
-      vec.resize(n);
+      vector<ll>vec(n);
       cin>>vec;
-      tot=0;
-      for(ll i=0;i<n;i++) tot+=vec[i];
-      mem(dp,-1);
-      ll ans=func(0,0);
-      if(ans){
-        path(0,0);
-        ll s1=0,s2=0;
-        vector<ll>ans;
-        ll l=0,r=0;
-        // sort(all(a1));
-        // sort(all(b1));
-        while(ans.size()<n){
-            if(s1<=s2){
-                s1+=a1[l];
-                ans.push_back(a1[l]);
-                l++;
-            }
-            else{
-                s2+=b1[r];
-                ans.push_back(b1[r]);
-                r++;
-            }
-        }
-        cout<<ans<<nn;
+      if(n==1){
+        cout<<"NO"<<nn;
+        continue;
       }
-      else cout<<-1<<nn;
+      ll sum=0;
+      for(ll i=0;i<n;i++) sum+=vec[i];
+      vector<ll>vec2(n,1);
+      vec2[n-1]=sum-(n-1);
+    //   deb2(vec,vec2);
+      bool f=0;
+      for(ll i=0;i<n-1;i++){
+        if(vec[i]==vec2[i]){
+            vec2[i]++;
+            vec2[n-1]--;
+        }
+      }
+      if(vec[n-1]==vec2[n-1]){vec2[n-1]--;vec2[0]++;}
+      if(vec2[n-1]<=0) f=1;
+    //   deb2(vec,vec2);
+      if(!f) cout<<"YES"<<nn;
+      else cout<<"NO"<<nn;
     }
 
     return 0;

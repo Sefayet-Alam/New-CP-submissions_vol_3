@@ -10,6 +10,7 @@ using namespace __gnu_pbds;
     cin.tie(0);                   \
     cout.tie(0);
 
+#define int long long
 #define ll long long
 #define SZ(a) (int)a.size()
 #define UNIQUE(a) (a).erase(unique(all(a)), (a).end())
@@ -28,7 +29,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI acos(-1)
 const double EPS = 1e-9;
-const ll N = 2e5 + 10;
+const ll N = 3e5 + 10;
 const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
@@ -200,29 +201,158 @@ namespace io
 }
 using namespace io;
 
-ll power(ll a, ll n)
+vector<int> adj[N];
+int st[N], en[N];
+int ara[N];
+int tt;
+int mx;
+
+vector<int> last[N], nxt[N];
+
+struct Segtree
 {
-    ll res = 1;
-    while (n)
+
+    int segtree[4 * N], lazy[4 * N];
+    // max Segtree with lazy updates
+    // will find maximum of value in a range ,
+    void build(int pos, int l, int r)
     {
-        if (n % 2)
+        if (l == r)
         {
-            res *= a;
-            n--;
+            segtree[pos] = 0;
+            lazy[pos] = 0;
+            return;
         }
-        else
+        int mid = (l + r) / 2;
+        build(pos * 2, l, mid);
+        build(pos * 2 + 1, mid + 1, r);
+        segtree[pos] = max(segtree[pos * 2], segtree[pos * 2 + 1]);
+        lazy[pos] = 0;
+    }
+
+    void lazyUpdate(int pos, int l, int r)
+    {
+        if (lazy[pos])
         {
-            a *= a;
-            n /= 2;
+            segtree[pos] += lazy[pos];
+            if (l != r)
+            {
+                lazy[pos * 2] += lazy[pos];
+                lazy[pos * 2 + 1] += lazy[pos];
+            }
+            lazy[pos] = 0;
         }
     }
-    return res;
+
+    void update(int pos, int l, int r, int L, int R, int val)
+    {
+        lazyUpdate(pos, l, r);
+        if (l > r)
+            return;
+        if (l > R or r < L)
+            return;
+        if (l >= L and r <= R)
+        {
+            lazy[pos] += val;
+            lazyUpdate(pos, l, r);
+            return;
+        }
+        int mid = (l + r) / 2;
+        update(pos * 2, l, mid, L, R, val);
+        update(pos * 2 + 1, mid + 1, r, L, R, val);
+        segtree[pos] = max(segtree[pos * 2 + 1], segtree[pos * 2]);
+    }
+
+    int query(int pos, int l, int r, int L, int R)
+    {
+        lazyUpdate(pos, l, r);
+        if (l > r)
+            return 0;
+        if (l > R or r < L)
+            return 0;
+        if (l >= L and r <= R)
+            return segtree[pos];
+        int mid = (l + r) / 2;
+        int val1 = query(pos * 2, l, mid, L, R);
+        int val2 = query(pos * 2 + 1, mid + 1, r, L, R);
+        return max(val1, val2);
+    }
+
+} segtree;
+
+int n;
+void dfsEuler(int u)
+{
+    if (last[ara[u]].size())
+    {
+        nxt[last[ara[u]].back()].push_back(u);
+    }
+    last[ara[u]].push_back(u);
+    st[u] = tt + 1;
+    if (adj[u].size() == 0)
+        tt++;
+    for (auto v : adj[u])
+        dfsEuler(v);
+    en[u] = tt;
+    last[ara[u]].pop_back();
+
+    segtree.update(1, 1, n, st[u], en[u], 1);
+    for (auto v : nxt[u])
+        segtree.update(1, 1, n, st[v], en[v], -1);
+
+    if (adj[u].size() == 0)
+        return;
+    if (adj[u].size() == 1)
+    {
+        mx = max(mx, segtree.query(1, 1, n, st[u], en[u]));
+        return;
+    }
+    vector<int> temp;
+    for (auto v : adj[u])
+    {
+        int ret = segtree.query(1, 1, n, st[v], en[v]);
+        temp.push_back(ret);
+    }
+    sort(temp.rbegin(), temp.rend());
+    mx = max(mx, temp[0] * temp[1]);
 }
 
-int main()
+void solve()
+{
+
+    cin >> n;
+    segtree.build(1, 1, n);
+    tt = 0;
+    mx = 1;
+    for (int i = 0; i <= n; i++)
+    {
+        adj[i].clear();
+        last[i].clear();
+        nxt[i].clear();
+    }
+    for (int i = 2; i <= n; i++)
+    {
+        int p;
+        cin >> p;
+        adj[p].push_back(i);
+    }
+    for (int i = 1; i <= n; i++)
+        cin >> ara[i];
+    dfsEuler(1);
+    /* for(int i=1;i<=n;i++) cout<<i<<" "<<st[i]<<" "<<en[i]<<endl;
+     cout<<endl;
+     for(int i=1;i<=n;i++){
+         cout<<i<<endl;
+         for(auto n:nxt[i]) cout<<n<<" ";
+         cout<<endl;
+     }*/
+    cout << mx << endl;
+}
+
+main()
 {
     fast;
-    ll t;
+    int t;
     // setIO();
     // ll tno=1;;
     t = 1;
@@ -230,31 +360,7 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        if(n==1) cout<<1<<nn;
-        else{
-            vector<string>vec={"169","196","961"};
-            for(ll i=5;i<=n;i+=2){
-                // string s=vec[i];
-                for(ll j=0;j<vec.size();j++){
-                vec[j]+="00";
-                // deb(vec[j]);
-                }
-                string s(i,'0');
-                // deb(s);
-                s[0]='1';
-                s[i-1]='9';
-                s[(i)/2]='6';
-                vec.push_back(s);
-                s[0]='9';
-                s[i-1]='1';
-                s[(i)/2]='6';
-                vec.push_back(s);
-            }
-            for(auto it:vec) cout<<it<<nn;
-        }
-
+        solve();
     }
 
     return 0;

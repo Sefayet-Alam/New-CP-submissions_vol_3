@@ -200,24 +200,64 @@ namespace io
 }
 using namespace io;
 
-ll power(ll a, ll n)
-{
-    ll res = 1;
-    while (n)
-    {
-        if (n % 2)
-        {
-            res *= a;
-            n--;
+ll n, k;
+ll sum(ll l,ll r){
+    if(l>r) return 0;
+    ll ans=(r*(r+1))/2;
+    if(l){
+        l--;
+        ll tomin=(l*(l+1))/2;
+        ans-=tomin;
+    }
+    return ans;
+}
+
+bool func(ll pos){
+    ll x1=sum(k,k+pos);
+    ll x2=sum(k+pos+1,k+n-1);
+    return x1<=x2;
+}
+
+ll bs(ll low,ll high){
+    ll mid;
+    ll ans=0;
+    while(low<=high){
+        mid=low+(high-low)/2;
+        //cout<<mid<<" "<<func(mid)<<endl;
+        if(func(mid)){
+            ans=mid;
+            low=mid+1;
         }
-        else
-        {
-            a *= a;
-            n /= 2;
+        else{
+            high=mid-1;
         }
     }
-    return res;
+    return ans;
 }
+
+bool func2(ll pos){
+    ll x1=sum(k,k+pos);
+    ll x2=sum(k+pos+1,k+n-1);
+    return x1>=x2;
+}
+
+ll bs2(ll low,ll high){
+    ll mid;
+    ll ans=0;
+    while(low<=high){
+        mid=low+(high-low)/2;
+        //cout<<mid<<" "<<func(mid)<<endl;
+        if(func2(mid)){
+            ans=mid;
+            high=mid-1;
+        }
+        else{
+            low=mid+1;
+        }
+    }
+    return ans;
+}
+
 
 int main()
 {
@@ -230,31 +270,16 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        if(n==1) cout<<1<<nn;
-        else{
-            vector<string>vec={"169","196","961"};
-            for(ll i=5;i<=n;i+=2){
-                // string s=vec[i];
-                for(ll j=0;j<vec.size();j++){
-                vec[j]+="00";
-                // deb(vec[j]);
-                }
-                string s(i,'0');
-                // deb(s);
-                s[0]='1';
-                s[i-1]='9';
-                s[(i)/2]='6';
-                vec.push_back(s);
-                s[0]='9';
-                s[i-1]='1';
-                s[(i)/2]='6';
-                vec.push_back(s);
-            }
-            for(auto it:vec) cout<<it<<nn;
-        }
-
+        cin >> n >> k;
+        ll lo=0,hi=n-1;
+        ll ans=bs(lo,hi);
+        ans=abs(sum(k,k+ans)-sum(k+ans+1,k+n-1));
+       
+        ll ans2=bs2(lo,hi);
+        ans2=abs(sum(k,k+ans2)-sum(k+ans2+1,k+n-1));
+       
+        ans=min(ans,ans2);
+        cout<<ans<<nn;
     }
 
     return 0;

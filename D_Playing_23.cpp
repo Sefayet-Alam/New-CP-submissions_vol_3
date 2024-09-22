@@ -200,25 +200,6 @@ namespace io
 }
 using namespace io;
 
-ll power(ll a, ll n)
-{
-    ll res = 1;
-    while (n)
-    {
-        if (n % 2)
-        {
-            res *= a;
-            n--;
-        }
-        else
-        {
-            a *= a;
-            n /= 2;
-        }
-    }
-    return res;
-}
-
 int main()
 {
     fast;
@@ -226,35 +207,68 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
         ll n;
         cin >> n;
-        if(n==1) cout<<1<<nn;
-        else{
-            vector<string>vec={"169","196","961"};
-            for(ll i=5;i<=n;i+=2){
-                // string s=vec[i];
-                for(ll j=0;j<vec.size();j++){
-                vec[j]+="00";
-                // deb(vec[j]);
-                }
-                string s(i,'0');
-                // deb(s);
-                s[0]='1';
-                s[i-1]='9';
-                s[(i)/2]='6';
-                vec.push_back(s);
-                s[0]='9';
-                s[i-1]='1';
-                s[(i)/2]='6';
-                vec.push_back(s);
-            }
-            for(auto it:vec) cout<<it<<nn;
+        ll a = 0, b = 0;
+        ll c, d;
+        map<ll,ll>freq;
+        for(ll i=1;i<=13;i++){
+            freq[i]=4;
         }
-
+        cin >> c >> d;
+        freq[c]--;
+        freq[d]--;
+        if (c >= 10)
+            c = 10;
+        if (d >= 10)
+            d = 10;
+        a += c + d;
+        cin >> c >> d;
+        freq[c]--;
+        freq[d]--;
+        if (c >= 10)
+            c = 10;
+        if (d >= 10)
+            d = 10;
+        b += c + d;
+        //   deb2(a,b);.
+        vector<ll> xs(n);
+        cin >> xs;
+        ll ex = 0;
+        for (ll i = 0; i < n; i++)
+        {
+            ll x = xs[i];
+            freq[x]--;
+            if (x >= 10)
+                x = 10;
+            ex += x;
+        }
+        a += ex;
+        b += ex;
+        bool f = 0;
+        vector<ll> ops;
+        for (ll i = 1; i <= 13; i++)
+        {
+            if(freq[i]) ops.push_back(i);
+        }
+        sort(all(ops));
+        // deb(ops);
+        // deb2(a,b);
+        ll ans=-1;
+        for(auto it2:ops){
+            ll it=it2;
+            if(it>=10) it=10; 
+            if(b+it==23){ans=it;break;}
+            else if(b+it<=23 && a+it>23){
+                ans=it;
+                break; 
+            }
+        }
+        cout<<ans<<nn;
     }
 
     return 0;

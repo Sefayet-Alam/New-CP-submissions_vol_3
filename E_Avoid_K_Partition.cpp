@@ -29,7 +29,7 @@ using namespace __gnu_pbds;
 #define PI acos(-1)
 const double EPS = 1e-9;
 const ll N = 2e5 + 10;
-const ll M = 1e9 + 7;
+const ll M = 998244353;
 
 /// INLINE FUNCTIONS
 inline ll GCD(ll a, ll b) { return b == 0 ? a : GCD(b, a % b); }
@@ -98,6 +98,20 @@ int main()
       cin>>n>>k;
       vec.resize(n);
       cin>>vec;
+      map<ll,ll>mpp;//dp basically
+      //dp[i]=the number of ways to choose points from point 1 through i, while always choosing point i.
+      mpp[0]=1; //sum of empty set
+      ll sum=0;
+      ll all=1;
+      ll curr=0;
+      for(ll i=0;i<n;i++){
+        sum+=vec[i];
+        ll ban=sum-k;
+        curr=(all-mpp[ban]+M)%M;
+        mpp[sum]=(mpp[sum]+curr)%M;
+        all=(all+curr)%M;
+      }
+      cout<<curr<<nn;
     }
 
     return 0;

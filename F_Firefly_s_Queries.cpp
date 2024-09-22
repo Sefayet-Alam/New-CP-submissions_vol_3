@@ -28,7 +28,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI acos(-1)
 const double EPS = 1e-9;
-const ll N = 1e4 + 10;
+const ll N = 2e5 + 10;
 const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
@@ -81,34 +81,57 @@ namespace io{
     template <typename First, typename... Other> void print( First first, Other... other ) { if( sep ) cerr << " | "; sep = true; cerr << to_string( first ); print( other... ); }
 } using namespace io;
 
-ll n;
+struct segment_tree{
+    ll size;
+    vector<ll>tree;
+    //INITIALIZATION
+    void init(ll n){
+        size=1;
+        while(size<n) size*=2;
+        tree.assign(2*size,0LL);
+    }
+    ll merge(ll a,ll b){
+        return a+b;
+    }
 
-vector<ll>vec(N);
-ll tot;
-ll dp[105][N];
+    void build(vector<ll> &a,ll x,ll lx,ll rx){
+        //linear time
+        if(rx-lx==1){
+            if(lx<a.size()){
+                tree[x]=a[lx];
+            }
+            return;
+        }
+        ll m=(lx+rx)/2;
+        build(a,2*x+1,lx,m);
+        build(a,2*x+2,m,rx);
+        tree[x]=merge(tree[2*x+1],tree[2*x+2]);
+    }
+    void build(vector<ll> &a){
+        //linear time
+        build(a,0,0,size);
+    }
 
-vector<ll>a1,b1;
-ll func(ll i,ll sum){
-    if(i==n){
-        if(tot==sum*2) return 1;
-        else return 0;
+    ///RANGE SUM
+    ll sum(ll l,ll r,ll x,ll lx,ll rx){
+        if(lx>=r || l>=rx){
+            return 0;
+        }
+        if(lx>=l && rx<=r){
+            return tree[x];
+        }
+        ll m=(lx+rx)/2;
+        ll s1=sum(l,r,2*x+1,lx,m);
+        ll s2=sum(l,r,2*x+2,m,rx);
+        return merge(s1,s2);
     }
-    if(dp[i][sum]!=-1) return dp[i][sum];
-    ll a=func(i+1,sum+vec[i]);
-    ll b=func(i+1,sum);
-    return dp[i][sum]=(a|b);
-}
-void path(ll i,ll sum){
-    if(i==n) return;
-    if(func(i+1,sum+vec[i])){
-        a1.push_back(vec[i]);
-        path(i+1,sum+vec[i]);
+    ll sum(ll l,ll r){
+        //returns sum from l to r
+        return sum(l,r,0,0,size);
     }
-    else{
-        b1.push_back(vec[i]);
-        path(i+1,sum);
-    }
-}
+   
+};
+
 int main()
 {
     fast;
@@ -116,39 +139,55 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    // cin >> t;
+    cin >> t;
 
     while (t--)
     {
-      cin>>n;
-      vec.resize(n);
+      ll n,q;
+      cin>>n>>q;
+      vector<ll>vec(n);
       cin>>vec;
-      tot=0;
-      for(ll i=0;i<n;i++) tot+=vec[i];
-      mem(dp,-1);
-      ll ans=func(0,0);
-      if(ans){
-        path(0,0);
-        ll s1=0,s2=0;
-        vector<ll>ans;
-        ll l=0,r=0;
-        // sort(all(a1));
-        // sort(all(b1));
-        while(ans.size()<n){
-            if(s1<=s2){
-                s1+=a1[l];
-                ans.push_back(a1[l]);
-                l++;
-            }
-            else{
-                s2+=b1[r];
-                ans.push_back(b1[r]);
-                r++;
-            }
+      segment_tree sg;
+      sg.init(n);
+      sg.build(vec);
+      ll tot=sg.sum(0,n);
+      while (q--)
+      {
+        ll l,r;
+        cin>>l>>r;
+        l--,r--;
+        // deb2(l,r);
+        ll right=(r)/n;
+        ll newl=right;
+        ll newr=(right+r%n)%n;
+        ll ansr=right*tot;
+        if(newl<=newr){
+            ansr+=sg.sum(newl,newr+1);
         }
+        else{
+            ansr+=sg.sum(newl,n)+sg.sum(0,newr+1);
+        }
+        // deb(ansr);
+        if(l==0){
+            cout<<ansr<<nn;
+            continue;
+        }
+        l--;
+        ll left=l/n;
+        newl=left;
+        newr=(left+l%n)%n;
+        ll ansl=left*tot;
+        if(newl<=newr){
+            ansl+=sg.sum(newl,newr+1);
+        }
+        else{
+            ansl+=sg.sum(newl,n)+sg.sum(0,newr+1);
+        }
+        // deb2(ansl,ansr);
+        ll ans=ansr-ansl;
         cout<<ans<<nn;
       }
-      else cout<<-1<<nn;
+      
     }
 
     return 0;

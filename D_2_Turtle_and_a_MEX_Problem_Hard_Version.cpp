@@ -22,183 +22,39 @@ using namespace __gnu_pbds;
 #define Setpre(n) cout << fixed << setprecision(n)
 #define deb(x) cout << #x << "=" << x << endl
 #define deb2(x, y) cout << #x << "=" << x << "," << #y << "=" << y << endl
-#define debug printf("I am here\n")
 
-// CONSTANTS
-#define md 10000007
-#define PI acos(-1)
-const double EPS = 1e-9;
-const ll N = 2e5 + 10;
-const ll M = 1e9 + 7;
 
-/// INLINE FUNCTIONS
-inline ll GCD(ll a, ll b) { return b == 0 ? a : GCD(b, a % b); }
-inline ll LCM(ll a, ll b) { return a * b / GCD(a, b); }
-inline double logb(ll base, ll num) { return (double)log(num) / (double)log(base); }
+const ll N = 1e6 + 10;
 
-/// Data structures
-typedef unsigned long long ull;
-typedef pair<ll, ll> pll;
-typedef vector<ll> vl;
-typedef vector<pll> vpll;
-typedef vector<vl> vvl;
-template <typename T>
-using PQ = priority_queue<T>;
-template <typename T>
-using QP = priority_queue<T, vector<T>, greater<T>>;
-template <typename T>
-using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
-template <typename T>
-using ordered_multiset = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
-template <typename T, typename R>
-using ordered_map = tree<T, R, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
-template <typename T, typename R>
-using ordered_multimap = tree<T, R, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
-namespace io
+
+vector<ll> g[N];
+
+bool vis[N];
+vector<ll> val(N);
+
+ll dfs(ll node)
 {
-    template <typename First, typename Second>
-    ostream &operator<<(ostream &os, const pair<First, Second> &p) { return os << p.first << " " << p.second; }
-    template <typename First, typename Second>
-    ostream &operator<<(ostream &os, const map<First, Second> &mp)
+    if (vis[node])
+        return val[node];
+    val[node] = node;
+    vis[node] = 1;
+    for (int a : g[node])
     {
-        for (auto it : mp)
-        {
-            os << it << endl;
-        }
-        return os;
+        val[node] = max(val[node], dfs(a));
     }
-    template <typename First>
-    ostream &operator<<(ostream &os, const vector<First> &v)
-    {
-        bool space = false;
-        for (First x : v)
-        {
-            if (space)
-                os << " ";
-            space = true;
-            os << x;
-        }
-        return os;
-    }
-    template <typename First>
-    ostream &operator<<(ostream &os, const set<First> &st)
-    {
-        bool space = false;
-        for (First x : st)
-        {
-            if (space)
-                os << " ";
-            space = true;
-            os << x;
-        }
-        return os;
-    }
-    template <typename First>
-    ostream &operator<<(ostream &os, const multiset<First> &st)
-    {
-        bool space = false;
-        for (First x : st)
-        {
-            if (space)
-                os << " ";
-            space = true;
-            os << x;
-        }
-        return os;
-    }
-    template <typename First, typename Second>
-    istream &operator>>(istream &is, pair<First, Second> &p) { return is >> p.first >> p.second; }
-    template <typename First>
-    istream &operator>>(istream &is, vector<First> &v)
-    {
-        for (First &x : v)
-        {
-            is >> x;
-        }
-        return is;
-    }
+    return val[node];
+}
 
-    long long fastread()
+ll reset(ll n)
+{
+    for (ll i = 0; i <= n; i++)
     {
-        char c;
-        long long d = 1, x = 0;
-        do
-            c = getchar();
-        while (c == ' ' || c == '\n');
-        if (c == '-')
-            c = getchar(), d = -1;
-        while (isdigit(c))
-        {
-            x = x * 10 + c - '0';
-            c = getchar();
-        }
-        return d * x;
-    }
-    static bool sep = false;
-    using std::to_string;
-    string to_string(bool x) { return (x ? "true" : "false"); }
-    string to_string(const string &s) { return "\"" + s + "\""; }
-    string to_string(const char *s) { return "\"" + string(s) + "\""; }
-    string to_string(const char &c)
-    {
-        string s;
-        s += c;
-        return "\'" + s + "\'";
-    }
-    template <typename Type>
-    string to_string(vector<Type>);
-    template <typename First, typename Second>
-    string to_string(pair<First, Second>);
-    template <typename Collection>
-    string to_string(Collection);
-    template <typename First, typename Second>
-    string to_string(pair<First, Second> p) { return "{" + to_string(p.first) + ", " + to_string(p.second) + "}"; }
-    template <typename Type>
-    string to_string(vector<Type> v)
-    {
-        bool sep = false;
-        string s = "[";
-        for (Type x : v)
-        {
-            if (sep)
-                s += ", ";
-            sep = true;
-            s += to_string(x);
-        }
-        s += "]";
-        return s;
-    }
-    template <typename Collection>
-    string to_string(Collection collection)
-    {
-        bool sep = false;
-        string s = "{";
-        for (auto x : collection)
-        {
-            if (sep)
-                s += ", ";
-            sep = true;
-            s += to_string(x);
-        }
-        s += "}";
-        return s;
-    }
-    void print()
-    {
-        cerr << endl;
-        sep = false;
-    }
-    template <typename First, typename... Other>
-    void print(First first, Other... other)
-    {
-        if (sep)
-            cerr << " | ";
-        sep = true;
-        cerr << to_string(first);
-        print(other...);
+        val[i] = 0;
+        g[i].clear();
+        vis[i] = 0;
     }
 }
-using namespace io;
+
 
 ll sum(ll n)
 {
@@ -209,6 +65,7 @@ ll ltor(ll l, ll r)
 {
     return sum(r) - sum(l - 1);
 }
+
 
 int main()
 {
@@ -224,42 +81,48 @@ int main()
         ll n, m;
         cin >> n >> m;
         ll maximex = 0;
+        ll maxsz = 0;
+
         for (ll i = 0; i < n; i++)
         {
             ll sz;
             cin >> sz;
-            vector<ll> tmp(sz);
-            cin >> tmp;
-            sort(all(tmp));
-            UNIQUE(tmp);
+            unordered_map<ll,bool>freq;
+            maxsz = max(maxsz, sz);
+            for(ll j=0;j<sz;j++){
+                ll x;
+                cin>>x;
+                freq[x]=1;
+            }
             ll mex = 0;
-            for (ll j = 0; j < tmp.size(); j++)
-            {
-                if (mex == tmp[j])
-                    mex++;
-                else
-                    break;
-            }
+            while(freq[mex]) mex++;
             maximex = max(maximex, mex);
-            tmp.push_back(mex);
-            UNIQUE(tmp);
-            sort(all(tmp));
-            ll nxtmex = 0;
-            for (ll j = 0; j < tmp.size(); j++)
+            freq[mex]=1;
+            ll nxtmex = mex;
+            while(freq[nxtmex]) nxtmex++;
+            g[mex].push_back(nxtmex);
+        }
+        ll ans = 0;
+        
+        for (ll i = 0; i < maxsz+3; i++)
+        {
+            if (g[i].size()>1)
             {
-                if (nxtmex == tmp[j])
-                    nxtmex++;
-                else
-                    break;
+                maximex = max(maximex, dfs(i));
             }
-            maximex = max(maximex, nxtmex);
         }
-        ll ans=0;
-        if(maximex<=m){
-            ans=maximex*maximex+ltor(maximex,m);
+        ll lim = min(m+1, maxsz+3);
+        for (ll i = 0; i < lim; i++)
+        {
+            ans += max({i, maximex, dfs(i)});
         }
-        else ans=(m+1)*maximex;
-        cout<<ans<<nn;
+        if (m > maxsz+2)
+        {
+            ans += ltor(maxsz + 3, m);
+            // cout << ans << nn;
+        }
+        cout << ans << nn;
+        reset(maxsz+2);
     }
 
     return 0;
