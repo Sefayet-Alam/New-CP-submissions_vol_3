@@ -200,8 +200,16 @@ namespace io
 }
 using namespace io;
 
+/// BIT MANIPULATION
 
+#define Set(x, k) (x |= (1LL << k))
+#define Unset(x, k) (x &= ~(1LL << k))
+#define Check(x, k) (x & (1LL << k))
+#define Toggle(x, k) (x ^ (1LL << k))
 
+int popcount(ll x) { return __builtin_popcountll(x); };
+int poplow(ll x) { return __builtin_ctzll(x); };
+int pophigh(ll x) { return 63 - __builtin_clzll(x); };
 
 int main()
 {
@@ -216,44 +224,40 @@ int main()
     {
         ll n;
         cin >> n;
-        vector<ll> a(n), b(n);
-        cin >> a >> b;
-        vector<pll> vec;
-        for (ll i = 0; i < n; i++)
+        vector<ll> ans;
+        ll g = pophigh(n);
+        ll k = (1LL << g);
+        ll minm = 0;
+        if (n % 2 == 0)
         {
-            vec.push_back({a[i], i});
-        }
-        sort(all(vec));
-        for (auto it : vec)
-        {
-            ll i = it.second;
-            for (ll j = i; j < n; j++)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-            for (ll j = i; j >= 0; j--)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
+            for(ll i=k+1;i<=n;i++) ans.push_back(i);
+            ans.push_back(2);
+            for(ll i=1;i<=k;i++){
+                if(i!=2) ans.push_back(i);
             }
         }
-        bool f = 0;
-        for (ll i = 0; i < n; i++)
-        {
-            if (a[i] != b[i])
-                f = 1;
-        }
-        if (f)
-            cout << "NO" << nn;
         else
-            cout << "YES" << nn;
+        {
+            // deb(n);
+            ll p = n;
+            ll p2 = p - 1;
+            // deb2(p2,p);
+            ans.push_back(2);
+            for(ll i=1;i<=n;i++)if(i!=2)ans.push_back(i);
+        }
+        ll fin = 0;
+        for (ll i = 1; i <= n; i++)
+        {
+            if (i % 2)
+            {
+                fin = fin & ans[i - 1];
+            }
+            else
+                fin = (fin | ans[i - 1]);
+            // deb2(i,fin);
+        }
+        cout << fin << nn;
+        cout << ans << nn;
     }
 
     return 0;

@@ -200,9 +200,6 @@ namespace io
 }
 using namespace io;
 
-
-
-
 int main()
 {
     fast;
@@ -216,44 +213,22 @@ int main()
     {
         ll n;
         cin >> n;
-        vector<ll> a(n), b(n);
-        cin >> a >> b;
-        vector<pll> vec;
-        for (ll i = 0; i < n; i++)
+        vector<ll> vec(n);
+        cin >> vec;
+        for (ll i = 1; i < n / 2; i++)
         {
-            vec.push_back({a[i], i});
-        }
-        sort(all(vec));
-        for (auto it : vec)
-        {
-            ll i = it.second;
-            for (ll j = i; j < n; j++)
+            if (vec[i] == vec[i - 1] || vec[n - i - 1] == vec[n - i])
             {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-            for (ll j = i; j >= 0; j--)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
+                swap(vec[i], vec[n - i - 1]);
             }
         }
-        bool f = 0;
-        for (ll i = 0; i < n; i++)
+        ll ans = 0;
+        for (ll i = 0; i < n - 1; i++)
         {
-            if (a[i] != b[i])
-                f = 1;
+            if (vec[i] == vec[i + 1])
+                ans++;
         }
-        if (f)
-            cout << "NO" << nn;
-        else
-            cout << "YES" << nn;
+        cout << ans << nn;
     }
 
     return 0;

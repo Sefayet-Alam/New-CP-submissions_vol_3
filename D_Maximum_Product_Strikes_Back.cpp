@@ -200,8 +200,67 @@ namespace io
 }
 using namespace io;
 
+struct segment_tree
+{
+    ll size;
+    vector<ll> tree;
+    // INITIALIZATION
+    void init(ll n)
+    {
+        size = 1;
+        while (size < n)
+            size *= 2;
+        tree.assign(2 * size, 0LL);
+    }
+    ll merge(ll a, ll b)
+    {
+        return a + b;
+    }
 
+    void build(vector<ll> &a, ll x, ll lx, ll rx)
+    {
+        // linear time
+        if (rx - lx == 1)
+        {
+            if (lx < a.size())
+            {
+                tree[x] = a[lx];
+            }
+            return;
+        }
+        ll m = (lx + rx) / 2;
+        build(a, 2 * x + 1, lx, m);
+        build(a, 2 * x + 2, m, rx);
+        tree[x] = merge(tree[2 * x + 1], tree[2 * x + 2]);
+    }
+    void build(vector<ll> &a)
+    {
+        // linear time
+        build(a, 0, 0, size);
+    }
 
+    /// RANGE SUM
+    ll sum(ll l, ll r, ll x, ll lx, ll rx)
+    {
+        if (lx >= r || l >= rx)
+        {
+            return 0;
+        }
+        if (lx >= l && rx <= r)
+        {
+            return tree[x];
+        }
+        ll m = (lx + rx) / 2;
+        ll s1 = sum(l, r, 2 * x + 1, lx, m);
+        ll s2 = sum(l, r, 2 * x + 2, m, rx);
+        return merge(s1, s2);
+    }
+    ll sum(ll l, ll r)
+    {
+        // returns sum from l to r
+        return sum(l, r, 0, 0, size);
+    }
+};
 
 int main()
 {
@@ -216,44 +275,97 @@ int main()
     {
         ll n;
         cin >> n;
-        vector<ll> a(n), b(n);
-        cin >> a >> b;
-        vector<pll> vec;
+        vector<ll> vec;
+
+        vec.push_back(0);
         for (ll i = 0; i < n; i++)
         {
-            vec.push_back({a[i], i});
+            ll x;
+            cin >> x;
+            vec.push_back(x);
         }
-        sort(all(vec));
-        for (auto it : vec)
+        vec.push_back(0);
+
+        vector<ll> zs;
+        n = vec.size();
+        for (ll i = 0; i < vec.size(); i++)
         {
-            ll i = it.second;
-            for (ll j = i; j < n; j++)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-            for (ll j = i; j >= 0; j--)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
+            if (vec[i] == 0)
+                zs.push_back(i);
         }
-        bool f = 0;
+
+        vector<ll> tmp(n, 0);
         for (ll i = 0; i < n; i++)
         {
-            if (a[i] != b[i])
-                f = 1;
+            if (vec[i] == 2 || vec[i] == -2)
+                tmp[i] = 1;
         }
-        if (f)
-            cout << "NO" << nn;
-        else
-            cout << "YES" << nn;
+        segment_tree sg;
+        sg.init(n);
+        sg.build(tmp);
+
+        ll maxm = -1;
+        pll ans = {-1, -1};
+        for (ll i = 0; i < zs.size() - 1; i++)
+        {
+            ll st = zs[i] + 1;
+            ll en = zs[i + 1] - 1;
+            if (st > en)
+                continue;
+            vector<ll> nigs;
+            for (ll j = st; j <= en; j++)
+            {
+                if (vec[j] < 0)
+                    nigs.push_back(j);
+            }
+            // deb2(st, en);
+            // deb(nigs);
+            if (nigs.size() % 2)
+            {
+                ll sz=nigs.size();
+                for (ll k=0;k<nigs.size();k++)
+                {
+                    ll it=nigs[k];
+                    ll left = 0;
+                    if (it - 1 >= st)
+                        left += sg.sum(st, it);
+                    ll right = 0;
+                    if (it + 1 <= en)
+                        right += sg.sum(it + 1, en + 1);
+                    // deb(it);
+                    // deb2(left, right);
+                    if (left > maxm && k%2==0)
+                    {
+                        maxm = left;
+                        ans = {st, it - 1};
+                    }
+                    if (right > maxm && (sz-k-1)%2==0)
+                    {
+                        maxm = right;
+                        ans = {it + 1, en};
+                    }
+                }
+            }
+            else
+            {
+                ll now = sg.sum(st, en+1);
+                if (now > maxm)
+                {
+                    maxm = now;
+                    ans = {st, en};
+                }
+            }
+        }
+        // deb(maxm);
+        // deb(ans);
+        ll fir = ans.first;
+        ll las = n - 1 - ans.second;
+        if (maxm <= 0)
+        {
+            fir = n - 1;
+            las = 1;
+        }
+        cout << fir - 1 << " " << las - 1 << nn;
     }
 
     return 0;

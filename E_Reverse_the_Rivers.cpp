@@ -200,62 +200,46 @@ namespace io
 }
 using namespace io;
 
-
-
-
 int main()
 {
     fast;
-    ll t;
-    // setIO();
-    // ll tno=1;;
-    t = 1;
-    cin >> t;
-
-    while (t--)
+    int n, k, q;
+    cin >> n >> k >> q;
+    vector<vector<int>> a(k, vector<int>(n));
+    for (int i = 0; i < n; i++)
     {
-        ll n;
-        cin >> n;
-        vector<ll> a(n), b(n);
-        cin >> a >> b;
-        vector<pll> vec;
-        for (ll i = 0; i < n; i++)
+        for (int j = 0; j < k; j++)
         {
-            vec.push_back({a[i], i});
-        }
-        sort(all(vec));
-        for (auto it : vec)
-        {
-            ll i = it.second;
-            for (ll j = i; j < n; j++)
+            cin >> a[j][i];
+            if (i > 0)
             {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-            for (ll j = i; j >= 0; j--)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
+                a[j][i] |= a[j][i - 1];
             }
         }
-        bool f = 0;
-        for (ll i = 0; i < n; i++)
-        {
-            if (a[i] != b[i])
-                f = 1;
-        }
-        if (f)
-            cout << "NO" << nn;
-        else
-            cout << "YES" << nn;
     }
-
+    while (q--)
+    {
+        int m;
+        cin >> m;
+        int low = 0, high = n;
+        while (m--)
+        {
+            int i;
+            char c;
+            int x;
+            cin >> i >> c >> x;
+            --i;
+            if (c == '<')
+            {
+                high = min(high, int(lower_bound(a[i].begin(), a[i].end(), x) - a[i].begin()));
+            }
+            else
+            {
+                low = max(low, int(upper_bound(a[i].begin(), a[i].end(), x) - a[i].begin()));
+            }
+        }
+        cout << (low >= high ? -1 : low + 1) << '\n';
+    }
     return 0;
 }
 

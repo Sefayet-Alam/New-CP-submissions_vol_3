@@ -200,9 +200,43 @@ namespace io
 }
 using namespace io;
 
+ll func(ll m, const vector<pll>& ranges) {
+    vector<ll> freq(m + 2, 0);  
+    for (const auto& range : ranges) {
+        ll l = range.first;
+        ll r = range.second;
+        freq[l]++;
+        freq[r + 1]--;
+    }
+    vector<ll> coverage(m + 1, 0);
+    for (int i = 1; i <= m; ++i) {
+        coverage[i] = coverage[i - 1] + freq[i];
+    }
+    ll count = 0;
+    ll start = -1;
+    for (ll i = 1; i <= m; ++i) {
+        if (coverage[i] > 0) { 
+            if (start == -1) start = i; 
+        } else {
+            if (start != -1) {
+                ll length = i - start;
+                count += length * (length + 1) / 2; 
+                start = -1; 
+            }
+        }
+    }
 
+    if (start != -1) {
+        ll length = m - start + 1;
+        count += length * (length + 1) / 2;
+    }
 
+    return count;
+}
 
+bool cmp(pll a,pll b){
+    return a.second<b.second;
+}
 int main()
 {
     fast;
@@ -210,50 +244,40 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<ll> a(n), b(n);
-        cin >> a >> b;
-        vector<pll> vec;
+        ll n, m;
+        cin >> n >> m;
+        ll tomin = 0;
+        vector<pll> pars;
         for (ll i = 0; i < n; i++)
         {
-            vec.push_back({a[i], i});
+            ll x, y;
+            cin >> x >> y;
+            pars.push_back({x, y});
         }
-        sort(all(vec));
-        for (auto it : vec)
+        sort(all(pars),cmp);
+        ll lastf = 0, lasts = 0;
+        for (ll i = 0; i < pars.size(); i++)
         {
-            ll i = it.second;
-            for (ll j = i; j < n; j++)
+            pll it = pars[i];
+            // deb(it);
+            if (it.first > lastf && it.second >= lasts)
             {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-            for (ll j = i; j >= 0; j--)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
+                // deb(it);
+                ll a = (it.first - lastf);
+                ll b = (m - it.second + 1);
+                // deb2(a,b);
+                tomin += a * b;
+                lastf = it.first;
+                lasts = it.second;
             }
         }
-        bool f = 0;
-        for (ll i = 0; i < n; i++)
-        {
-            if (a[i] != b[i])
-                f = 1;
-        }
-        if (f)
-            cout << "NO" << nn;
-        else
-            cout << "YES" << nn;
+        ll ans = (m * (m + 1)) / 2;
+        ans -= tomin;
+        cout << ans << nn;
     }
 
     return 0;

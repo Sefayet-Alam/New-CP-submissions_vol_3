@@ -200,8 +200,50 @@ namespace io
 }
 using namespace io;
 
+ll n, x;
+vector<ll> vec(N);
 
-
+bool func(ll pos)
+{
+    ll ret = 0;
+    vector<pll> tmp(n);
+    for (ll i = 0; i < n; i++)
+    {
+        tmp[i].first = vec[i] - pos;
+        tmp[i].second = vec[i] + pos;
+    }
+    ll prev = tmp[0].second + x;
+    for (ll i = 1; i < n; i++)
+    {
+        prev = min(prev, tmp[i].second);
+        if (prev < tmp[i].first || prev > tmp[i].second)
+        {
+            return false;
+        }
+        prev += x;
+    }
+    return true;
+}
+ll bs(ll low, ll high)
+{
+    ll mid;
+    ll ans = -1;
+    while (low <= high)
+    {
+        mid = low + (high - low) / 2;
+        // cout<<mid<<" "<<func(mid)<<endl;
+        if (func(mid))
+        {
+            ans = mid;
+            high = mid - 1;
+        }
+        else
+        {
+            low = mid + 1;
+        }
+    }
+    return ans;
+}
 
 int main()
 {
@@ -214,46 +256,27 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<ll> a(n), b(n);
-        cin >> a >> b;
-        vector<pll> vec;
+        cin >> n >> x;
+        vec.resize(n);
+        cin >> vec;
+        ll l = 0, r = 2e9 + 5;
+        ll ans = bs(l, r);
+        vector<pll> tmp(n);
         for (ll i = 0; i < n; i++)
         {
-            vec.push_back({a[i], i});
+            tmp[i].first = vec[i] - ans;
+            tmp[i].second = vec[i] + ans;
         }
-        sort(all(vec));
-        for (auto it : vec)
+        vector<ll>ans2;
+        ll prev = tmp[0].second + x;
+        ans2.push_back(tmp[0].second);
+        for (ll i = 1; i < n; i++)
         {
-            ll i = it.second;
-            for (ll j = i; j < n; j++)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-            for (ll j = i; j >= 0; j--)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
+            prev = min(prev, tmp[i].second);
+            ans2.push_back(prev);
+            prev += x;
         }
-        bool f = 0;
-        for (ll i = 0; i < n; i++)
-        {
-            if (a[i] != b[i])
-                f = 1;
-        }
-        if (f)
-            cout << "NO" << nn;
-        else
-            cout << "YES" << nn;
+        cout<<ans<<nn<<ans2<<nn;
     }
 
     return 0;

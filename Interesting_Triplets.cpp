@@ -200,9 +200,6 @@ namespace io
 }
 using namespace io;
 
-
-
-
 int main()
 {
     fast;
@@ -216,44 +213,55 @@ int main()
     {
         ll n;
         cin >> n;
-        vector<ll> a(n), b(n);
-        cin >> a >> b;
-        vector<pll> vec;
+
+        vector<ll> vec(n);
+        cin >> vec;
+        ll ans = 0;
+        unordered_map<ll, ll> totpos, totneg;
         for (ll i = 0; i < n; i++)
         {
-            vec.push_back({a[i], i});
+            ll a = abs(vec[i]);
+            if (vec[i] > 0)
+                totpos[a]++;
+            else if (vec[i] < 0)
+                totneg[a]++;
+            else
+                totpos[a]++;
         }
-        sort(all(vec));
-        for (auto it : vec)
-        {
-            ll i = it.second;
-            for (ll j = i; j < n; j++)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-            for (ll j = i; j >= 0; j--)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-        }
-        bool f = 0;
+        unordered_map<ll, ll> pos, neg;
         for (ll i = 0; i < n; i++)
         {
-            if (a[i] != b[i])
-                f = 1;
+            ll a = abs(vec[i]);
+            if (vec[i] > 0)
+                pos[a]++;
+            else if (vec[i] < 0)
+                neg[a]++;
+            else
+                pos[a]++;
+
+            if (vec[i] == 0)
+            {
+                ll poss = pos[a] - 1;
+                ll resta = totpos[0] - pos[0];
+                ll curr = (poss * (n - i - 1 - resta));
+                ans += curr;
+            }
+            else if (vec[i] > 0)
+            {
+                ll negs = neg[a];
+                ll resta = totpos[a] + totneg[a] - pos[a] - neg[a];
+                ll curr = (negs * (n - i - 1 - resta));
+                ans += curr;
+            }
+            else
+            {
+                ll poss = pos[a];
+                ll resta = totpos[a] + totneg[a] - pos[a] - neg[a];
+                ll curr = (poss * (n - i - 1 - resta));
+                ans += curr;
+            }
         }
-        if (f)
-            cout << "NO" << nn;
-        else
-            cout << "YES" << nn;
+        cout << ans << nn;
     }
 
     return 0;

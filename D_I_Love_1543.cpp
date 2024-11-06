@@ -200,62 +200,52 @@ namespace io
 }
 using namespace io;
 
-
-
-
 int main()
 {
-    fast;
-    ll t;
-    // setIO();
-    // ll tno=1;;
-    t = 1;
-    cin >> t;
-
-    while (t--)
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int tt;
+    cin >> tt;
+    while (tt--)
     {
-        ll n;
-        cin >> n;
-        vector<ll> a(n), b(n);
-        cin >> a >> b;
-        vector<pll> vec;
-        for (ll i = 0; i < n; i++)
+        int h, w;
+        cin >> h >> w;
+        vector<string> s(h);
+        for (int i = 0; i < h; i++)
         {
-            vec.push_back({a[i], i});
+            cin >> s[i];
         }
-        sort(all(vec));
-        for (auto it : vec)
+        int ans = 0;
+        for (int r = 0; r + r <= min(h - 1, w - 1); r++)
         {
-            ll i = it.second;
-            for (ll j = i; j < n; j++)
+            string t = "";
+            for (int j = r + 1; j < w - r; j++)
             {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
+                t += s[r][j];
             }
-            for (ll j = i; j >= 0; j--)
+            for (int i = r + 1; i < h - r; i++)
             {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
+                t += s[i][w - 1 - r];
+            }
+            for (int j = w - 2 - r; j >= r; j--)
+            {
+                t += s[h - 1 - r][j];
+            }
+            for (int i = h - 2 - r; i >= r; i--)
+            {
+                t += s[i][r];
+            }
+            t += t.substr(0, 3);
+            for (int i = 0; i <= int(t.size()) - 4; i++)
+            {
+                if (t.substr(i, 4) == "1543")
+                {
+                    ans += 1;
+                }
             }
         }
-        bool f = 0;
-        for (ll i = 0; i < n; i++)
-        {
-            if (a[i] != b[i])
-                f = 1;
-        }
-        if (f)
-            cout << "NO" << nn;
-        else
-            cout << "YES" << nn;
+        cout << ans << '\n';
     }
-
     return 0;
 }
 

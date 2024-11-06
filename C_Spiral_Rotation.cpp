@@ -200,60 +200,50 @@ namespace io
 }
 using namespace io;
 
-
-
-
 int main()
 {
     fast;
-    ll t;
+    ll tc;
     // setIO();
     // ll tno=1;;
-    t = 1;
-    cin >> t;
+    tc = 1;
+    // cin >> t;
 
-    while (t--)
+    while (tc--)
     {
-        ll n;
+        int n;
         cin >> n;
-        vector<ll> a(n), b(n);
-        cin >> a >> b;
-        vector<pll> vec;
-        for (ll i = 0; i < n; i++)
+        vector<string> s(n);
+        for (auto &i : s)
         {
-            vec.push_back({a[i], i});
+            cin >> i;
         }
-        sort(all(vec));
-        for (auto it : vec)
+        auto t(s);
+        for (int i = 0; i < n / 2; i++)
         {
-            ll i = it.second;
-            for (ll j = i; j < n; j++)
+            int cnt = (i + 1) % 4;
+            while (cnt--)
             {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-            for (ll j = i; j >= 0; j--)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
+                for (int j = i; j < n - i; j++)
+                {
+                    t[j][n - 1 - i] = s[i][j];
+                    t[j][i] = s[n - 1 - i][j];
+                    t[i][n - 1 - j] = s[j][i];
+                    t[n - 1 - i][n - 1 - j] = s[j][n - 1 - i];
+                }
+                for (int j = i; j < n - i; j++)
+                {
+                    s[i][j] = t[i][j];
+                    s[n - 1 - i][j] = t[n - 1 - i][j];
+                    s[j][i] = t[j][i];
+                    s[j][n - 1 - i] = t[j][n - 1 - i];
+                }
             }
         }
-        bool f = 0;
-        for (ll i = 0; i < n; i++)
+        for (auto i : s)
         {
-            if (a[i] != b[i])
-                f = 1;
+            cout << i << "\n";
         }
-        if (f)
-            cout << "NO" << nn;
-        else
-            cout << "YES" << nn;
     }
 
     return 0;

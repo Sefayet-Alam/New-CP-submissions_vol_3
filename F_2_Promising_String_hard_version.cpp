@@ -202,6 +202,100 @@ using namespace io;
 
 
 
+//Given an array of n( n<=1e5) integer  (-1e5<=Ai<=1e5) how many pairs i,j are there such that
+//i<j and Aj>=Ai and (Aj-Ai) mod 3=0?
+
+class SegmentTree {
+private:
+    int n;
+    vector<long long> tree, lazy;
+    long long identity;
+
+    void build(const vector<long long>& vec, int node, int start, int end) {
+        if (start == end) {
+            tree[node] = vec[start];
+        } else {
+            int mid = (start + end) / 2;
+            build(vec, 2 * node + 1, start, mid);
+            build(vec, 2 * node + 2, mid + 1, end);
+            tree[node] = merge(tree[2 * node + 1], tree[2 * node + 2]);
+        }
+    }
+
+    void updateRange(int node, int start, int end, int l, int r, long long val) {
+        if (lazy[node] != 0) {
+            tree[node] += (end - start + 1) * lazy[node];
+            if (start != end) {
+                lazy[2 * node + 1] += lazy[node];
+                lazy[2 * node + 2] += lazy[node];
+            }
+            lazy[node] = 0;
+        }
+
+        if (start > end || start > r || end < l)
+            return;
+
+        if (start >= l && end <= r) {
+            tree[node] += (end - start + 1) * val;
+            if (start != end) {
+                lazy[2 * node + 1] += val;
+                lazy[2 * node + 2] += val;
+            }
+            return;
+        }
+
+        int mid = (start + end) / 2;
+        updateRange(2 * node + 1, start, mid, l, r, val);
+        updateRange(2 * node + 2, mid + 1, end, l, r, val);
+        tree[node] = merge(tree[2 * node + 1], tree[2 * node + 2]);
+    }
+
+    long long queryRange(int node, int start, int end, int l, int r) {
+        if (start > end || start > r || end < l)
+            return identity;
+
+        if (lazy[node] != 0) {
+            tree[node] += (end - start + 1) * lazy[node];
+            if (start != end) {
+                lazy[2 * node + 1] += lazy[node];
+                lazy[2 * node + 2] += lazy[node];
+            }
+            lazy[node] = 0;
+        }
+
+        if (start >= l && end <= r)
+            return tree[node];
+
+        int mid = (start + end) / 2;
+        long long left = queryRange(2 * node + 1, start, mid, l, r);
+        long long right = queryRange(2 * node + 2, mid + 1, end, l, r);
+        return merge(left, right);
+    }
+
+protected:
+    virtual long long merge(long long a, long long b) {
+        return a + b;  // Default to sum. Can be overridden in subclasses.
+    }
+
+public:
+    SegmentTree(const vector<long long>& vec, long long identityElem = 0)
+        : identity(identityElem) {
+        n = vec.size();
+        tree.resize(4 * n);
+        lazy.resize(4 * n, 0);
+        build(vec, 0, 0, n - 1);
+    }
+
+    void rangeAdd(int l, int r, long long val) {
+        updateRange(0, 0, n - 1, l, r, val);
+    }
+
+    long long rangeQuery(int l, int r) {
+        return queryRange(0, 0, n - 1, l, r);
+    }
+};
+
+
 
 int main()
 {
@@ -216,44 +310,48 @@ int main()
     {
         ll n;
         cin >> n;
-        vector<ll> a(n), b(n);
-        cin >> a >> b;
-        vector<pll> vec;
+        string s;
+        cin >> s;
+        ll sz=2*(n+5);
+        vector<ll>vec(sz+5,0);
+        SegmentTree sg0(vec),sg1(vec),sg2(vec);
+
+        ll diff = 0;
+        ll x=n+5;
+        if(x%3==0) sg0.rangeAdd(x,x,1);
+        else if(x%3==1) sg1.rangeAdd(x,x,1);
+        else sg2.rangeAdd(x,x,1);
+        // vector<ll> Arr(n,0);
+        ll tot=0;
         for (ll i = 0; i < n; i++)
         {
-            vec.push_back({a[i], i});
-        }
-        sort(all(vec));
-        for (auto it : vec)
-        {
-            ll i = it.second;
-            for (ll j = i; j < n; j++)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
+            if (s[i] == '-') diff++;
+            else diff--;
+            // Arr[i]=diff;
+            // deb(diff);
+            ll now=diff+x;
+            // deb2(now,now%3);
+            if((now%3)==1){
+                ll ans=sg1.rangeQuery(0,now);
+                tot+=ans;
+                // deb2(i,ans);
+                sg1.rangeAdd(now,now,1);
             }
-            for (ll j = i; j >= 0; j--)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
+            else if((now%3)==2){
+                ll ans=sg2.rangeQuery(0,now);
+                tot+=ans;
+                // deb2(i,ans);
+                sg2.rangeAdd(now,now,1);
+            }
+            else{
+                ll ans=sg0.rangeQuery(0,now);
+                tot+=ans;
+                // deb2(i,ans);
+                sg0.rangeAdd(now,now,1);
+                
             }
         }
-        bool f = 0;
-        for (ll i = 0; i < n; i++)
-        {
-            if (a[i] != b[i])
-                f = 1;
-        }
-        if (f)
-            cout << "NO" << nn;
-        else
-            cout << "YES" << nn;
+        cout<<tot<<nn;
     }
 
     return 0;

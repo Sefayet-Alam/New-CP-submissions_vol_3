@@ -28,7 +28,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI acos(-1)
 const double EPS = 1e-9;
-const ll N = 2e5 + 10;
+const ll N = 3e5 + 10;
 const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
@@ -200,8 +200,58 @@ namespace io
 }
 using namespace io;
 
+vector<ll> g[N];
+ll level[N];
+ll subTree[N];
+void dfs(int vertex, int par)
+{
+    subTree[vertex] = 1;
+    level[vertex] = level[par] + 1;
+    for (int child : g[vertex])
+    {
+        if (child == par)
+            continue;
+        dfs(child, vertex);
+        subTree[vertex] += subTree[child];
+    }
+}
 
+ll dp[N];
+ll dfs2(ll vertex, ll par)
+{
+    if(dp[vertex]!=-1) return dp[vertex];
+    vector<ll>cs;
+    for(auto child:g[vertex]){
+        if(child==par) continue;
+        cs.push_back(child);
+    }
+    // deb2(vertex,cs);
+    ll ret=0;
+    if(cs.size()==0){
+        return dp[vertex]=0;
+    }
+    else if(cs.size()==1){
+        ret=subTree[cs[0]];
+    }
+    else{
+        ll ret1=subTree[cs[0]]+dfs2(cs[1],vertex);
+        ll ret2=subTree[cs[1]]+dfs2(cs[0],vertex);
+        ret=max(ret1,ret2);
+    }
+    return dp[vertex]=ret;
+}
 
+void reset(ll n)
+{
+
+    for (ll i = 0; i <= n; i++)
+    {
+        g[i].clear();
+        subTree[i] = 0;
+        level[i] = 0;
+        dp[i]=-1;
+    }
+}
 
 int main()
 {
@@ -216,44 +266,21 @@ int main()
     {
         ll n;
         cin >> n;
-        vector<ll> a(n), b(n);
-        cin >> a >> b;
-        vector<pll> vec;
-        for (ll i = 0; i < n; i++)
+        reset(n);
+        for (ll i = 0; i < n - 1; i++)
         {
-            vec.push_back({a[i], i});
+            ll u, v;
+            cin >> u >> v;
+            g[u].push_back(v);
+            g[v].push_back(u);
         }
-        sort(all(vec));
-        for (auto it : vec)
-        {
-            ll i = it.second;
-            for (ll j = i; j < n; j++)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-            for (ll j = i; j >= 0; j--)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-        }
-        bool f = 0;
-        for (ll i = 0; i < n; i++)
-        {
-            if (a[i] != b[i])
-                f = 1;
-        }
-        if (f)
-            cout << "NO" << nn;
-        else
-            cout << "YES" << nn;
+        dfs(1, 0);
+        for (ll i = 1; i <= n; i++)
+            subTree[i]--;
+        // for(ll i=1;i<=n;i++) deb2(i,subTree[i]);
+        ll ans = dfs2(1, 0);
+        //   deb(ans);
+        cout << ans << nn;
     }
 
     return 0;

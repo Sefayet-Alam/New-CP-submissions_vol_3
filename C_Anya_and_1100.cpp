@@ -200,9 +200,6 @@ namespace io
 }
 using namespace io;
 
-
-
-
 int main()
 {
     fast;
@@ -211,49 +208,67 @@ int main()
     // ll tno=1;;
     t = 1;
     cin >> t;
-
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<ll> a(n), b(n);
-        cin >> a >> b;
-        vector<pll> vec;
+        string s;
+        cin >> s;
+        ll n = s.size();
+        ll q;
+        cin >> q;
+        ll f = 0;
         for (ll i = 0; i < n; i++)
         {
-            vec.push_back({a[i], i});
-        }
-        sort(all(vec));
-        for (auto it : vec)
-        {
-            ll i = it.second;
-            for (ll j = i; j < n; j++)
+            if (i + 4 <= n)
             {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-            for (ll j = i; j >= 0; j--)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
+                //  deb2(i, s.substr(i, 4));
+                if (s.substr(i, 4) == "1100")
+                {
+                    // deb2(i, s.substr(i, 4));
+                    f++;
+                }
             }
         }
-        bool f = 0;
-        for (ll i = 0; i < n; i++)
+        // deb(f);
+        while (q--)
         {
-            if (a[i] != b[i])
-                f = 1;
+            ll x;
+            char c;
+            cin >> x >> c;
+            x--;
+            // deb2(x, c);
+            // deb(s);
+            for (ll i = max(0LL, x - 4); i <= x; i++)
+            {
+                if (i + 4 <= n)
+                {
+                    //  deb2(i, s.substr(i, 4));
+                    if (s.substr(i, 4) == "1100")
+                    {
+                        // deb2(i, s.substr(i, 4));
+                        f--;
+                    }
+                }
+            }
+            s[x] = c;
+            // deb(s);
+            for (ll i = max(0LL, x - 4); i <= x; i++)
+            {
+                if (i + 4 <= n)
+                {
+                    //  deb2(i, s.substr(i, 4));
+                    if (s.substr(i, 4) == "1100")
+                    {
+                        // deb2(i, s.substr(i, 4));
+                        f++;
+                    }
+                }
+            }
+            // deb(f);
+            if (f)
+                cout << "YES" << nn;
+            else
+                cout << "NO" << nn;
         }
-        if (f)
-            cout << "NO" << nn;
-        else
-            cout << "YES" << nn;
     }
 
     return 0;

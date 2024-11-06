@@ -200,9 +200,6 @@ namespace io
 }
 using namespace io;
 
-
-
-
 int main()
 {
     fast;
@@ -214,46 +211,35 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<ll> a(n), b(n);
-        cin >> a >> b;
-        vector<pll> vec;
-        for (ll i = 0; i < n; i++)
-        {
-            vec.push_back({a[i], i});
-        }
+        ll n, k;
+        cin >> n >> k;
+        vector<ll> vec(n);
+        cin >> vec;
         sort(all(vec));
-        for (auto it : vec)
-        {
-            ll i = it.second;
-            for (ll j = i; j < n; j++)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-            for (ll j = i; j >= 0; j--)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
+        map<ll,ll>freq;
+        for(auto it:vec) freq[it]++;
+        ll press=0;
+        ll gesega=0;
+        vector<pll>pars;
+        for(auto it:freq){
+            if(it.second){
+                pars.push_back({it.first,it.second});
             }
         }
-        bool f = 0;
-        for (ll i = 0; i < n; i++)
-        {
-            if (a[i] != b[i])
-                f = 1;
+        sort(all(pars));
+        ll last=0;
+        for(auto it:pars){
+            ll minms=it.second;
+            ll curmin=max(0LL,it.first-last);
+            ll tomin=min(k,curmin*(n-gesega));
+            k-=tomin;
+            press+=tomin;
+            gesega+=minms;
+            last+=curmin;
+            if(k) press+=minms;
+            else break;
         }
-        if (f)
-            cout << "NO" << nn;
-        else
-            cout << "YES" << nn;
+        cout<<press<<nn;
     }
 
     return 0;

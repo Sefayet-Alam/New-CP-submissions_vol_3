@@ -200,9 +200,6 @@ namespace io
 }
 using namespace io;
 
-
-
-
 int main()
 {
     fast;
@@ -216,44 +213,28 @@ int main()
     {
         ll n;
         cin >> n;
-        vector<ll> a(n), b(n);
-        cin >> a >> b;
-        vector<pll> vec;
-        for (ll i = 0; i < n; i++)
+        unordered_map<ll, ll> diag;
+        ll tot = 0;
+        for (ll i = 1; i <= n; i++)
         {
-            vec.push_back({a[i], i});
-        }
-        sort(all(vec));
-        for (auto it : vec)
-        {
-            ll i = it.second;
-            for (ll j = i; j < n; j++)
+            string s;
+            cin >> s;
+            for (ll j = 1; j <= n; j++)
             {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-            for (ll j = i; j >= 0; j--)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
+                ll x = s[j - 1] - '0';
+                if (x)
+                {
+                    diag[(j + n - i)%n]++;
+                    tot++;
+                }
             }
         }
-        bool f = 0;
-        for (ll i = 0; i < n; i++)
+        ll maxm = 0;
+        for (auto it : diag)
         {
-            if (a[i] != b[i])
-                f = 1;
+            maxm=max(maxm,it.second);
         }
-        if (f)
-            cout << "NO" << nn;
-        else
-            cout << "YES" << nn;
+        cout << tot+n-2*maxm << nn;
     }
 
     return 0;

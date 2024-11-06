@@ -200,9 +200,6 @@ namespace io
 }
 using namespace io;
 
-
-
-
 int main()
 {
     fast;
@@ -214,46 +211,28 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<ll> a(n), b(n);
-        cin >> a >> b;
-        vector<pll> vec;
-        for (ll i = 0; i < n; i++)
-        {
-            vec.push_back({a[i], i});
-        }
+        ll n, k;
+        cin >> n >> k;
+        vector<ll> vec(n);
+        cin >> vec;
         sort(all(vec));
-        for (auto it : vec)
+        vector<ll> a, b;
+        a.push_back(vec[n - 1]);
+        b.push_back(vec[n-2]);
+        ll r = n - 3;
+        while (a.size() < k)
         {
-            ll i = it.second;
-            for (ll j = i; j < n; j++)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-            for (ll j = i; j >= 0; j--)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
+            a.push_back(vec[r]);
+            r--;
         }
-        bool f = 0;
-        for (ll i = 0; i < n; i++)
+        while (r >= 0)
         {
-            if (a[i] != b[i])
-                f = 1;
+            b.push_back(vec[r]);
+            r--;
         }
-        if (f)
-            cout << "NO" << nn;
-        else
-            cout << "YES" << nn;
+        // deb2(a,b);
+        ll ans = *max_element(all(a)) + *min_element(all(a)) + *max_element(all(b)) + *min_element(all(b));
+        cout << ans << nn;
     }
 
     return 0;

@@ -28,7 +28,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI acos(-1)
 const double EPS = 1e-9;
-const ll N = 2e5 + 10;
+const ll N = 1e4 + 10;
 const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
@@ -200,8 +200,35 @@ namespace io
 }
 using namespace io;
 
+vector<ll> par(N, 1);
+vector<ll> g[N];
+vector<ll> leaves;
+ll level[N];
+void dfs(ll vertex, ll parent = 1)
+{
+    bool f = 0;
+    for (ll child : g[vertex])
+    {
+        if (child == parent)
+            continue;
+        level[child] = level[vertex] + 1;
+        dfs(child, vertex);
+        par[child] = vertex;
+        f = 1;
+    }
+    leaves.push_back(vertex);
+}
 
-
+void reset(ll n)
+{
+    for (ll i = 0; i <= n; i++)
+    {
+        g[i].clear();
+        par[i] = i;
+        level[i] = 0;
+    }
+    leaves.clear();
+}
 
 int main()
 {
@@ -216,44 +243,56 @@ int main()
     {
         ll n;
         cin >> n;
-        vector<ll> a(n), b(n);
-        cin >> a >> b;
-        vector<pll> vec;
-        for (ll i = 0; i < n; i++)
+        reset(n);
+        for (ll i = 0; i < n - 1; i++)
         {
-            vec.push_back({a[i], i});
+            ll x, y;
+            cin >> x >> y;
+            g[x].push_back(y);
+            g[y].push_back(x);
         }
-        sort(all(vec));
-        for (auto it : vec)
+        dfs(1, 1);
+        vector<vector<ll>> ans;
+        map<pll, ll> edgs;
+        ll maxlvl = 0;
+        for (auto it : leaves)
+            maxlvl = max(maxlvl, level[it]);
+        vector<ll> nodinlv[maxlvl + 3];
+        for (ll i = 1; i <= n; i++)
         {
-            ll i = it.second;
-            for (ll j = i; j < n; j++)
+            // deb2(i,level[i]);
+            nodinlv[level[i]].push_back(i);
+        }
+        while (1)
+        {
+            vector<ll> tmp(n, 0);
+            bool f = 0;
+            ll col = 1;
+            for (ll lv = 1; lv <= maxlvl; lv++)
             {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
+                for (auto it : nodinlv[lv])
+                {
+                    if (tmp[it - 1] == 0 && tmp[par[it] - 1] == 0 && edgs[{it, par[it]}] == 0)
+                    {
+                        tmp[par[it] - 1] = tmp[it - 1] = col;
+                        edgs[{it, par[it]}] = 1;
+                        col++;
+                        f = 1;
+                    }
+                }
             }
-            for (ll j = i; j >= 0; j--)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
+            for (ll i = 0; i < n; i++)
+                if (!tmp[i])
+                    tmp[i] = col++;
+            if (!f)
+                break;
+            ans.push_back(tmp);
         }
-        bool f = 0;
-        for (ll i = 0; i < n; i++)
+        cout << ans.size() << nn;
+        for (auto it : ans)
         {
-            if (a[i] != b[i])
-                f = 1;
+            cout << it << nn;
         }
-        if (f)
-            cout << "NO" << nn;
-        else
-            cout << "YES" << nn;
     }
 
     return 0;

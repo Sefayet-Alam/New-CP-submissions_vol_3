@@ -200,8 +200,52 @@ namespace io
 }
 using namespace io;
 
-
-
+int a[N], pref[N], suf[N];
+void solve()
+{
+    int n, q;
+    cin >> n >> q;
+    for (int i = 1; i <= n; i++)
+    {
+        cin >> a[i];
+        pref[i] = max(pref[i - 1], a[i]);
+    }
+    suf[n + 1] = n + 1;
+    for (int i = n; i >= 1; i--)
+    {
+        suf[i] = min(suf[i + 1], a[i]);
+    }
+    string s;
+    cin >> s;
+    s = "." + s;
+    auto cost = [&](int i)
+    {
+        if (s[i] == 'L' and s[i + 1] == 'R')
+        {
+            return pref[i] > suf[i + 1];
+        }
+        else
+        {
+            return false;
+        }
+    };
+    int bad = 0;
+    for (int i = 1; i + 1 <= n; i++)
+    {
+        bad += cost(i);
+    }
+    while (q--)
+    {
+        int i;
+        cin >> i;
+        bad -= cost(i - 1);
+        bad -= cost(i);
+        s[i] = s[i] == 'L' ? 'R' : 'L';
+        bad += cost(i - 1);
+        bad += cost(i);
+        cout << (bad ? "NO\n" : "YES\n");
+    }
+}
 
 int main()
 {
@@ -214,46 +258,7 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<ll> a(n), b(n);
-        cin >> a >> b;
-        vector<pll> vec;
-        for (ll i = 0; i < n; i++)
-        {
-            vec.push_back({a[i], i});
-        }
-        sort(all(vec));
-        for (auto it : vec)
-        {
-            ll i = it.second;
-            for (ll j = i; j < n; j++)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-            for (ll j = i; j >= 0; j--)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-        }
-        bool f = 0;
-        for (ll i = 0; i < n; i++)
-        {
-            if (a[i] != b[i])
-                f = 1;
-        }
-        if (f)
-            cout << "NO" << nn;
-        else
-            cout << "YES" << nn;
+        solve();
     }
 
     return 0;

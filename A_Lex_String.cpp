@@ -200,9 +200,6 @@ namespace io
 }
 using namespace io;
 
-
-
-
 int main()
 {
     fast;
@@ -214,46 +211,50 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<ll> a(n), b(n);
+        ll n, m, k;
+        cin >> n >> m >> k;
+        string a, b;
         cin >> a >> b;
-        vector<pll> vec;
-        for (ll i = 0; i < n; i++)
-        {
-            vec.push_back({a[i], i});
-        }
-        sort(all(vec));
-        for (auto it : vec)
-        {
-            ll i = it.second;
-            for (ll j = i; j < n; j++)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-            for (ll j = i; j >= 0; j--)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-        }
+        sort(all(a));
+        sort(all(b));
+        // deb2(a,b);
+        ll str = 0;
         bool f = 0;
-        for (ll i = 0; i < n; i++)
+        ll l = 0, r = 0;
+        string ans = "";
+        while (l < n && r < m)
         {
-            if (a[i] != b[i])
+            // deb2(a[l],b[r]);
+            // deb2(f,str);
+            // cout << (a[l]<=b[r] )<<nn;
+            if ((a[l] <= b[r] && (f || (f== 0 && str < k))) || (f==1 && str>=k))
+            {
+                ans += a[l];
+                l++;
+                if (!f){
+                    str++;
+                }
+                else{
+                    str = 1;
+                }
+                f = 0;
+            }
+            else
+            {
+                ans += b[r];
+                r++;
+                if (f){
+                    str++;
+                }
+                else{
+                    str = 1;
+                }
                 f = 1;
+            }
+            // deb(ans);
         }
-        if (f)
-            cout << "NO" << nn;
-        else
-            cout << "YES" << nn;
+      
+        cout << ans << nn;
     }
 
     return 0;

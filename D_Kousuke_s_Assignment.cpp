@@ -201,8 +201,9 @@ namespace io
 using namespace io;
 
 
-
-
+bool cmp(pll a,pll b){
+    return a.second<b.second;
+}
 int main()
 {
     fast;
@@ -216,44 +217,31 @@ int main()
     {
         ll n;
         cin >> n;
-        vector<ll> a(n), b(n);
-        cin >> a >> b;
-        vector<pll> vec;
+        vector<ll> vec(n);
+        cin >> vec;
+        ll sum = 0;
+        map<ll,ll>sums;
+        vector<pll>ranges;
+        sums[0]=-1;
         for (ll i = 0; i < n; i++)
         {
-            vec.push_back({a[i], i});
-        }
-        sort(all(vec));
-        for (auto it : vec)
-        {
-            ll i = it.second;
-            for (ll j = i; j < n; j++)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
+            sum += vec[i];
+            if(sums.find(sum)!=sums.end()){
+                ranges.push_back({sums[sum]+1,i});
             }
-            for (ll j = i; j >= 0; j--)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
+            sums[sum]=i;
+        }
+        sort(all(ranges),cmp);
+        ll now=-1;
+        ll ans=0;
+        for(auto it:ranges){
+            if(it.first>now){
+                now=it.second;
+                now=it.second;
+                ans++;
             }
         }
-        bool f = 0;
-        for (ll i = 0; i < n; i++)
-        {
-            if (a[i] != b[i])
-                f = 1;
-        }
-        if (f)
-            cout << "NO" << nn;
-        else
-            cout << "YES" << nn;
+        cout<<ans<<nn;
     }
 
     return 0;

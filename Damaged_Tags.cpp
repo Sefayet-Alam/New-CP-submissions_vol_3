@@ -10,7 +10,7 @@ using namespace __gnu_pbds;
     cin.tie(0);                   \
     cout.tie(0);
 
-#define ll long long
+#define ll int
 #define SZ(a) (int)a.size()
 #define UNIQUE(a) (a).erase(unique(all(a)), (a).end())
 #define mp make_pair
@@ -28,7 +28,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI acos(-1)
 const double EPS = 1e-9;
-const ll N = 2e5 + 10;
+const ll N = 7e4 + 10;
 const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
@@ -202,58 +202,89 @@ using namespace io;
 
 
 
+ll p, n;
 
+vector<string> a(N), b(N);
+ll dp[107][N];
+bool matchdone[20][109];
+bool match(ll i, ll j)
+{
+    for (ll k = 0; k < a[i].size(); k++)
+    {
+        if (a[i][k] == '?')
+            continue;
+        if (a[i][k] != b[j][k]) return false;
+    }
+    return true;
+}
+ll lim;
+ll func(ll i, ll msk)
+{
+    if (i == n)
+    {
+        if(msk==lim) return 1;
+        else return 0;
+    }
+    if (dp[i][msk] != -1)
+        return dp[i][msk];
+    ll ret = 0;
+    for (ll j = 0; j < p; j++)
+    {
+        if ((msk&(1<<j))==0 && matchdone[j][i])
+        {
+            ret = (ret + func(i + 1, (msk|(1<<j)))) % M;
+        }
+    }
+    ret=(ret+func(i+1,msk))%M;
+    return dp[i][msk] = ret;
+}
+
+void reset(ll n, ll p)
+{
+    for (ll i = 0; i <= n; i++)
+    {
+        for (ll j = 0; j <= (1LL << p); j++)
+        {
+            dp[i][j] = -1;
+        }
+    }
+}
 int main()
 {
     fast;
     ll t;
-    // setIO();
-    // ll tno=1;;
+
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        ll n;
+        string s;
+        cin >> p;
+        a.resize(p);
+        for (ll i = 0; i < p; i++)
+        {
+            
+            cin >> s;
+            a[i] = s;
+        }
         cin >> n;
-        vector<ll> a(n), b(n);
-        cin >> a >> b;
-        vector<pll> vec;
+        b.resize(n);
         for (ll i = 0; i < n; i++)
         {
-            vec.push_back({a[i], i});
+            cin >> s;
+            b[i] = s;
         }
-        sort(all(vec));
-        for (auto it : vec)
-        {
-            ll i = it.second;
-            for (ll j = i; j < n; j++)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-            for (ll j = i; j >= 0; j--)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
+        
+        for(ll i=0;i<p;i++){
+            for(ll j=0;j<n;j++){
+                matchdone[i][j]=match(i,j);
             }
         }
-        bool f = 0;
-        for (ll i = 0; i < n; i++)
-        {
-            if (a[i] != b[i])
-                f = 1;
-        }
-        if (f)
-            cout << "NO" << nn;
-        else
-            cout << "YES" << nn;
+        reset(n, p);
+        lim=(1LL<<p)-1;
+        ll ans = func(0, 0);
+        cout << ans << nn;
     }
 
     return 0;

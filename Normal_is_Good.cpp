@@ -200,9 +200,6 @@ namespace io
 }
 using namespace io;
 
-
-
-
 int main()
 {
     fast;
@@ -216,44 +213,48 @@ int main()
     {
         ll n;
         cin >> n;
-        vector<ll> a(n), b(n);
-        cin >> a >> b;
-        vector<pll> vec;
+        vector<ll> vec(n);
+        cin >> vec;
+        ll ans = 0;
+        map<ll, ll> curr,cnt;
         for (ll i = 0; i < n; i++)
         {
-            vec.push_back({a[i], i});
-        }
-        sort(all(vec));
-        for (auto it : vec)
-        {
-            ll i = it.second;
-            for (ll j = i; j < n; j++)
+            curr[vec[i]]++;
+            cnt[vec[i]]++;
+            for (ll j = 1; j <= 3; j++)
             {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-            for (ll j = i; j >= 0; j--)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
+                if (vec[i] != j && j != 2)
+                {
+                    ans += (curr[j] * (curr[j] - 1)) / 2;
+                    curr[j] = 0;
+                }
             }
         }
-        bool f = 0;
+        ans += (curr[1] * (curr[1] - 1)) / 2;
+        ans += (curr[3] * (curr[3] - 1)) / 2;
+        map<ll, vector<ll>> diff_map;
+        ll diff = 0;
+        ll f = 0;
+        diff_map[diff].push_back(f);
         for (ll i = 0; i < n; i++)
         {
-            if (a[i] != b[i])
-                f = 1;
+            if (vec[i] == 1)
+                diff++;
+            else if (vec[i] == 3)
+                diff--;
+            else
+                f++;
+            diff_map[diff].push_back(f);
+            if (f && diff_map.find(diff) != diff_map.end())
+            {
+                ll now = lower_bound(all(diff_map[diff]), f) - diff_map[diff].begin();
+                ans += now;
+            }
         }
-        if (f)
-            cout << "NO" << nn;
-        else
-            cout << "YES" << nn;
+        // ans+=n;
+        ans+=cnt[1];
+        ans+=cnt[3];
+        cout << ans << nn;
     }
 
     return 0;

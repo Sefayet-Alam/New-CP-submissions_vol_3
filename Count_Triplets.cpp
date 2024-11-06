@@ -200,9 +200,6 @@ namespace io
 }
 using namespace io;
 
-
-
-
 int main()
 {
     fast;
@@ -216,44 +213,34 @@ int main()
     {
         ll n;
         cin >> n;
-        vector<ll> a(n), b(n);
-        cin >> a >> b;
-        vector<pll> vec;
-        for (ll i = 0; i < n; i++)
+        vector<ll> a(n+1);
+        for(ll i=1;i<=n;i++) cin>>a[i];
+        ll ans = 0;
+        for (int i = 1; i <= n; i++)
         {
-            vec.push_back({a[i], i});
-        }
-        sort(all(vec));
-        for (auto it : vec)
-        {
-            ll i = it.second;
-            for (ll j = i; j < n; j++)
+            for (int j = max(i - 100LL, 1LL); j <= min(i + 100LL, n); j++)
             {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-            for (ll j = i; j >= 0; j--)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
+                int v = abs(a[i] - a[j]);
+                int m1 = min(i, j);
+                int m2 = max(i, j);
+                int d = (m2 - m1);
+
+                if (d % 2 != v % 2 || v < d)
+                    continue;
+
+                if (v == d)
+                {
+                    ans += (m2 - m1 + 1);
+                    continue;
+                }
+
+                if (v <= abs(1 - i) + abs(1 - j))
+                    ans++;
+                if (v <= abs(n - i) + abs(n - j))
+                    ans++;
             }
         }
-        bool f = 0;
-        for (ll i = 0; i < n; i++)
-        {
-            if (a[i] != b[i])
-                f = 1;
-        }
-        if (f)
-            cout << "NO" << nn;
-        else
-            cout << "YES" << nn;
+        cout << ans << nn;
     }
 
     return 0;

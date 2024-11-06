@@ -28,7 +28,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI acos(-1)
 const double EPS = 1e-9;
-const ll N = 2e5 + 10;
+const ll N = 3e5 + 10;
 const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
@@ -200,62 +200,177 @@ namespace io
 }
 using namespace io;
 
+ll GCD2(ll a, ll b)
+{
+    while (b)
+    {
+        a %= b;
+        swap(a, b);
+    }
+    return a;
+}
 
+ll table[N][19], ar[N];
+void build(ll n)
+{
 
+    for (ll i = 1; i <= n; ++i)
+        table[i][0] = ar[i];
+
+    for (ll k = 1; k < 19; ++k)
+    {
+        for (ll i = 1; i + (1LL << k) - 1 <= n; ++i)
+        {
+            table[i][k] = GCD2(table[i][k - 1], table[i + (1LL << (k - 1))][k - 1]);
+        }
+    }
+}
+
+ll query(ll l, ll r)
+{
+    ll k = 31 - __builtin_clz(r - l + 1);
+    return GCD2(table[l][k], table[r - (1 << k) + 1][k]);
+}
 
 int main()
 {
     fast;
-    ll t;
-    // setIO();
-    // ll tno=1;;
-    t = 1;
-    cin >> t;
-
-    while (t--)
+    ll n;
+    cin >> n;
+    for (ll i = 1; i <= n; i++)
     {
-        ll n;
-        cin >> n;
-        vector<ll> a(n), b(n);
-        cin >> a >> b;
-        vector<pll> vec;
-        for (ll i = 0; i < n; i++)
-        {
-            vec.push_back({a[i], i});
-        }
-        sort(all(vec));
-        for (auto it : vec)
-        {
-            ll i = it.second;
-            for (ll j = i; j < n; j++)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-            for (ll j = i; j >= 0; j--)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-        }
-        bool f = 0;
-        for (ll i = 0; i < n; i++)
-        {
-            if (a[i] != b[i])
-                f = 1;
-        }
-        if (f)
-            cout << "NO" << nn;
-        else
-            cout << "YES" << nn;
+        cin >> ar[i];
     }
+    build(n);
 
+    for (ll i = 1; i <= n; i++)
+    {
+        if (ar[i] == 1)
+        {
+            cout << 0 << " ";
+            continue;
+        }
+
+        ll b = 0;
+        ll l = 0, r = min(i - 1, n - i);
+        while (l <= r)
+        {
+            ll mid = l + (r - l) / 2;
+            if (query(i - mid, i + mid) > 1)
+            {
+                b = mid;
+                l = mid + 1;
+            }
+            else
+            {
+                r = mid - 1;
+            }
+        }
+        ll left = i;
+        l = 1, r = i;
+        while (l <= r)
+        {
+            ll midl = l + (r - l) / 2;
+            if (query(midl, i) > 1)
+            {
+                left = midl;
+                r = midl - 1;
+            }
+            else
+            {
+                l = midl + 1;
+            }
+        }
+        ll leftr = i;
+        l = i, r = n;
+        while (l <= r)
+        {
+            ll midl = l + (r - l) / 2;
+            if (query(left, midl) > 1)
+            {
+                leftr = midl;
+                l = midl + 1;
+            }
+            else
+            {
+                r = midl - 1;
+            }
+        }
+        // deb2(left, leftr);
+        ll ans1 = max(0LL, leftr - left + 1);
+
+        leftr = i;
+        l = i, r = n;
+        while (l <= r)
+        {
+            ll midl = l + (r - l) / 2;
+            if (query(i - b, midl) > 1)
+            {
+                leftr = midl;
+                l = midl + 1;
+            }
+            else
+            {
+                r = midl - 1;
+            }
+        }
+        // deb2(left, leftr);
+        ll ans3 = max(0LL, leftr - (i - b) + 1);
+
+        ll right = i;
+        l = i, r = n;
+        while (l <= r)
+        {
+            ll midr = l + (r - l) / 2;
+            if (query(i, midr) > 1)
+            {
+                right = midr;
+                l = midr + 1;
+            }
+            else
+            {
+                r = midr - 1;
+            }
+        }
+        ll rightl = i;
+        l = 1, r = i;
+        while (l <= r)
+        {
+            ll midr = l + (r - l) / 2;
+            if (query(midr, right) > 1)
+            {
+                rightl = midr;
+                r = midr - 1;
+            }
+            else
+            {
+                l = midr + 1;
+            }
+        }
+        // deb2(rightl,right);
+        ll ans2 = max(0LL, right - rightl + 1);
+
+        rightl = i;
+        l = 1, r = i;
+        while (l <= r)
+        {
+            ll midr = l + (r - l) / 2;
+            if (query(midr, i + b) > 1)
+            {
+                rightl = midr;
+                r = midr - 1;
+            }
+            else
+            {
+                l = midr + 1;
+            }
+        }
+        // deb2(rightl,right);
+        ll ans4 = max(0LL, (i + b) - rightl + 1);
+        ll ans = max({ans1, ans2, ans3, ans4});
+        cout << ans << " ";
+    }
+    cout << nn;
     return 0;
 }
 

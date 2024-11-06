@@ -1,2 +1,3 @@
-cout<<i<<" "<<bam[now]<<" "<<dan[now]<<endl;
-        cout<<i<<" "<<left<<" "<<right<<endl;
+for(auto it:mpp){
+    //     deb(it);
+    // }

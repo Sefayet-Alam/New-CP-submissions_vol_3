@@ -200,61 +200,124 @@ namespace io
 }
 using namespace io;
 
+#define pdd pair<double, double>
+const ll INFI = 1e18 + 2.00;
+ll n;
 
+struct Point
+{
+    double x, y;
+};
 
+double distance(Point a, Point b)
+{
+    return sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
+}
 
+Point midpoint(Point a, Point b)
+{
+    return {(a.x + b.x) / 2.0, (a.y + b.y) / 2.0};
+}
+
+Point circumcenter(Point a, Point b, Point c)
+{
+    double d = 2 * (a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y));
+
+    if (d == 0)
+    {
+        double dist_ab = distance(a, b);
+        double dist_bc = distance(b, c);
+        double dist_ca = distance(c, a);
+        if (dist_ab >= dist_bc && dist_ab >= dist_ca)
+        {
+            return midpoint(a, b);
+        }
+        else if (dist_bc >= dist_ab && dist_bc >= dist_ca)
+        {
+            return midpoint(b, c);
+        }
+        else
+        {
+            return midpoint(c, a);
+        }
+    }
+
+    double ux = ((a.x * a.x + a.y * a.y) * (b.y - c.y) + (b.x * b.x + b.y * b.y) * (c.y - a.y) + (c.x * c.x + c.y * c.y) * (a.y - b.y)) / (d * 1.00);
+    double uy = ((a.x * a.x + a.y * a.y) * (c.x - b.x) + (b.x * b.x + b.y * b.y) * (a.x - c.x) + (c.x * c.x + c.y * c.y) * (b.x - a.x)) / (d * 1.00);
+    return {ux, uy};
+}
+
+vector<Point> vec(N);
+
+ll check(Point center, double rad)
+{
+    ll ret = 0;
+    for (ll i = 0; i < n; i++)
+    {
+        if (distance(vec[i], center) <= rad + EPS)
+            ret++;
+    }
+    // deb2(rad,ret);
+    return ret;
+}
+
+vector<double> Arr(N, DBL_MAX);
+void solve()
+{
+    cin >> n;
+    for (ll i = 0; i < n; i++)
+    {
+        double x, y;
+        cin >> x >> y;
+        vec[i].x = x;
+        vec[i].y = y;
+    }
+
+    for (ll i = 0; i < n; i++)
+    {
+        for (ll j = 0; j < n; j++)
+        {
+            for (ll k = 0; k < n; k++)
+            {
+                // if(i==j || j==k || i==k) continue;
+                Point currcenter = circumcenter(vec[i], vec[j], vec[k]);
+                double nowrad = distance(vec[i], currcenter);
+                ll nos = check(currcenter, nowrad);
+
+                Arr[nos] = min(Arr[nos], nowrad);
+            }
+        }
+    }
+    for (ll i = 0; i < n; i++)
+    {
+        for (ll j = 0; j < n; j++)
+        {
+            // if(i==j) continue;
+            Point currcenter = midpoint(vec[i], vec[j]);
+            double nowrad = distance(vec[i], currcenter);
+            ll nos = check(currcenter, nowrad);
+            Arr[nos] = min(Arr[nos], nowrad);
+        }
+    }
+    for (ll i = n - 1; i > 1; i--)
+    {
+        Arr[i] = min(Arr[i], Arr[i + 1]);
+    }
+    // for(ll i=1;i<=n;i++) deb(Arr[i]);
+    for (ll i = 2; i <= n; i++)
+    {
+        ll l = ((i - 2) * (i - 1)) / 2 + 1;
+        ll r = (i * (i - 1)) / 2;
+        for (ll j = l; j <= r; j++)
+        {
+            Setpre(10) << Arr[i] << nn;
+        }
+    }
+}
 int main()
 {
     fast;
-    ll t;
-    // setIO();
-    // ll tno=1;;
-    t = 1;
-    cin >> t;
-
-    while (t--)
-    {
-        ll n;
-        cin >> n;
-        vector<ll> a(n), b(n);
-        cin >> a >> b;
-        vector<pll> vec;
-        for (ll i = 0; i < n; i++)
-        {
-            vec.push_back({a[i], i});
-        }
-        sort(all(vec));
-        for (auto it : vec)
-        {
-            ll i = it.second;
-            for (ll j = i; j < n; j++)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-            for (ll j = i; j >= 0; j--)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-        }
-        bool f = 0;
-        for (ll i = 0; i < n; i++)
-        {
-            if (a[i] != b[i])
-                f = 1;
-        }
-        if (f)
-            cout << "NO" << nn;
-        else
-            cout << "YES" << nn;
-    }
+    solve();
 
     return 0;
 }

@@ -201,8 +201,6 @@ namespace io
 using namespace io;
 
 
-
-
 int main()
 {
     fast;
@@ -216,44 +214,23 @@ int main()
     {
         ll n;
         cin >> n;
-        vector<ll> a(n), b(n);
-        cin >> a >> b;
-        vector<pll> vec;
+        vector<ll> vec(n);
+        cin >> vec;
+        ll ans = M;
         for (ll i = 0; i < n; i++)
         {
-            vec.push_back({a[i], i});
+
+            vector<pll> tmp;
+            ll ans1 =i;
+            ll ans2 = 0;
+            for (ll j = i + 1; j < n; j++)
+                if (vec[j] > vec[i])
+                    ans2++;
+            ans = min(ans1 + ans2, ans);
+            // deb(i);
+            // deb2(ans1,ans2);
         }
-        sort(all(vec));
-        for (auto it : vec)
-        {
-            ll i = it.second;
-            for (ll j = i; j < n; j++)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-            for (ll j = i; j >= 0; j--)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-        }
-        bool f = 0;
-        for (ll i = 0; i < n; i++)
-        {
-            if (a[i] != b[i])
-                f = 1;
-        }
-        if (f)
-            cout << "NO" << nn;
-        else
-            cout << "YES" << nn;
+        cout << ans << nn;
     }
 
     return 0;

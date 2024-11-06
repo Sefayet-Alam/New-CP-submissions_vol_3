@@ -200,9 +200,6 @@ namespace io
 }
 using namespace io;
 
-
-
-
 int main()
 {
     fast;
@@ -218,42 +215,35 @@ int main()
         cin >> n;
         vector<ll> a(n), b(n);
         cin >> a >> b;
-        vector<pll> vec;
+        // deb(othrday);
+
+        vector<ll> othrday;
+        ll ans = 0;
         for (ll i = 0; i < n; i++)
         {
-            vec.push_back({a[i], i});
-        }
-        sort(all(vec));
-        for (auto it : vec)
-        {
-            ll i = it.second;
-            for (ll j = i; j < n; j++)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
+            if(b[i]>=a[i]){
+                othrday.push_back(i);
             }
-            for (ll j = i; j >= 0; j--)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
+            else ans+=b[i];
+        }
+        if(othrday.size()>1){
+            for(auto it:othrday){
+                ans+=a[it];
             }
         }
-        bool f = 0;
-        for (ll i = 0; i < n; i++)
-        {
-            if (a[i] != b[i])
-                f = 1;
+        else if(othrday.size()==1){
+            if(a[othrday[0]]==b[othrday[0]]) ans+=b[othrday[0]];
+            else{
+                ll now=b[othrday[0]];
+                for(ll i=0;i<n;i++){
+                    if(i!=othrday[0]){
+                        now=min(now,a[othrday[0]]-b[i]+a[i]);
+                    }
+                }
+                ans+=now;
+            }
         }
-        if (f)
-            cout << "NO" << nn;
-        else
-            cout << "YES" << nn;
+        cout<<ans<<nn;
     }
 
     return 0;

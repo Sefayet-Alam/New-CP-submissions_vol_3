@@ -200,9 +200,6 @@ namespace io
 }
 using namespace io;
 
-
-
-
 int main()
 {
     fast;
@@ -216,44 +213,49 @@ int main()
     {
         ll n;
         cin >> n;
-        vector<ll> a(n), b(n);
-        cin >> a >> b;
-        vector<pll> vec;
-        for (ll i = 0; i < n; i++)
-        {
-            vec.push_back({a[i], i});
+        vector<ll> vec(n);
+        cin >> vec;
+        if(n==1){
+            cout<<-1<<nn;
+            continue;
         }
-        sort(all(vec));
-        for (auto it : vec)
+        set<ll> pq;
+        for (ll i = 1; i <= n; i++)
         {
-            ll i = it.second;
-            for (ll j = i; j < n; j++)
+            pq.insert(i);
+        }
+        
+        vector<ll> ans(n, 0);
+        for (ll i = 0; i < n - 2; i++)
+        {
+            ll now = *pq.begin();
+            pq.erase(now);
+            if (now == vec[i])
             {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
+                ll now2 = *pq.begin();
+                pq.erase(now2);
+                ans[i] = now2;
+                pq.insert(now);
             }
-            for (ll j = i; j >= 0; j--)
+            else
             {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
+                ans[i] = now;
             }
         }
-        bool f = 0;
-        for (ll i = 0; i < n; i++)
+        ll now1 = *pq.begin();
+        pq.erase(now1);
+        ll now2 = *pq.begin();
+        pq.erase(now2);
+        if (now1 == vec[n - 2] || now2==vec[n-1])
         {
-            if (a[i] != b[i])
-                f = 1;
+            ans[n - 2] = now2;
+            ans[n - 1] = now1;
         }
-        if (f)
-            cout << "NO" << nn;
-        else
-            cout << "YES" << nn;
+        else{
+            ans[n-2]=now1;
+            ans[n-1]=now2;
+        }
+        cout<<ans<<nn;
     }
 
     return 0;

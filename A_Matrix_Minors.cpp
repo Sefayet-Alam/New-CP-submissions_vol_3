@@ -200,8 +200,24 @@ namespace io
 }
 using namespace io;
 
+ll powerMod(ll x, ll y, ll p)
+{
+    ll res = 1 % p;
+    x = x % p;
+    while (y > 0)
+    {
+        if (y & 1)
+            res = (res * x) % p;
+        y = y >> 1;
+        x = (x * x) % p;
+    }
+    return res;
+}
 
-
+ll inverseMod(ll a, ll x)
+{
+    return powerMod(a, x - 2, x);
+}
 
 int main()
 {
@@ -210,50 +226,145 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
         ll n;
         cin >> n;
-        vector<ll> a(n), b(n);
-        cin >> a >> b;
-        vector<pll> vec;
-        for (ll i = 0; i < n; i++)
+        ll ar[n + 1][n + 1];
+        if (n == 2)
         {
-            vec.push_back({a[i], i});
-        }
-        sort(all(vec));
-        for (auto it : vec)
-        {
-            ll i = it.second;
-            for (ll j = i; j < n; j++)
+            for (ll i = 1; i <= n; i++)
             {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
+                for (ll j = 1; j <= n; j++)
+                {
+                    cin >> ar[i][j];
+                }
             }
-            for (ll j = i; j >= 0; j--)
+            cout << 0 << " " << 0 << nn;
+            cout << 0 << " " << 0 << nn;
+            continue;
+        }
+        map<ll, ll> diag1, diag2;
+        for (ll i = 1; i <= n; i++)
+        {
+            for (ll j = 1; j <= n; j++)
             {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
+                cin >> ar[i][j];
+                diag1[i - j] = 1;
+                diag2[i + j] = 1;
             }
         }
-        bool f = 0;
-        for (ll i = 0; i < n; i++)
+        for (ll i = 1; i <= n; i++)
         {
-            if (a[i] != b[i])
-                f = 1;
+            for (ll j = 1; j <= n; j++)
+            {
+                diag1[i - j] = (diag1[i - j] * ar[i][j]);
+                diag2[i + j] = (diag2[i + j] * ar[i][j]);
+            }
         }
-        if (f)
-            cout << "NO" << nn;
-        else
-            cout << "YES" << nn;
+
+        for (ll i = 1; i <= n; i++)
+        {
+            for (ll j = 1; j <= n; j++)
+            {
+                ll curans = 0;
+                map<ll, ll> diag2x, diag1x;
+                for (auto it : diag1)
+                {
+                    diag1x[it.first] = it.second;
+                }
+                for (auto it : diag2)
+                {
+                    diag2x[it.first] = it.second;
+                }
+
+                for (auto it : diag1x)
+                {
+                    ll j1 = -(it.first - i);
+                    // diag1 matches i,j1 in row i
+                    if (j1 >= 1 && j1 <= n)
+                    {
+                        ll div = inverseMod(ar[i][j1], M);
+                        diag1x[i - j1] = (diag1x[i - j1] * div) % M;
+                    }
+                    ll i1 = it.first + j;
+                    // diag1 matches i1,j in col j
+                    if (i1 >= 1 && i1 <= n)
+                    {
+                        ll div = inverseMod(ar[i1][j], M);
+                        diag1x[i1 - j] = (diag1x[i1 - j] * div) % M;
+                    }
+                }
+                diag1x[i - j] = (ar[i][j] * diag1x[i - j]) % M;
+                for (auto it : diag2x)
+                {
+                    ll j1 = it.first - i;
+                    if (j1 >= 1 && j1 <= n)
+                    {
+                        ll div = inverseMod(ar[i][j1], M);
+                        diag2x[i + j1] = (diag2x[i + j1] * div) % M;
+                    }
+                    ll i1 = it.first - j;
+                    if (i1 >= 1 && i1 <= n)
+                    {
+                        ll div = inverseMod(ar[i1][j], M);
+                        diag2x[i1 + j] = (diag2x[i1 + j] * div) % M;
+                    }
+                }
+                diag2x[i + j] = (ar[i][j] * diag2x[i + j]) % M;
+
+                
+                ll curdiag1=i+j;
+
+                ll n2=n-1;
+                for(ll i=0;i<n;i++){
+                    if(i>curdiag1){
+                        diag1x[i-1]=(diag1x[i-1]*diag1x[i])%M;
+                        diag1x[i]=1;
+                    }
+                }
+                ll a = 0;
+                ll b = 0;
+                for (auto it : diag1x)
+                {
+
+                    ll cur = it.second;
+                    if (it.first < 0)
+                    {
+                        ll idx = n + it.first;
+                        cur = (cur * diag1x[idx]) % M;
+                        a = (a + cur);
+                    }
+                    else if (it.first == 0)
+                    {
+                        a = (a + cur);
+                    }
+                }
+                for (auto it : diag2x)
+                {
+
+                    ll cur = it.second;
+                    if (it.first < n + 1)
+                    {
+                        ll idx = n + it.first;
+                        cur = (cur * diag2x[idx]) % M;
+                        b = (b + cur);
+                        // deb2(it.first,idx);
+                        // deb(cur);
+                    }
+                    else if (it.first == n + 1)
+                    {
+                        b = (b + cur);
+                    }
+                }
+                curans = a - b;
+                deb(curans);
+                // cout << curans << " ";
+            }
+            cout << nn;
+        }
     }
 
     return 0;

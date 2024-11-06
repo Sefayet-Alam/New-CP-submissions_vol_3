@@ -29,7 +29,7 @@ using namespace __gnu_pbds;
 #define PI acos(-1)
 const double EPS = 1e-9;
 const ll N = 2e5 + 10;
-const ll M = 1e9 + 7;
+const ll M = 1e16 + 7;
 
 /// INLINE FUNCTIONS
 inline ll GCD(ll a, ll b) { return b == 0 ? a : GCD(b, a % b); }
@@ -200,8 +200,40 @@ namespace io
 }
 using namespace io;
 
+vector<ll> g[N];
 
+ll ans = LLONG_MAX;
+vector<ll> dist(N, M);
+vector<ll> parent(N, -1);
+ll bfs(ll source)
+{
 
+    queue<ll> q;
+    dist[1] = 0;
+    q.push(1);
+    parent[1]=1;
+    ll ret = M;
+    while (!q.empty())
+    {
+        ll u = q.front();
+        q.pop();
+
+        for (ll v : g[u])
+        {
+            if (dist[v] == M)
+            {
+                dist[v] = dist[u] + 1;
+                parent[v] = u;
+                q.push(v);
+            }
+            else if(v==1)
+            {
+                ret = min(ret, dist[u] + 1);
+            }
+        }
+    }
+    return ret;
+}
 
 int main()
 {
@@ -210,50 +242,24 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<ll> a(n), b(n);
-        cin >> a >> b;
-        vector<pll> vec;
-        for (ll i = 0; i < n; i++)
+        ll n, m;
+        cin >> n >> m;
+        for (ll i = 0; i < m; i++)
         {
-            vec.push_back({a[i], i});
+            ll u, v;
+            cin >> u >> v;
+            g[u].push_back(v);
+            // g[v].push_back(u);
         }
-        sort(all(vec));
-        for (auto it : vec)
-        {
-            ll i = it.second;
-            for (ll j = i; j < n; j++)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-            for (ll j = i; j >= 0; j--)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-        }
-        bool f = 0;
-        for (ll i = 0; i < n; i++)
-        {
-            if (a[i] != b[i])
-                f = 1;
-        }
-        if (f)
-            cout << "NO" << nn;
+        ll ans = bfs(1);
+        if (ans >= M)
+            cout << -1 << nn;
         else
-            cout << "YES" << nn;
+            cout << ans << nn;
     }
 
     return 0;

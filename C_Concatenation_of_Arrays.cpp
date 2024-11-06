@@ -202,7 +202,6 @@ using namespace io;
 
 
 
-
 int main()
 {
     fast;
@@ -216,44 +215,25 @@ int main()
     {
         ll n;
         cin >> n;
-        vector<ll> a(n), b(n);
-        cin >> a >> b;
-        vector<pll> vec;
+        vector<pair<pll, ll>> vec(n);
+        map<ll, pll> mpp;
         for (ll i = 0; i < n; i++)
         {
-            vec.push_back({a[i], i});
+            ll x,y;
+            cin>>x>>y;
+            mpp[i]={x,y};
+            if(x>y) swap(x,y);
+            vec[i].first.first=x;
+            vec[i].first.second=y;
+            vec[i].second = i;
         }
         sort(all(vec));
         for (auto it : vec)
         {
-            ll i = it.second;
-            for (ll j = i; j < n; j++)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-            for (ll j = i; j >= 0; j--)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
+            ll pos = it.second;
+            cout << mpp[pos] << " ";
         }
-        bool f = 0;
-        for (ll i = 0; i < n; i++)
-        {
-            if (a[i] != b[i])
-                f = 1;
-        }
-        if (f)
-            cout << "NO" << nn;
-        else
-            cout << "YES" << nn;
+        cout << nn;
     }
 
     return 0;
@@ -269,3 +249,5 @@ int main()
     -> bruteforce to find pattern
     -> use Setpre for precision problems
 */
+
+

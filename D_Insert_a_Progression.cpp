@@ -200,65 +200,94 @@ namespace io
 }
 using namespace io;
 
+ll dp[N][2][2], arr[N], n, m, x, y;
 
+ll solve(ll pos, ll i, ll j)
+{
+    if (dp[pos][i][j] != -1)
+        return dp[pos][i][j];
 
+    ll ret;
+
+    if (pos == 0)
+    {
+        ret = solve(pos + 1, i, j);
+        if (i && j)
+        {
+            ret = min(ret, abs(x - y) + abs(y - arr[1]) + solve(1, 0, 0));
+            ret = min(ret, abs(x - y) + abs(x - arr[1]) + solve(1, 0, 0));
+        }
+        if (i)
+            ret = min(ret, abs(x - arr[1]) + solve(1, 0, j));
+        if (j)
+            ret = min(ret, abs(y - arr[1]) + solve(1, i, 0));
+    }
+    else if (pos == n)
+    {
+        if (i && j)
+        {
+            ret = abs(x - y) + min(abs(arr[n] - x), abs(arr[n] - y));
+        }
+        else if (i)
+            ret = abs(x - arr[n]);
+        else if (j)
+            ret = abs(y - arr[n]);
+        else
+            ret = 0;
+    }
+    else
+    {
+        ret = abs(arr[pos] - arr[pos + 1]) + solve(pos + 1, i, j);
+        if (i && j)
+        {
+            ret = min(ret, abs(arr[pos] - x) + abs(arr[pos + 1] - y) + abs(x - y) + solve(pos + 1, 0, 0));
+            ret = min(ret, abs(arr[pos] - x) + abs(arr[pos + 1] - x) + abs(x - y) + solve(pos + 1, 0, 0));
+        }
+        if (i)
+            ret = min(ret, abs(arr[pos] - x) + abs(arr[pos + 1] - x) + solve(pos + 1, 0, j));
+        if (j)
+            ret = min(ret, abs(arr[pos] - y) + abs(arr[pos + 1] - y) + solve(pos + 1, i, 0));
+    }
+
+    return dp[pos][i][j] = ret;
+}
 
 int main()
 {
-    fast;
-    ll t;
-    // setIO();
-    // ll tno=1;;
-    t = 1;
+
+
+    int t;
     cin >> t;
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<ll> a(n), b(n);
-        cin >> a >> b;
-        vector<pll> vec;
-        for (ll i = 0; i < n; i++)
+        ll i, j;
+        cin >> n >> m;
+        ll mn = INT_MAX, mx = 0;
+        x = -1;
+        y = -1;
+
+        for (i = 1; i <= n; i++)
         {
-            vec.push_back({a[i], i});
+            cin >> arr[i];
+            mn = min(mn, arr[i]);
+            mx = max(mx, arr[i]);
         }
-        sort(all(vec));
-        for (auto it : vec)
+
+        if (mn > 1)
+            x = 1;
+        if (mx < m)
+            y = m;
+        for (i = 0; i <= n + 2; i++)
         {
-            ll i = it.second;
-            for (ll j = i; j < n; j++)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-            for (ll j = i; j >= 0; j--)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
+            memset(dp[i], -1, sizeof(dp[i]));
         }
-        bool f = 0;
-        for (ll i = 0; i < n; i++)
-        {
-            if (a[i] != b[i])
-                f = 1;
-        }
-        if (f)
-            cout << "NO" << nn;
-        else
-            cout << "YES" << nn;
+
+        cout << solve(0, (x != -1), (y != -1))<<nn;
     }
 
     return 0;
 }
-
 /* Points tO CONSIDER
     # RTE? -> check array bounds and constraints
     #TLE? -> thinks about binary search/ dp / optimization techniques

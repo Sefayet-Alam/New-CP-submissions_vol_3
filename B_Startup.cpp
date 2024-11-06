@@ -200,9 +200,6 @@ namespace io
 }
 using namespace io;
 
-
-
-
 int main()
 {
     fast;
@@ -214,46 +211,27 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<ll> a(n), b(n);
-        cin >> a >> b;
-        vector<pll> vec;
-        for (ll i = 0; i < n; i++)
+        ll n, k;
+        cin >> n >> k;
+        map<ll, ll> mpp;
+        for (ll i = 0; i < k; i++)
         {
-            vec.push_back({a[i], i});
+            ll x, y;
+            cin >> x >> y;
+            mpp[x] += y;
+        }
+        vector<ll> vec;
+        for (auto it : mpp)
+        {
+            vec.push_back(it.second);
         }
         sort(all(vec));
-        for (auto it : vec)
-        {
-            ll i = it.second;
-            for (ll j = i; j < n; j++)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-            for (ll j = i; j >= 0; j--)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-        }
-        bool f = 0;
-        for (ll i = 0; i < n; i++)
-        {
-            if (a[i] != b[i])
-                f = 1;
-        }
-        if (f)
-            cout << "NO" << nn;
-        else
-            cout << "YES" << nn;
+        reverse(all(vec));
+        ll ans = 0;
+        ll sz=vec.size();
+        sz=min(sz,n);
+        for (ll i = 0; i <sz;  i++) ans += vec[i];
+        cout << ans << nn;
     }
 
     return 0;

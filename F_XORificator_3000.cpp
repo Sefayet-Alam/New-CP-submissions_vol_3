@@ -10,7 +10,7 @@ using namespace __gnu_pbds;
     cin.tie(0);                   \
     cout.tie(0);
 
-#define ll long long
+#define ll uint64_t
 #define SZ(a) (int)a.size()
 #define UNIQUE(a) (a).erase(unique(all(a)), (a).end())
 #define mp make_pair
@@ -200,8 +200,46 @@ namespace io
 }
 using namespace io;
 
+ll findXOR(ll n)
+{
+    ll mod = n % 4;
 
+    if (mod == 0)
+        return n;
 
+    else if (mod == 1)
+        return 1;
+
+    else if (mod == 2)
+        return n + 1;
+
+    else if (mod == 3)
+        return 0;
+}
+
+ll findXOR(ll l, ll r)
+{
+    if (l)
+        return (findXOR(l - 1) ^ findXOR(r));
+    return findXOR(r);
+}
+ll xorInRange(ll k, ll i, ll l, ll r)
+{
+    ll powerOfTwo = (1LL << i);
+    ll startJ = (l - k + powerOfTwo - 1) / powerOfTwo;
+    ll endJ = (r - k) / powerOfTwo;
+    ll count = endJ - startJ + 1;
+    ll xr = findXOR(startJ, endJ);
+    xr *= powerOfTwo;
+    if (count % 2 == 0)
+    {
+        return (xr);
+    }
+    else
+    {
+        return (k ^ (xr));
+    }
+}
 
 int main()
 {
@@ -211,49 +249,17 @@ int main()
     // ll tno=1;;
     t = 1;
     cin >> t;
-
-    while (t--)
+    for (size_t tt = 0; tt < t; tt++)
     {
-        ll n;
-        cin >> n;
-        vector<ll> a(n), b(n);
-        cin >> a >> b;
-        vector<pll> vec;
-        for (ll i = 0; i < n; i++)
-        {
-            vec.push_back({a[i], i});
-        }
-        sort(all(vec));
-        for (auto it : vec)
-        {
-            ll i = it.second;
-            for (ll j = i; j < n; j++)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-            for (ll j = i; j >= 0; j--)
-            {
-                if (a[j] > a[i])
-                    break;
-                if (b[j] < a[i])
-                    break;
-                a[j] = a[i];
-            }
-        }
-        bool f = 0;
-        for (ll i = 0; i < n; i++)
-        {
-            if (a[i] != b[i])
-                f = 1;
-        }
-        if (f)
-            cout << "NO" << nn;
-        else
-            cout << "YES" << nn;
+        ll l, r, i, k;
+        cin >> l >> r >> i >> k;
+        ll xr = findXOR(l, r);
+        ll xr2 = xorInRange(k, i, l, r);
+        
+        // deb2(xr,xr2);
+        xr = (xr ^ xr2);
+        cout << xr << nn;
+        // deb(xr);
     }
 
     return 0;
