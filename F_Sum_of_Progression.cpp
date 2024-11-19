@@ -81,13 +81,8 @@ namespace io{
     template <typename First, typename... Other> void print( First first, Other... other ) { if( sep ) cerr << " | "; sep = true; cerr << to_string( first ); print( other... ); }
 } using namespace io;
 
-
-ll query(ll l,ll r){
-    cout<<"? "<<l<<" "<<r<<endl;
-    ll x;
-    cin>>x;
-    return x;
-}
+ll precalci[330][N];
+ll precalc[330][N];
 
 int main()
 {
@@ -100,34 +95,53 @@ int main()
 
     while (t--)
     {
-      ll n;
-      cin>>n;
-      string s(n+1,'0');
-      ll last=0;
-      vector<ll>pref(n+1,0);
-      ll curz=0;
-      bool f=0;
-      for(ll i=2;i<=n;i++){
-        ll now=query(1,i);
-        pref[i]=now;
-        if(f==0){
-            if(now<i-1){
-                for(ll j=1;j<=(i-1)-now;j++) s[j]='1';
+      ll n,q;
+      cin>>n>>q;
+      vector<ll>vec(n+1);
+      for(ll i=1;i<=n;i++) cin>>vec[i];
+    
+      ll lim=1;
+      while (lim*lim<n)
+      {
+        lim++;
+      }
+
+      // mem(precalc,0);
+      // mem(precalci,0);
+      for(ll d=1;d<=lim;d++){
+        for(ll i=1;i<=n+d;i++){
+            precalc[d][i]=0;
+            precalci[d][i]=0;
+        }
+        for(ll j=1;j<=n;j++){
+            precalc[d][j+d]+=precalc[d][j]+vec[j];
+            precalci[d][j+d]+=precalci[d][j]+vec[j]*((j+d)/d);
+        }
+      }
+      while (q--)
+      {
+        ll s,d,k;
+        ll ans = 0;
+        cin >> s >> d >> k;
+        // deb(s);
+        // deb2(d,k);
+        if (d > lim) {
+            ll cnt=1;
+            for (ll i = s; i <= s + (k - 1) * d; i += d) {
+                ans += vec[i] * (cnt);
+                cnt++;
             }
-            f=1;
+            cout << ans << " ";
+            continue;
         }
-        if(now>last){
-            s[i]='1';
-            last=now;
-        }
+        ll last=s+(k-1)*d;
+        ll first=s;
+        // deb2(precalc[d][last+d],precalc[d][first]);
+        ans=precalci[d][last+d] - precalci[d][first]-((precalc[d][last+d] - precalc[d][first]) * (first / d));
+        cout<<ans<<" ";
       }
-      if(last==0){
-        cout<<"! IMPOSSIBLE"<<endl;
-      }
-      else{
-        s.erase(s.begin());
-        cout<<s<<endl;
-      }
+      cout<<nn;
+      
     }
 
     return 0;

@@ -199,50 +199,62 @@ namespace io
     }
 }
 using namespace io;
+
 ll n;
+vector<ll> vec(N);
+ll FM[N];
+int is_initialized = 0;
+
+ll powerMod(ll x, ll y, ll p)
+{
+    ll res = 1 % p;
+    x = x % p;
+    while (y > 0)
+    {
+        if (y & 1)
+            res = (res * x) % p;
+        y = y >> 1;
+        x = (x * x) % p;
+    }
+    return res;
+}
+
+ll inverseMod(ll a, ll x)
+{
+    return powerMod(a, x - 2, x);
+}
+
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        ll n, p;
-        cin >> n >> p;
-        cout << "Case " << tno++ << ": ";
-        if (n <= 4)
+        ll d;
+        cin >> n >> d;
+        vec.resize(n);
+        cin >> vec;
+        ll xr = 0;
+        for (ll i = 0; i < n; i++)
         {
-            if (n == 1)
-            {
-                if (p == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
-            }
-            else if (n == 2 || n == 3 || n == 4)
-            {
-                cout << "Oddius" << nn;
-            }
-            continue;
+            xr = (xr ^ vec[i]);
         }
-        if (n % 2 == 0)
-            cout << "Oddius" << nn;
+        if (xr == 0)
+        {
+            cout << 0 << nn;
+        }
         else
         {
-            if (p == 1)
-                cout << "Oddius" << nn;
-            else
-            {
-                if (n % 4 == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
-            }
+            ll ans = (d + 1);
+            ll div = 2 * d;
+            div = inverseMod(div, M);
+            ans = (ans * div) % M;
+            cout << ans << nn;
         }
     }
 

@@ -29,7 +29,7 @@ using namespace __gnu_pbds;
 #define PI acos(-1)
 const double EPS = 1e-9;
 const ll N = 2e5 + 10;
-const ll M = 1e9 + 7;
+const ll M = 1e16 + 7;
 
 /// INLINE FUNCTIONS
 inline ll GCD(ll a, ll b) { return b == 0 ? a : GCD(b, a % b); }
@@ -81,7 +81,21 @@ namespace io{
     template <typename First, typename... Other> void print( First first, Other... other ) { if( sep ) cerr << " | "; sep = true; cerr << to_string( first ); print( other... ); }
 } using namespace io;
 
+ll n;
+vector<ll>vec(N);
 
+ll dp[1003][5005];
+
+vector<ll>prefmin(N);
+
+ll func(ll i,ll sec){
+    if(i==n) return 0;
+    if(dp[i][sec]!=-1) return dp[i][sec];
+    ll ret=M;
+    ret=min(ret,max(0LL,vec[i]-min(vec[i],sec))+func(i+1,min(sec,vec[i])));
+    ret=min(ret,vec[i]-prefmin[i]+func(i+1,sec));
+    return dp[i][sec]=ret;
+}
 
 int main()
 {
@@ -94,18 +108,23 @@ int main()
 
     while (t--)
     {
-      ll n;
       cin>>n;
-      vector<ll>vec(n+1);
-      for(ll i=1;i<=n;i++) cin>>vec[i];
-      ll dp[n+1][5005][2];
-      mem(dp,M);
+      vec.resize(n);
+      cin>>vec;
 
+      prefmin.resize(n);
+      prefmin[0]=vec[0];
       for(ll i=1;i<n;i++){
-        for(ll j=0;j<5005;j++){
-            dp[i][j][0]=min(dp[i],)
-        }
+        prefmin[i]=min(prefmin[i-1],vec[i]);
       }
+      ll maxm=*max_element(all(vec));
+    //   deb2(vec,prefmin);
+      for(ll i=0;i<n;i++){
+        for(ll j=0;j<=maxm+10;j++) dp[i][j]=-1;
+      }
+      ll ans=func(0,maxm);
+      cout<<ans<<nn;
+
     }
 
     return 0;
@@ -121,3 +140,4 @@ int main()
     -> bruteforce to find pattern
     -> use Setpre for precision problems
 */
+

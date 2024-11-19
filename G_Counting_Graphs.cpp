@@ -29,7 +29,7 @@ using namespace __gnu_pbds;
 #define PI acos(-1)
 const double EPS = 1e-9;
 const ll N = 2e5 + 10;
-const ll M = 1e9 + 7;
+const ll M = 998244353;
 
 /// INLINE FUNCTIONS
 inline ll GCD(ll a, ll b) { return b == 0 ? a : GCD(b, a % b); }
@@ -82,11 +82,52 @@ namespace io{
 } using namespace io;
 
 
-ll query(ll l,ll r){
-    cout<<"? "<<l<<" "<<r<<endl;
-    ll x;
-    cin>>x;
-    return x;
+int par[N];
+int sz[N];
+multiset<int> sizes;
+
+void make(int v){
+    par[v]=v;
+    sz[v]=1;
+    sizes.insert(1);
+}
+
+int find(int v){
+    if(v==par[v]) return v;
+    return par[v]=find(par[v]);
+}
+
+void merge(int a,int b){
+    sizes.erase(sizes.find(sz[a]));
+    sizes.erase(sizes.find(sz[b]));
+    sizes.insert(sz[a]+sz[b]);
+}
+
+void Union(int a,int b){
+    a=find(a);
+    b=find(b);
+    if(a!=b){
+        if(sz[a]<sz[b]) swap(a,b);
+        par[b]=a;
+        // merge(a,b);
+        sz[a]+=sz[b];
+    }
+}
+
+
+ll powerMod(ll x, ll y, ll p){
+    ll res = 1 % p;
+    x = x % p;
+    while (y > 0){
+        if (y & 1) res = (res * x) % p;
+        y = y >> 1;
+        x = (x * x) % p;
+    }
+    return res;
+}
+
+ll inverseMod(ll a, ll x){
+    return powerMod(a, x - 2, x);
 }
 
 int main()
@@ -100,34 +141,27 @@ int main()
 
     while (t--)
     {
-      ll n;
-      cin>>n;
-      string s(n+1,'0');
-      ll last=0;
-      vector<ll>pref(n+1,0);
-      ll curz=0;
-      bool f=0;
-      for(ll i=2;i<=n;i++){
-        ll now=query(1,i);
-        pref[i]=now;
-        if(f==0){
-            if(now<i-1){
-                for(ll j=1;j<=(i-1)-now;j++) s[j]='1';
-            }
-            f=1;
-        }
-        if(now>last){
-            s[i]='1';
-            last=now;
-        }
+      ll n,s;
+      cin>>n>>s;
+      for(ll i=1;i<=n;i++){make(i);}
+      vector<pair<ll,pll>>edges;
+      for(ll i=0;i<n-1;i++){
+        ll x,y,z;
+        cin>>x>>y>>z;
+        edges.push_back({z,{x,y}});
       }
-      if(last==0){
-        cout<<"! IMPOSSIBLE"<<endl;
+      sort(all(edges));
+      ll ans=1;
+      for(ll i=0;i<n-1;i++){
+        ll w=edges[i].first;
+        ll u=edges[i].second.first;
+        ll v=edges[i].second.second;
+        ll su=sz[find(u)];
+        ll sv=sz[find(v)];
+        ans=(ans*powerMod(s-w+1,su*sv-1LL,M))%M;
+        Union(u,v);
       }
-      else{
-        s.erase(s.begin());
-        cout<<s<<endl;
-      }
+      cout<<ans<<nn;
     }
 
     return 0;

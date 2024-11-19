@@ -199,51 +199,43 @@ namespace io
     }
 }
 using namespace io;
-ll n;
+
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        ll n, p;
-        cin >> n >> p;
-        cout << "Case " << tno++ << ": ";
-        if (n <= 4)
+        ll n, a, b;
+        cin >> n >> a >> b;
+        string s;
+        cin >> s;
+        ll currx = 0, curry = 0;
+        bool f = 0;
+        for (ll i = 0; i < 1000; i++)
         {
-            if (n == 1)
-            {
-                if (p == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
-            }
-            else if (n == 2 || n == 3 || n == 4)
-            {
-                cout << "Oddius" << nn;
-            }
-            continue;
-        }
-        if (n % 2 == 0)
-            cout << "Oddius" << nn;
-        else
-        {
-            if (p == 1)
-                cout << "Oddius" << nn;
+            if (s[i % n] == 'N')
+                curry++;
+            else if (s[i % n] == 'S')
+                curry--;
+            else if (s[i % n] == 'E')
+                currx++;
             else
+                currx--;
+            if (currx == a && curry == b)
             {
-                if (n % 4 == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
+                cout << "YES" << nn;
+                f = 1;
+                break;
             }
         }
+        if (!f)
+            cout << "NO" << nn;
     }
 
     return 0;

@@ -1,0 +1,1 @@
+{"name":"Local: G_ICPC","url":"e:\\GitHub\\New-CP-submissions_vol_3\\G_ICPC.cpp","tests":[{"id":1731151619441,"input":"1\n10 4 8\n","output":"422121017\n"},{"id":1731152772750,"input":"1\n2 2 3","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"e:\\GitHub\\New-CP-submissions_vol_3\\G_ICPC.cpp","group":"local","local":true}

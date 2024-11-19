@@ -1,3 +1,13 @@
+
+#pragma GCC optimize(2)
+#pragma GCC optimize("Ofast")
+#pragma GCC optimize("inline","fast-math","unroll-loops","no-stack-protector")
+#pragma GCC diagnostic error "-fwhole-program"
+#pragma GCC diagnostic error "-fcse-skip-blocks"
+#pragma GCC diagnostic error "-funsafe-loop-optimizations"
+#pragma GCC optimize("O3")
+
+//use before include
 #include <bits/stdc++.h>
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>
@@ -28,12 +38,12 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI acos(-1)
 const double EPS = 1e-9;
-const ll N = 2e5 + 10;
-const ll M = 1e9 + 7;
+const ll N = 1e6 + 10;
+const ll M = 998244353;
 
 /// INLINE FUNCTIONS
 inline ll GCD(ll a, ll b) { return b == 0 ? a : GCD(b, a % b); }
-inline ll LCM(ll a, ll b) { return a * b / GCD(a, b); }
+inline ll LCM(ll a, ll b) { return a * b; }
 inline double logb(ll base, ll num) { return (double)log(num) / (double)log(base); }
 
 /// Data structures
@@ -199,56 +209,136 @@ namespace io
     }
 }
 using namespace io;
-ll n;
+
+vector<int> smallest_factor;
+vector<bool> prime;
+vector<int> primes;
+
+void sieve(int maximum)
+{
+    maximum = max(maximum, 2);
+    smallest_factor.assign(maximum + 1, 0);
+    prime.assign(maximum + 1, true);
+    prime[0] = prime[1] = false;
+    primes = {2};
+
+    for (int p = 2; p <= maximum; p += 2)
+    {
+        prime[p] = p == 2;
+        smallest_factor[p] = 2;
+    }
+
+    for (int p = 3; p * p <= maximum; p += 2)
+        if (prime[p])
+            for (int i = p * p; i <= maximum; i += 2 * p)
+                if (prime[i])
+                {
+                    prime[i] = false;
+                    smallest_factor[i] = p;
+                }
+
+    for (int p = 3; p <= maximum; p += 2)
+        if (prime[p])
+        {
+            smallest_factor[p] = p;
+            primes.push_back(p);
+        }
+}
+
+/// BIT MANIPULATION
+
+#define Set(x, k) (x |= (1LL << k))
+#define Unset(x, k) (x &= ~(1LL << k))
+#define Check(x, k) (x & (1LL << k))
+#define Toggle(x, k) (x ^ (1LL << k))
+
+int popcount(ll x) { return __builtin_popcountll(x); };
+
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
-    cin >> t;
-
+    // cin >> t;
+    sieve(N);
     while (t--)
     {
-        ll n, p;
-        cin >> n >> p;
-        cout << "Case " << tno++ << ": ";
-        if (n <= 4)
+        ll n;
+        cin >> n;
+        vector<ll> vec(n);
+        cin >> vec;
+        ll dp[n + 2];
+        mem(dp, 0);
+        // dp[i] -> how many ways to go to i from 0
+        unordered_map<ll, ll> inexclu;
+        // holder of lcs
+        dp[0] = 1;
+
+        for (ll i = 0; i < n; i++)
         {
-            if (n == 1)
+            ll cur = vec[i];
+            vector<ll> prims;
+            while (cur > 1)
             {
-                if (p == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
+                ll x = smallest_factor[cur];
+                prims.push_back(x);
+                while (cur % x == 0)
+                {
+                    cur /= x;
+                }
             }
-            else if (n == 2 || n == 3 || n == 4)
+            ll sz = prims.size();
+            ll curdp = 0;
+            if (i)
             {
-                cout << "Oddius" << nn;
+                for (ll msk = 0; msk < (1LL << sz); msk++)
+                {
+                    ll lc = 1;
+                    for (ll k = 0; k < sz; k++)
+                    {
+                        if (msk & (1LL << k))
+                        {
+                            lc = LCM(lc, prims[k]);
+                        }
+                    }
+                    // deb2(msk,lc);
+
+                    if (popcount(msk) % 2)
+                        curdp = (curdp + inexclu[lc]) % M;
+                    else
+                        curdp = (curdp - inexclu[lc] + M) % M;
+                }
             }
-            continue;
+            dp[i] = (dp[i] + curdp) % M;
+            for (ll msk = 0; msk < (1LL << sz); msk++)
+            {
+                ll lc = 1;
+                for (ll k = 0; k < prims.size(); k++)
+                {
+                    if (msk & (1LL << k))
+                    {
+                        lc = LCM(lc, prims[k]); //here, LCM = a*b but why?
+                    }
+                }
+                if (lc > 1)
+                {
+                    inexclu[lc] += dp[i];
+                    inexclu[lc] %= M;
+                    // lc=6 use kore theke i te asa jai dp[i] upaye..
+                    // so, inexclu[lc] += dp[i]
+                }
+            }
+            // for (auto it : inexclu)
+            //     deb(it);
+            // deb2(i, dp[i]);
         }
-        if (n % 2 == 0)
-            cout << "Oddius" << nn;
-        else
-        {
-            if (p == 1)
-                cout << "Oddius" << nn;
-            else
-            {
-                if (n % 4 == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
-            }
-        }
+        cout << dp[n - 1] << nn;
     }
 
     return 0;
 }
-
 /* Points tO CONSIDER
     # RTE? -> check array bounds and constraints
     #TLE? -> thinks about binary search/ dp / optimization techniques
@@ -259,3 +349,4 @@ int main()
     -> bruteforce to find pattern
     -> use Setpre for precision problems
 */
+

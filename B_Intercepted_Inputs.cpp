@@ -199,51 +199,52 @@ namespace io
     }
 }
 using namespace io;
-ll n;
+
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        ll n, p;
-        cin >> n >> p;
-        cout << "Case " << tno++ << ": ";
-        if (n <= 4)
+        ll k;
+        cin >> k;
+        vector<ll> vec(k);
+        cin >> vec;
+        sort(all(vec));
+        // deb(vec);
+        map<ll, ll> mpp;
+        for (auto it : vec)
+            mpp[it]++;
+        ll othr = k - 2;
+        ll n, m;
+        for (auto it : mpp)
         {
-            if (n == 1)
+            if (othr % it.first == 0)
             {
-                if (p == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
-            }
-            else if (n == 2 || n == 3 || n == 4)
-            {
-                cout << "Oddius" << nn;
-            }
-            continue;
-        }
-        if (n % 2 == 0)
-            cout << "Oddius" << nn;
-        else
-        {
-            if (p == 1)
-                cout << "Oddius" << nn;
-            else
-            {
-                if (n % 4 == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
+                ll b = it.first;
+                ll a = othr / it.first;
+                // deb2(a,b);
+                if (a == b)
+                {
+                    if (mpp[b] > 1)
+                    {
+                        n = b;
+                        m = a;
+                    }
+                }
+                else if (mpp[a]>0 && mpp[b]>0)
+                {
+                    n = b;
+                    m = a;
+                }
             }
         }
+        cout << n << " " << m << nn;
     }
 
     return 0;

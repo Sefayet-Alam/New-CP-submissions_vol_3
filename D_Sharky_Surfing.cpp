@@ -199,51 +199,83 @@ namespace io
     }
 }
 using namespace io;
-ll n;
+
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        ll n, p;
-        cin >> n >> p;
-        cout << "Case " << tno++ << ": ";
-        if (n <= 4)
+        ll n, m, L;
+        cin >> n >> m >> L;
+        vector<pll> vec;
+        for (ll i = 0; i < n; i++)
         {
-            if (n == 1)
-            {
-                if (p == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
-            }
-            else if (n == 2 || n == 3 || n == 4)
-            {
-                cout << "Oddius" << nn;
-            }
-            continue;
+            ll x, y;
+            cin >> x >> y;
+            vec.push_back({x, y});
         }
-        if (n % 2 == 0)
-            cout << "Oddius" << nn;
-        else
+        vector<pll> pows;
+        for (ll i = 0; i < m; i++)
         {
-            if (p == 1)
-                cout << "Oddius" << nn;
+            ll x, v;
+            cin >> x >> v;
+            pows.push_back({x, v});
+        }
+        // sort(all(vec));
+        // sort(all(pows));
+        ll l = 0, r = 0;
+
+        ll curpower = 1;
+        ll ans = 0;
+        bool f = 0;
+        PQ<ll> expq;
+        while (r < n)
+        {
+            while (l < m)
+            {
+                if (pows[l].first < vec[r].first)
+                {
+                    expq.push(pows[l].second);
+                    l++;
+                }
+                else
+                    break;
+            }
+            ll nowneed = vec[r].second - vec[r].first + 2;
+            // deb2(curpower, nowneed);
+            // deb2(l, r);
+            ll take=0;
+            while (expq.size())
+            {
+                ll cur=expq.top();
+                if(curpower>=nowneed) break;
+                curpower+=cur;
+                take++;
+                expq.pop();
+            }
+            // deb2(curpower, nowneed);
+            // deb2(l, r);
+            if (curpower < nowneed)
+            {
+                f = 1;
+                break;
+            }
             else
             {
-                if (n % 4 == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
+                ans+=take;
+                r++;
             }
         }
+        if (f)
+            cout << -1 << nn;
+        else
+            cout << ans << nn;
     }
 
     return 0;

@@ -199,51 +199,73 @@ namespace io
     }
 }
 using namespace io;
-ll n;
+
+ll n, k;
+ll curi;
+ll func(ll pos)
+{
+    ll now = n;
+    
+    for(ll i=0;i<curi;i++) now+=(now%10);
+    now += 20LL * (pos);
+    ll ret = (now) * (k - 4*pos - curi);
+
+    return ret;
+}
+
+ll ts(ll low, ll high)
+{
+    ll mid;
+    while (low<high)
+    {
+        mid = (high + low) >> 1;
+        // cout<<mid<<" "<<func(mid)<<endl;
+        if (func(mid) < func(mid + 1))
+        {
+            low = mid + 1;
+        }
+        else
+        {
+            high = mid;
+        }
+    }
+    return max(func(low),func(high));
+}
+
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
-
     while (t--)
     {
-        ll n, p;
-        cin >> n >> p;
-        cout << "Case " << tno++ << ": ";
-        if (n <= 4)
+        cin >> n >> k;
+        ll ans = n * k;
+        // deb2(n,k);
+        if (n%2)
         {
-            if (n == 1)
-            {
-                if (p == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
-            }
-            else if (n == 2 || n == 3 || n == 4)
-            {
-                cout << "Oddius" << nn;
-            }
-            continue;
+            n += (n % 10);
+            k--;
+            ans = max(ans, n * (k));
         }
-        if (n % 2 == 0)
-            cout << "Oddius" << nn;
+        if (n % 10 == 0)
+        {
+            ans = max(ans, n * k);
+        }
+
         else
         {
-            if (p == 1)
-                cout << "Oddius" << nn;
-            else
-            {
-                if (n % 4 == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
+            // deb2(n,k);
+            for(ll i=0;i<4 && i<=k;i++){
+                curi=i;
+                ll posi=ts(0,(k-i)/4);
+                ans = max(ans, posi);
             }
         }
+        cout << ans << nn;
     }
 
     return 0;

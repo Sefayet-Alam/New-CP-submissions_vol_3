@@ -1,3 +1,13 @@
+#pragma GCC optimize(2)
+#pragma GCC optimize("Ofast")
+#pragma GCC optimize("inline","fast-math","unroll-loops","no-stack-protector")
+#pragma GCC diagnostic error "-fwhole-program"
+#pragma GCC diagnostic error "-fcse-skip-blocks"
+#pragma GCC diagnostic error "-funsafe-loop-optimizations"
+#pragma GCC optimize("O3")
+
+//use before include
+
 #include <bits/stdc++.h>
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>
@@ -199,51 +209,57 @@ namespace io
     }
 }
 using namespace io;
-ll n;
+
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        ll n, p;
-        cin >> n >> p;
-        cout << "Case " << tno++ << ": ";
-        if (n <= 4)
-        {
-            if (n == 1)
-            {
-                if (p == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
-            }
-            else if (n == 2 || n == 3 || n == 4)
-            {
-                cout << "Oddius" << nn;
-            }
-            continue;
+        ll n, q;
+        cin >> n;
+        vector<ll> vec(n);
+        cin >> vec;
+        map<ll, ll> vis;
+        for (auto it : vec){
+            vis[it]++;
         }
-        if (n % 2 == 0)
-            cout << "Oddius" << nn;
-        else
+        cin >> q;
+        while (q--)
         {
-            if (p == 1)
-                cout << "Oddius" << nn;
-            else
+            ll x, y;
+            cin >> x >> y;
+            ll amb2 = (x) * (x) - 4* y;
+            // deb(amb2);
+            if (amb2 < 0)
             {
-                if (n % 4 == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
+                cout << 0 << " ";
+                continue;
             }
+            ll rt = sqrtl(amb2);
+            if(rt*rt!=amb2){
+                cout<<0<<" ";
+                continue;
+            }
+            ll apb = x;
+            ll amb=rt;//+-
+            // deb2(apb,amb);
+            ll ai=(apb+amb)/2;
+            ll aj=(apb-ai);
+            // deb2(ai,aj);
+            ll ans=0;
+            if(ai==aj){
+                ans=vis[ai]*(vis[ai]-1)/2;
+            }
+            else ans=vis[ai]*vis[aj]; 
+            cout<<ans<<" ";
         }
+        cout<<nn;
     }
 
     return 0;

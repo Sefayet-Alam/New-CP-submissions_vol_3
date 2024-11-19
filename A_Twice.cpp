@@ -82,12 +82,6 @@ namespace io{
 } using namespace io;
 
 
-ll query(ll l,ll r){
-    cout<<"? "<<l<<" "<<r<<endl;
-    ll x;
-    cin>>x;
-    return x;
-}
 
 int main()
 {
@@ -102,32 +96,15 @@ int main()
     {
       ll n;
       cin>>n;
-      string s(n+1,'0');
-      ll last=0;
-      vector<ll>pref(n+1,0);
-      ll curz=0;
-      bool f=0;
-      for(ll i=2;i<=n;i++){
-        ll now=query(1,i);
-        pref[i]=now;
-        if(f==0){
-            if(now<i-1){
-                for(ll j=1;j<=(i-1)-now;j++) s[j]='1';
-            }
-            f=1;
-        }
-        if(now>last){
-            s[i]='1';
-            last=now;
-        }
+      vector<ll>vec(n);
+      map<ll,ll>mpp;
+      cin>>vec;
+      for(auto it:vec) mpp[it]++;
+      ll ans=0;
+      for(auto it:mpp){
+        ans+=it.second/2;
       }
-      if(last==0){
-        cout<<"! IMPOSSIBLE"<<endl;
-      }
-      else{
-        s.erase(s.begin());
-        cout<<s<<endl;
-      }
+      cout<<ans<<nn;
     }
 
     return 0;

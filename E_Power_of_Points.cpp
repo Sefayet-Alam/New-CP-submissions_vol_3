@@ -199,51 +199,65 @@ namespace io
     }
 }
 using namespace io;
-ll n;
+
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        ll n, p;
-        cin >> n >> p;
-        cout << "Case " << tno++ << ": ";
-        if (n <= 4)
+        ll n;
+        cin >> n;
+        ll n2=n;
+        vector<ll> vec(n);
+        cin >> vec;
+        vector<ll>vec2(n2);
+        vec2=vec;
+        map<ll, ll> freq;
+        for (auto it : vec)
+            freq[it]++;
+        sort(all(vec));
+        UNIQUE(vec);
+        n=vec.size();
+
+
+        ll last = freq[vec[0]];
+        vector<ll> fordiffs;
+
+        for (ll i = 1; i < n; i++)
         {
-            if (n == 1)
-            {
-                if (p == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
-            }
-            else if (n == 2 || n == 3 || n == 4)
-            {
-                cout << "Oddius" << nn;
-            }
-            continue;
+            ll now = vec[i] - vec[i - 1];
+            now *= last;
+            fordiffs.push_back(now);
+            last += freq[vec[i]];
         }
-        if (n % 2 == 0)
-            cout << "Oddius" << nn;
-        else
-        {
-            if (p == 1)
-                cout << "Oddius" << nn;
-            else
-            {
-                if (n % 4 == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
-            }
+        vector<ll>backdiffs;
+        last=freq[vec[n-1]];
+        for(ll i=n-2;i>=0;i--){
+            ll now = vec[i+1] - vec[i];
+            now *= last;
+            backdiffs.push_back(now);
+            last += freq[vec[i]];
         }
+        reverse(all(backdiffs));
+        for(ll i=1;i<fordiffs.size();i++) fordiffs[i]+=fordiffs[i-1];
+        for(ll i=backdiffs.size()-2;i>=0;i--) backdiffs[i]+=backdiffs[i+1]; 
+        map<ll,ll>ans;
+        for(ll i=0;i<n;i++){
+            ll cur=0;
+            if(i) cur+=fordiffs[i-1];
+            if(i<n-1) cur+=backdiffs[i];
+            ans[vec[i]]=cur+n2;
+        }
+        for(ll i=0;i<n2;i++){
+            cout<<ans[vec2[i]]<<" ";
+        }
+        cout<<nn;
     }
 
     return 0;

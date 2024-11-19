@@ -28,7 +28,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI acos(-1)
 const double EPS = 1e-9;
-const ll N = 2e5 + 10;
+const ll N = 5e5 + 10;
 const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
@@ -199,51 +199,87 @@ namespace io
     }
 }
 using namespace io;
-ll n;
+
+ll FM[N];
+int is_initialized = 0;
+ll factorialMod(ll n, ll x)
+{
+    if (!is_initialized)
+    {
+        FM[0] = 1 % x;
+        for (int i = 1; i < N; i++)
+            FM[i] = (FM[i - 1] * i) % x;
+        is_initialized = 1;
+    }
+    return FM[n];
+}
+
+ll powerMod(ll x, ll y, ll p)
+{
+    ll res = 1 % p;
+    x = x % p;
+    while (y > 0)
+    {
+        if (y & 1)
+            res = (res * x) % p;
+        y = y >> 1;
+        x = (x * x) % p;
+    }
+    return res;
+}
+
+ll inverseMod(ll a, ll x)
+{
+    return powerMod(a, x - 2, x);
+}
+
+ll nCrMod(ll n, ll r, ll x)
+{
+    if (r == 0)
+        return 1;
+    if (r > n)
+        return 0;
+    ll res = factorialMod(n, x);
+    ll fr = factorialMod(r, x);
+    ll zr = factorialMod(n - r, x);
+    res = (res * inverseMod((fr * zr) % x, x)) % x;
+    return res;
+}
+
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        ll n, p;
-        cin >> n >> p;
-        cout << "Case " << tno++ << ": ";
-        if (n <= 4)
+        ll i, j, k, q, a, b, c, d, n, m, mn = 0;
+        string s, s1, s2;
+        cin >> n >> m;
+        vector<ll> v, v1(m), v2;
+        for (i = 0; i < m; i++)
         {
-            if (n == 1)
+            if (i < n - 1)
             {
-                if (p == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
+                cout << 0 << " ";
             }
-            else if (n == 2 || n == 3 || n == 4)
-            {
-                cout << "Oddius" << nn;
-            }
-            continue;
-        }
-        if (n % 2 == 0)
-            cout << "Oddius" << nn;
-        else
-        {
-            if (p == 1)
-                cout << "Oddius" << nn;
             else
             {
-                if (n % 4 == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
+                k = powerMod(2, i + 1, M);
+                k = inverseMod(k,M);
+                mn = (k * nCrMod(i, n - 1,M))%M;
+                if (i) mn = (mn+v1[i - 1])%M;
+                v1[i] = mn;
+                cout << mn << " ";
             }
         }
+
+        // cout << mn;
+        cout << endl;
     }
 
     return 0;

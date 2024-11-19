@@ -82,12 +82,6 @@ namespace io{
 } using namespace io;
 
 
-ll query(ll l,ll r){
-    cout<<"? "<<l<<" "<<r<<endl;
-    ll x;
-    cin>>x;
-    return x;
-}
 
 int main()
 {
@@ -100,34 +94,20 @@ int main()
 
     while (t--)
     {
+      ll on=0,zr=0;
       ll n;
       cin>>n;
-      string s(n+1,'0');
-      ll last=0;
-      vector<ll>pref(n+1,0);
-      ll curz=0;
-      bool f=0;
-      for(ll i=2;i<=n;i++){
-        ll now=query(1,i);
-        pref[i]=now;
-        if(f==0){
-            if(now<i-1){
-                for(ll j=1;j<=(i-1)-now;j++) s[j]='1';
-            }
-            f=1;
-        }
-        if(now>last){
-            s[i]='1';
-            last=now;
-        }
+      n*=2;
+      vector<ll>vec(n);
+      cin>>vec;
+      for(ll i=0;i<n;i++){
+        if(vec[i]) on++;
+        else zr++;
       }
-      if(last==0){
-        cout<<"! IMPOSSIBLE"<<endl;
-      }
-      else{
-        s.erase(s.begin());
-        cout<<s<<endl;
-      }
+    //   deb2(on,zr);
+      ll minm=(n-2*((on/2)+(zr/2)))/2;
+      ll maxm=min(on,zr);//01
+      cout<<minm<<" "<<maxm<<nn;
     }
 
     return 0;

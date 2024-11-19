@@ -199,51 +199,95 @@ namespace io
     }
 }
 using namespace io;
-ll n;
+
+vector<ll> g[N];
+vector<ll> par(N, 0);
+
+void dfs(int vertex, int parent = -1)
+{
+    /*
+    take action on vertex after entering the vertex
+    */
+    for (int child : g[vertex])
+    {
+        /*
+        take action on child before entering the child node
+        */
+        if (child == parent)
+            continue;
+        par[child] = vertex;
+        dfs(child, vertex);
+        /*
+        take action on child after entering the child node
+        */
+    }
+    /*
+    take action on vertex before exiting the vertex
+    */
+}
+
+void reset(ll n)
+{
+    for (ll i = 0; i <= n; i++)
+    {
+        par[i] = 0;
+        g[i].clear();
+    }
+}
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        ll n, p;
-        cin >> n >> p;
-        cout << "Case " << tno++ << ": ";
-        if (n <= 4)
+        ll n, k;
+        cin >> n >> k;
+        reset(n);
+        ll x, y;
+        cin >> x >> y;
+        vector<ll> hos(k);
+        cin >> hos;
+        sort(all(hos));
+        UNIQUE(hos);
+        // deb(hos);
+        for (ll i = 0; i < n - 1; i++)
         {
-            if (n == 1)
-            {
-                if (p == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
-            }
-            else if (n == 2 || n == 3 || n == 4)
-            {
-                cout << "Oddius" << nn;
-            }
-            continue;
+            ll a, b;
+            cin >> a >> b;
+            // deb2(a,b);
+            g[a].push_back(b);
+            g[b].push_back(a);
         }
-        if (n % 2 == 0)
-            cout << "Oddius" << nn;
-        else
+        dfs(x);
+        ll cur=y;
+        unordered_map<ll,ll>vis;
+        ll ans=0;
+        vis[x]=1;
+        while (cur!=x)
         {
-            if (p == 1)
-                cout << "Oddius" << nn;
-            else
-            {
-                if (n % 4 == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
+            // deb(cur);
+            vis[cur]=1;
+            ans++;
+            cur=par[cur];
+            // deb(cur);
+        }
+        for(auto it:hos){
+            if(vis[it]) continue;
+            ll now=it;
+            while(!vis[now]){
+                // deb2(now,par[now]);
+                vis[now]=1;
+                ans+=2;
+                now=par[now];
+                
             }
         }
+        cout<<ans<<nn;
     }
 
     return 0;

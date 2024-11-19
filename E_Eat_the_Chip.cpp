@@ -199,49 +199,58 @@ namespace io
     }
 }
 using namespace io;
-ll n;
+
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        ll n, p;
-        cin >> n >> p;
-        cout << "Case " << tno++ << ": ";
-        if (n <= 4)
-        {
-            if (n == 1)
-            {
-                if (p == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
-            }
-            else if (n == 2 || n == 3 || n == 4)
-            {
-                cout << "Oddius" << nn;
-            }
-            continue;
-        }
-        if (n % 2 == 0)
-            cout << "Oddius" << nn;
+        ll h, w, xa, ya, xb, yb;
+        cin >> h >> w >> xa >> ya >> xb >> yb;
+        if (xa >= xb)
+            cout << "Draw" << nn;
         else
         {
-            if (p == 1)
-                cout << "Oddius" << nn;
+            if ((xb - xa) % 2 == 0)
+            {
+                // alice tries to go to the left
+                ll lft = max(1LL, ya - (xb - xa) / 2);
+                // alice tries to go right
+                ll rght = min(w, ya + (xb - xa) / 2);
+                // deb2(lft,rght);
+                // bob lft
+                ll blft = max(1LL, yb - (xb - xa) / 2);
+                ll brght = min(w, yb + (xb - xa) / 2);
+                // deb2(blft,brght);
+                if (lft < blft || rght > brght)
+                {
+                    cout << "Draw" << nn;
+                }
+                else
+                    cout << "Bob" << nn;
+            }
             else
             {
-                if (n % 4 == 1)
-                    cout << "Evenius" << nn;
+                ll lft = max(1LL, ya - (xb - xa) / 2 - 1);
+                // alice tries to go right
+                ll rght = min(w, ya + (xb - xa) / 2 + 1);
+
+                // bob lft
+                ll blft = max(1LL, yb - (xb - xa) / 2);
+                ll brght = min(w, yb + (xb - xa) / 2);
+
+                // deb2(lft,rght);
+                //  deb2(blft,brght);
+                if (lft > blft || rght < brght)
+                    cout << "Draw" << nn;
                 else
-                    cout << "Oddius" << nn;
+                    cout << "Alice" << nn;
             }
         }
     }

@@ -28,7 +28,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI acos(-1)
 const double EPS = 1e-9;
-const ll N = 2e5 + 10;
+const ll N = 1e3 + 10;
 const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
@@ -199,51 +199,76 @@ namespace io
     }
 }
 using namespace io;
-ll n;
+
+ll n, m;
+vector<string> vec(N);
+ll dp[N][N][30];
+ll func(ll i, ll j, ll last)
+{
+    if (i == n)
+    {
+        if (last == 10) // k
+            return 0;
+        else return -M;
+    }
+    if (dp[i][j][last] != -1) return dp[i][j][last];
+    // deb2(last,vec[i][j]);
+    ll ret = LLONG_MIN;
+    if (j == 0)
+        ret = max(ret, func(i + 1, 0, last));
+    if (vec[i][j] == 'n' || vec[i][j] == 'a' || vec[i][j] == 'r' || vec[i][j] == 'e' || vec[i][j] == 'k')
+    {
+        if (j == m - 1)
+            ret = max(ret, (-1) + func(i + 1, 0, last));
+        else
+            ret = max(ret, (-1) + func(i, j + 1, last));
+    }
+    else
+    {
+        if (j == m - 1)
+            ret = max(ret, func(i + 1, 0, last));
+        else
+            ret = max(ret, func(i, j + 1, last));
+    }
+
+    if ((last == 13 && vec[i][j] == 'a') || (last == 0 && vec[i][j] == 'r') || (last == 17 && vec[i][j] == 'e') || (last == 4 && vec[i][j] == 'k') || (last == 10 && vec[i][j] == 'n'))
+    {
+        if (j == m - 1)
+            ret = max(ret, (1) + func(i + 1, 0, vec[i][j] - 'a'));
+        else
+            ret = max(ret, (1) + func(i, j + 1, vec[i][j] - 'a'));
+    }
+    return dp[i][j][last] = ret;
+}
+
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        ll n, p;
-        cin >> n >> p;
-        cout << "Case " << tno++ << ": ";
-        if (n <= 4)
+        cin >> n >> m;
+        vec.resize(n);
+        // mem(dp,-1);
+        for (ll i = 0; i <= n+5; i++)
+            for (ll j = 0; j <= m+5; j++)
+                for (ll k = 0; k <= 26; k++)
+                    dp[i][j][k] = -1;
+        for (ll i = 0; i < n; i++)
         {
-            if (n == 1)
-            {
-                if (p == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
-            }
-            else if (n == 2 || n == 3 || n == 4)
-            {
-                cout << "Oddius" << nn;
-            }
-            continue;
+            string s;
+            cin >> s;
+            vec[i] = s;
         }
-        if (n % 2 == 0)
-            cout << "Oddius" << nn;
-        else
-        {
-            if (p == 1)
-                cout << "Oddius" << nn;
-            else
-            {
-                if (n % 4 == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
-            }
-        }
+        // for (auto it : vec)
+        //     deb(it);
+        ll ans = func(0, 0, 10);
+        cout << ans << nn;
     }
 
     return 0;

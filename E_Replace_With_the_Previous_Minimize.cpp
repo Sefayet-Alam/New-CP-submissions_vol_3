@@ -199,51 +199,67 @@ namespace io
     }
 }
 using namespace io;
-ll n;
+
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        ll n, p;
-        cin >> n >> p;
-        cout << "Case " << tno++ << ": ";
-        if (n <= 4)
+        ll n, k;
+        cin >> n >> k;
+        string s;
+        cin >> s;
+        vector<char> vec;
+        for (ll i = 0; i < n; i++)
         {
-            if (n == 1)
+            if (s[i] == 'a')
+                continue;
+            if (vec.size())
             {
-                if (p == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
+                if (s[i] > vec.back())
+                    vec.push_back(s[i]);
             }
-            else if (n == 2 || n == 3 || n == 4)
-            {
-                cout << "Oddius" << nn;
-            }
-            continue;
-        }
-        if (n % 2 == 0)
-            cout << "Oddius" << nn;
-        else
-        {
-            if (p == 1)
-                cout << "Oddius" << nn;
             else
+                vec.push_back(s[i]);
+        }
+        vector<char> tmp = vec;
+        if (vec.size())
+        {
+            ll tomin = min(k, 1LL * (vec[0] - 'a'));
+
+            tmp[0] -= tomin;
+            k -= tomin;
+            for (ll i = 1; i < vec.size(); i++)
             {
-                if (n % 4 == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
+                ll tomin = min(k, 1LL * (vec[i] - vec[i - 1]));
+                tmp[i] -= tomin;
+                k -= tomin;
+            }
+            for (ll i = vec.size() - 1; i >= 1; i--)
+            {
+                for (ll j = 0; j < n; j++)
+                {
+                    if (s[j] <= vec[i] && (s[j] > vec[i - 1]))
+                    {
+                        s[j] = min(s[j], tmp[i]);
+                    }
+                }
+            }
+
+            for (ll j = 0; j < n; j++)
+            {
+                if (s[j] <= vec[0])
+                    s[j] = min(s[j], tmp[0]);
             }
         }
+        //   deb(vec);
+        cout << s << nn;
     }
 
     return 0;

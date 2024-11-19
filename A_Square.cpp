@@ -199,51 +199,43 @@ namespace io
     }
 }
 using namespace io;
-ll n;
+
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        ll n, p;
-        cin >> n >> p;
-        cout << "Case " << tno++ << ": ";
-        if (n <= 4)
+        vector<pll> vec;
+        for (ll i = 0; i < 4; i++)
         {
-            if (n == 1)
-            {
-                if (p == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
-            }
-            else if (n == 2 || n == 3 || n == 4)
-            {
-                cout << "Oddius" << nn;
-            }
-            continue;
+            ll x, y;
+            cin >> x >> y;
+            vec.push_back({x, y});
         }
-        if (n % 2 == 0)
-            cout << "Oddius" << nn;
-        else
+        sort(all(vec));
+        ll ans = 0;
+        for (ll i = 0; i < 3; i++)
         {
-            if (p == 1)
-                cout << "Oddius" << nn;
-            else
+            if (vec[i].first == vec[i + 1].first)
             {
-                if (n % 4 == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
+                ll a = vec[i + 1].second - vec[i].second;
+                ans = a * a;
+                break;
+            }
+            else if (vec[i].second == vec[i + 1].second)
+            {
+                ll a = vec[i + 1].first - vec[i].first;
+                ans = a * a;
+                break;
             }
         }
+        cout << ans << nn;
     }
 
     return 0;

@@ -199,51 +199,51 @@ namespace io
     }
 }
 using namespace io;
-ll n;
+
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        ll n, p;
-        cin >> n >> p;
-        cout << "Case " << tno++ << ": ";
-        if (n <= 4)
+        ll n, m, k;
+        cin >> n >> m >> k;
+        ll r = min(n, m);
+        string s;
+        cin >> s;
+        ll a = 0, b = 0;
+        ll acnt = 0, bcnt = 0;
+        ll tot = n + m - 1;
+        ll i = 0;
+        for (ll i = 0; i < r; i++)
         {
-            if (n == 1)
+            char ch = s[i % k];
+            if (ch == 'A')
             {
-                if (p == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
+                a += (tot) + (bcnt * 2);
+                b -= bcnt * 2;
+                acnt++;
             }
-            else if (n == 2 || n == 3 || n == 4)
-            {
-                cout << "Oddius" << nn;
-            }
-            continue;
-        }
-        if (n % 2 == 0)
-            cout << "Oddius" << nn;
-        else
-        {
-            if (p == 1)
-                cout << "Oddius" << nn;
             else
             {
-                if (n % 4 == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
+                b += (tot) + (acnt * 2);
+                a -= acnt * 2;
+                bcnt++;
             }
+            tot -= 2;
         }
+        // deb2(a,b);
+        if (a < b)
+            cout << "Bob" << nn;
+        else if (a > b)
+            cout << "Alice" << nn;
+        else
+            cout << "Draw" << nn;
     }
 
     return 0;

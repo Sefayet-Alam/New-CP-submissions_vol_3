@@ -199,51 +199,57 @@ namespace io
     }
 }
 using namespace io;
-ll n;
+
+double A;
+double func(double mid)
+{
+    double a = mid;
+    double asq=a*a;
+    double ret = (A - asq) * (A - asq) * asq;
+    // deb(ret);
+    ret = ret - asq*asq*asq;
+    // deb(ret);
+    ret = sqrt(ret);
+    ret = ret / 6.00;
+    // deb2(mid,ret);
+    return ret;
+}
+
+double ts(double l, double r)
+{
+    double eps = 1e-7; // set the error limit here
+    while (r - l > eps)
+    {
+        double mid1 = l + (r - l) / 3;
+        double mid2 = r - (r - l) / 3;
+        double f1 = func(mid1); // evaluates the function at mid1
+        double f2 = func(mid2); // evaluates the function at mid2
+        if (f1 < f2)
+            l = mid1; // change f1>f2 if needed minimum
+        else
+            r = mid2;
+    }
+    return func(l); // return the maximum of func(x) in [l, r]
+}
+
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
-    while (t--)
+    while (cin >> A)
     {
-        ll n, p;
-        cin >> n >> p;
-        cout << "Case " << tno++ << ": ";
-        if (n <= 4)
-        {
-            if (n == 1)
-            {
-                if (p == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
-            }
-            else if (n == 2 || n == 3 || n == 4)
-            {
-                cout << "Oddius" << nn;
-            }
-            continue;
-        }
-        if (n % 2 == 0)
-            cout << "Oddius" << nn;
-        else
-        {
-            if (p == 1)
-                cout << "Oddius" << nn;
-            else
-            {
-                if (n % 4 == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
-            }
-        }
+        if (A < 0)
+            break;
+        double l = 0.0000000001;
+        double r = sqrt(A/2.00);
+        // deb2(l,r);
+        double ans=ts(l,r);
+        Setpre(4)<<ans<<nn;
     }
 
     return 0;

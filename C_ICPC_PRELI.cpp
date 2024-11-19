@@ -199,7 +199,7 @@ namespace io
     }
 }
 using namespace io;
-ll n;
+
 int main()
 {
     fast;
@@ -212,38 +212,17 @@ int main()
 
     while (t--)
     {
-        ll n, p;
-        cin >> n >> p;
         cout << "Case " << tno++ << ": ";
-        if (n <= 4)
+        ll n, k;
+        cin >> n >> k;
+        ll ans = 0;
+        for (ll i = 0; i < n; i++)
         {
-            if (n == 1)
-            {
-                if (p == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
-            }
-            else if (n == 2 || n == 3 || n == 4)
-            {
-                cout << "Oddius" << nn;
-            }
-            continue;
+            ll x, y;
+            cin >> x >> y;
+            ans += (k / x);
         }
-        if (n % 2 == 0)
-            cout << "Oddius" << nn;
-        else
-        {
-            if (p == 1)
-                cout << "Oddius" << nn;
-            else
-            {
-                if (n % 4 == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
-            }
-        }
+        cout << ans << nn;
     }
 
     return 0;

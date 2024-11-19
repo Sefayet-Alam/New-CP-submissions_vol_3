@@ -199,50 +199,60 @@ namespace io
     }
 }
 using namespace io;
-ll n;
+
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        ll n, p;
-        cin >> n >> p;
-        cout << "Case " << tno++ << ": ";
-        if (n <= 4)
+        ll n;
+        cin >> n;
+        for (ll i = 3; i <= 10; i += 2)
         {
-            if (n == 1)
+            set<ll> stt;
+            ll st = i;
+            vector<ll> nums;
+            vector<ll> res;
+            vector<ll> ans;
+
+            for (ll j = st; j < st + 10; j += 2)
             {
-                if (p == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
+                nums.push_back(j);
             }
-            else if (n == 2 || n == 3 || n == 4)
+            deb(nums);
+            ll c = 0;
+            ll a = 0, b = 1;
+            for (ll k = 0; k < n; k++)
             {
-                cout << "Oddius" << nn;
+                ans.push_back(nums[c]);
+                a += nums[c];
+                b *= nums[c];
+                // deb2(a,b);
+                c = (c + 1) % nums.size();
+                ll now = (a & b);
+                stt.insert(now);
             }
-            continue;
-        }
-        if (n % 2 == 0)
-            cout << "Oddius" << nn;
-        else
-        {
-            if (p == 1)
-                cout << "Oddius" << nn;
-            else
+            // deb(stt);
+            if (stt.size() == n)
             {
-                if (n % 4 == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
+                deb(i);
+                deb(stt);
             }
+
+            // vector<ll> revnums = nums;
+            // revnums.pop_back();
+            // reverse(all(revnums));
+            // revnums.pop_back();
+            // for (auto it : revnums)
+            //     nums.push_back(it);
+
+            // deb(nums);
         }
     }
 

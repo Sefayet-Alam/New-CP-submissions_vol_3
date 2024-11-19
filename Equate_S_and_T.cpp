@@ -199,50 +199,114 @@ namespace io
     }
 }
 using namespace io;
-ll n;
+
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        ll n, p;
-        cin >> n >> p;
-        cout << "Case " << tno++ << ": ";
-        if (n <= 4)
-        {
-            if (n == 1)
-            {
-                if (p == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
-            }
-            else if (n == 2 || n == 3 || n == 4)
-            {
-                cout << "Oddius" << nn;
-            }
-            continue;
-        }
-        if (n % 2 == 0)
-            cout << "Oddius" << nn;
+        ll n, m;
+        cin >> n >> m;
+        string s, p;
+        cin >> s >> p;
+        if (s == p)
+            cout << "YES" << nn;
         else
         {
-            if (p == 1)
-                cout << "Oddius" << nn;
-            else
+            ll l = 0, r = 0;
+            ll a1 = 0, a2 = 0;
+            bool f = 0;
+            while (l < n && r < m)
             {
-                if (n % 4 == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
+                if (s[l] == p[r])
+                {
+                    if (s[l] == 'a')
+                    {
+                        l++;
+                        r++;
+                        a1++;
+                        a2++;
+                    }
+                    else
+                    {
+                        l++;
+                        r++;
+                    }
+                }
+                else if (s[l] == 'a')
+                {
+                    if (a1)
+                    {
+                        r++;
+                    }
+                    else
+                    {
+                        f = 1;
+                        break;
+                    }
+                }
+                else if (p[r] == 'a')
+                {
+                    if (a2)
+                    {
+                        l++;
+                    }
+                    else
+                    {
+                        f = 1;
+                        break;
+                    }
+                }
             }
+            if(f){
+                cout<<"No"<<nn;
+                continue;
+            }
+            while (l < n)
+            {
+                if (s[l] == 'a')
+                {
+                    f = 1;
+                    break;
+                }
+                else if (a2)
+                {
+                    l++;
+                }
+                else
+                {
+                    f = 1;
+                    break;
+                }
+            }
+            while (r < m)
+            {
+                if (p[r] == 'a')
+                {
+                    f = 1;
+                    break;
+                }
+                else if (a1)
+                {
+                    r++;
+                }
+                else
+                {
+                    f = 1;
+                    break;
+                }
+            }
+
+            if (f == 0)
+                cout << "Yes" << nn;
+            else
+                cout << "No" << nn;
         }
     }
 

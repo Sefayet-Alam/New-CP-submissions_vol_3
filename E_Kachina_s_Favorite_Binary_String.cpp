@@ -199,51 +199,60 @@ namespace io
     }
 }
 using namespace io;
-ll n;
+
+ll query(ll l, ll r)
+{
+    cout << "? " << l << " " << r << endl;
+    ll x;
+    cin >> x;
+    return x;
+}
+
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        ll n, p;
-        cin >> n >> p;
-        cout << "Case " << tno++ << ": ";
-        if (n <= 4)
+        ll n;
+        cin >> n;
+
+        ll curz = 0;
+        
+        if (query(1, n) == 0)
         {
-            if (n == 1)
-            {
-                if (p == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
-            }
-            else if (n == 2 || n == 3 || n == 4)
-            {
-                cout << "Oddius" << nn;
-            }
+            cout << "! IMPOSSIBLE" << endl;
             continue;
         }
-        if (n % 2 == 0)
-            cout << "Oddius" << nn;
-        else
+        string s(n + 1, '0');
+        ll last = 0;
+        bool f = 0;
+        for (ll i = 2; i <= n; i++)
         {
-            if (p == 1)
-                cout << "Oddius" << nn;
-            else
+            ll now = query(1, i);
+
+            if (f == 0 && now)
             {
-                if (n % 4 == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
+
+                for (ll j = 1; j < i - now; j++)
+                    s[j] = '1';
+
+                f = 1;
             }
+            if (now > last)
+            {
+                s[i] = '1';
+            }
+            last = now;
         }
+
+        s.erase(s.begin());
+        cout << "! " << s << endl;
     }
 
     return 0;

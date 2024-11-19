@@ -199,51 +199,49 @@ namespace io
     }
 }
 using namespace io;
-ll n;
+
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        ll n, p;
-        cin >> n >> p;
-        cout << "Case " << tno++ << ": ";
-        if (n <= 4)
+        ll n, m;
+        cin >> n >> m;
+        vector<ll> a(n), b(m);
+        cin >> a >> b;
+        sort(all(a));
+        sort(all(b), greater<ll>());
+        //   deb2(a,b);
+        vector<ll> ans(n);
+        ll ex = m - n;
+        ll l = 0, r = m - 1;
+        ll r2 = n - 1;
+        while (l<=r2)
         {
-            if (n == 1)
-            {
-                if (p == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
+            if(abs(b[l]-a[l])>abs(b[r]-a[r2])){
+                ans[l]=b[l];
+                l++;
             }
-            else if (n == 2 || n == 3 || n == 4)
-            {
-                cout << "Oddius" << nn;
+            else{
+                ans[r2]=b[r];
+                r2--;
+                r--;
             }
-            continue;
+            
         }
-        if (n % 2 == 0)
-            cout << "Oddius" << nn;
-        else
+        //   deb(ans);
+        ll ret = 0;
+        for (ll i = 0; i < n; i++)
         {
-            if (p == 1)
-                cout << "Oddius" << nn;
-            else
-            {
-                if (n % 4 == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
-            }
+            ret += abs(a[i] - ans[i]);
         }
+        cout << ret << nn;
     }
 
     return 0;

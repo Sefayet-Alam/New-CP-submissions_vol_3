@@ -199,51 +199,103 @@ namespace io
     }
 }
 using namespace io;
-ll n;
+
+ll n, v, m;
+vector<ll> vec(N);
+vector<ll> crcnt(N);
+vector<ll> crcntsuff(N);
+ll cur;
+bool func(ll pos)
+{
+    ll ret = 0;
+    if (cur)
+        ret += crcnt[cur - 1];
+    if (cur + pos < n)
+        ret += crcntsuff[cur + pos];
+    return ret >= m;
+}
+ll bs(ll low, ll high)
+{
+    ll mid;
+    ll ans = -1;
+    while (low <= high)
+    {
+        mid = low + (high - low) / 2;
+        // cout<<mid<<" "<<func(mid)<<endl;
+        if (func(mid))
+        {
+            ans = mid;
+            low = mid + 1;
+        }
+        else
+        {
+            high = mid - 1;
+        }
+    }
+    return ans;
+}
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        ll n, p;
-        cin >> n >> p;
-        cout << "Case " << tno++ << ": ";
-        if (n <= 4)
+        cin >> n >> m >> v;
+        vec.resize(n);
+        crcnt.resize(n);
+        crcntsuff.resize(n);
+        cin >> vec;
+        ll val = 0;
+        ll cnt = 0;
+        for (ll i = 0; i < n; i++)
         {
-            if (n == 1)
+            val += vec[i];
+            if (val >= v)
             {
-                if (p == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
+                val = 0;
+                cnt++;
             }
-            else if (n == 2 || n == 3 || n == 4)
-            {
-                cout << "Oddius" << nn;
-            }
-            continue;
+            crcnt[i] = cnt;
         }
-        if (n % 2 == 0)
-            cout << "Oddius" << nn;
-        else
+        val = 0;
+        cnt = 0;
+        for (ll i = n - 1; i >= 0; i--)
         {
-            if (p == 1)
-                cout << "Oddius" << nn;
-            else
+            val += vec[i];
+            if (val >= v)
             {
-                if (n % 4 == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
+                val = 0;
+                cnt++;
             }
+            crcntsuff[i] = cnt;
         }
+        // deb2(crcnt, crcntsuff);
+        vector<ll>pref(n,0);
+        pref[0]=vec[0];
+        for(ll i=1;i<n;i++){
+            pref[i]+=pref[i-1];
+            pref[i]+=vec[i];
+        }
+        ll ans = -1;
+        for (ll i = 0; i < n; i++)
+        {
+            ll l = 0, r = n - i;
+            cur = i;
+            ll now = bs(l, r);
+            if (now>0)
+            {
+                ll ret = pref[cur+now-1];
+                if(cur) ret-=pref[cur-1];
+                ans = max(ans, ret);
+            }
+            else if(now==0) ans=max(ans,now);
+        }
+        cout << ans << nn;
     }
 
     return 0;

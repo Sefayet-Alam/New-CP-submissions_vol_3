@@ -199,51 +199,41 @@ namespace io
     }
 }
 using namespace io;
-ll n;
+
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        ll n, p;
-        cin >> n >> p;
-        cout << "Case " << tno++ << ": ";
-        if (n <= 4)
+        ll n;
+        cin >> n;
+        string s;
+        string p;
+        cin >> s >> p;
+        ll ans1 = 0;
+        ll ans2 = 0;
+        for (ll i = 0; i < n; i++)
         {
-            if (n == 1)
+            if (s[i] != p[i])
             {
-                if (p == 1)
-                    cout << "Evenius" << nn;
+                if (s[i] == '1')
+                {
+                    ans1++;
+                }
                 else
-                    cout << "Oddius" << nn;
-            }
-            else if (n == 2 || n == 3 || n == 4)
-            {
-                cout << "Oddius" << nn;
-            }
-            continue;
-        }
-        if (n % 2 == 0)
-            cout << "Oddius" << nn;
-        else
-        {
-            if (p == 1)
-                cout << "Oddius" << nn;
-            else
-            {
-                if (n % 4 == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
+                {
+                    ans2++;
+                }
             }
         }
+        ll ans = max(ans1, ans2);
+        cout << ans << nn;
     }
 
     return 0;

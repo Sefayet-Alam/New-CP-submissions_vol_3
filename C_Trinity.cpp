@@ -199,51 +199,42 @@ namespace io
     }
 }
 using namespace io;
-ll n;
+
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        ll n, p;
-        cin >> n >> p;
-        cout << "Case " << tno++ << ": ";
-        if (n <= 4)
-        {
-            if (n == 1)
-            {
-                if (p == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
-            }
-            else if (n == 2 || n == 3 || n == 4)
-            {
-                cout << "Oddius" << nn;
-            }
-            continue;
+        ll n;
+        cin >> n;
+        vector<ll> vec(n);
+        cin >> vec;
+        sort(all(vec));
+        ll ans = n - 1;
+        vector<ll>pars;
+        for(ll i=0;i<n-1;i++){
+            pars.push_back(vec[i]+vec[i+1]);
         }
-        if (n % 2 == 0)
-            cout << "Oddius" << nn;
-        else
+        // deb(vec);
+        // for(auto it:pars) deb(it);
+        for (ll i = 0; i < n - 1; i++)
         {
-            if (p == 1)
-                cout << "Oddius" << nn;
-            else
-            {
-                if (n % 4 == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
-            }
+            ll cur=vec[i]+vec[i+1];
+            ll big=n-(lower_bound(all(vec),cur)-vec.begin());
+            ll smal=(upper_bound(all(pars),cur-1)-pars.begin());
+            // deb2(smal,big);
+            ans=min(ans,smal+big);
         }
+        // deb(vec);
+        // deb2(ans,ans2);
+        // ans = min(ans, ans2);
+        cout << ans << nn;
     }
 
     return 0;

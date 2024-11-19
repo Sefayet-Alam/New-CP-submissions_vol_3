@@ -28,7 +28,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI acos(-1)
 const double EPS = 1e-9;
-const ll N = 2e5 + 10;
+const ll N = 1e6 + 10;
 const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
@@ -199,51 +199,66 @@ namespace io
     }
 }
 using namespace io;
-ll n;
+
+vector<int> smallest_factor;
+vector<bool> prime;
+vector<int> primes;
+ 
+void sieve(int maximum) {
+    maximum = max(maximum, 2);
+    smallest_factor.assign(maximum + 1, 0);
+    prime.assign(maximum + 1, true);
+    prime[0] = prime[1] = false;
+    primes = {2};
+ 
+    for (int p = 2; p <= maximum; p += 2) {
+        prime[p] = p == 2;
+        smallest_factor[p] = 2;
+    }
+ 
+    for (int p = 3; p * p <= maximum; p += 2)
+        if (prime[p])
+            for (int i = p * p; i <= maximum; i += 2 * p)
+                if (prime[i]) {
+                    prime[i] = false;
+                    smallest_factor[i] = p;
+                }
+ 
+    for (int p = 3; p <= maximum; p += 2)
+        if (prime[p]) {
+            smallest_factor[p] = p;
+            primes.push_back(p);
+        }
+}
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
-
+    sieve(N);
     while (t--)
     {
-        ll n, p;
-        cin >> n >> p;
-        cout << "Case " << tno++ << ": ";
-        if (n <= 4)
+        ll h, k;
+        cin >> h >> k;
+        ll ex = 0;
+        while (k>=2)
         {
-            if (n == 1)
-            {
-                if (p == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
-            }
-            else if (n == 2 || n == 3 || n == 4)
-            {
-                cout << "Oddius" << nn;
-            }
-            continue;
+            k /= 2;
+            ex++;
         }
-        if (n % 2 == 0)
-            cout << "Oddius" << nn;
-        else
+        while (h>1)
         {
-            if (p == 1)
-                cout << "Oddius" << nn;
-            else
-            {
-                if (n % 4 == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
+            ll x=smallest_factor[h];
+            while(h%x==0){
+                h/=x;
+                ex++;
             }
         }
+        cout<<ex<<nn;
+        
     }
 
     return 0;

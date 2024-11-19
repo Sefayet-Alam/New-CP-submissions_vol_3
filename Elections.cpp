@@ -199,50 +199,56 @@ namespace io
     }
 }
 using namespace io;
-ll n;
+
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        ll n, p;
-        cin >> n >> p;
-        cout << "Case " << tno++ << ": ";
-        if (n <= 4)
+        ll n, x;
+        cin >> n >> x;
+        vector<ll> veca(n), vecb(n);
+        cin >> veca;
+        cin >> vecb;
+        ll a = 0, b = 0;
+        vector<ll> need;
+        for (ll i = 0; i < n; i++)
         {
-            if (n == 1)
-            {
-                if (p == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
-            }
-            else if (n == 2 || n == 3 || n == 4)
-            {
-                cout << "Oddius" << nn;
-            }
-            continue;
-        }
-        if (n % 2 == 0)
-            cout << "Oddius" << nn;
-        else
-        {
-            if (p == 1)
-                cout << "Oddius" << nn;
+            if (veca[i] > vecb[i])
+                a++;
             else
             {
-                if (n % 4 == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
+                b++;
+                need.push_back(vecb[i] + 1 - veca[i]);
             }
+        }
+        sort(all(need));
+        //   deb(need);
+        ll towin = (n + 1) / 2;
+        if (a >= towin)
+            cout << "YES" << nn;
+        else
+        {
+            for (auto it : need)
+            {
+                if (it <= x)
+                {
+                    a++;
+                    x -= it;
+                }
+                else
+                    break;
+            }
+            if (a >= towin)
+                cout << "YES" << nn;
+            else
+                cout << "NO" << nn;
         }
     }
 

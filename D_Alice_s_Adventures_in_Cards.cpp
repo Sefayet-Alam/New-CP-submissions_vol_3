@@ -199,50 +199,87 @@ namespace io
     }
 }
 using namespace io;
-ll n;
+
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        ll n, p;
-        cin >> n >> p;
-        cout << "Case " << tno++ << ": ";
-        if (n <= 4)
+        ll n;
+        cin >> n;
+        ll pos[3][n];
+        ll val[3][n];
+        for (ll i = 0; i < 3; i++)
         {
-            if (n == 1)
+            for (ll j = 0; j < n; j++)
             {
-                if (p == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
+                ll x;
+                cin >> x;
+                x--;
+                val[i][x] = j;
+                pos[i][j] = x;
             }
-            else if (n == 2 || n == 3 || n == 4)
+        }
+        vector<ll>high(3);
+        for (ll i = 0; i < 3; i++)
+        {
+            high[i] = pos[i][0];
+        }
+
+        vector<pll> ans(n, {-1, -1});
+        for (ll i = 1; i < n; i++)
+        {
+            for (ll j = 0; j < 3; j++)
             {
-                cout << "Oddius" << nn;
+                if (pos[j][i] < high[j])
+                {
+                    ans[i] = {val[j][high[j]], j};
+                    // deb2(i, ans[i]);
+                    break;
+                }
             }
+            if (ans[i].first != -1)
+            {
+                // continue;
+                for (ll j = 0; j < 3; j++)
+                {
+                    high[j] = max(high[j], pos[j][i]);
+                }
+            }
+            // deb(high);
+        }
+        // deb(ans[n-1]);
+        if (ans[n-1].first == -1)
+        {
+            cout << "NO" << nn;
             continue;
         }
-        if (n % 2 == 0)
-            cout << "Oddius" << nn;
-        else
+        ll cur = n-1;
+        vector<pair<char, ll>> ret;
+        while (cur != 0)
         {
-            if (p == 1)
-                cout << "Oddius" << nn;
+            char ch;
+            if (ans[cur].second == 0)
+                ch = 'q';
+            else if (ans[cur].second == 1)
+                ch = 'k';
             else
-            {
-                if (n % 4 == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
-            }
+                ch = 'j';
+            ret.push_back({ch, cur+1});
+            cur = ans[cur].first;
+        }
+        cout << "YES" << nn;
+        cout << ret.size() << nn;
+        reverse(all(ret));
+        for (auto it : ret)
+        {
+            cout << it.first<<" "<<it.second << nn;
         }
     }
 

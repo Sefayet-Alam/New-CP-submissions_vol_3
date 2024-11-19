@@ -199,51 +199,94 @@ namespace io
     }
 }
 using namespace io;
-ll n;
+
+ll query(ll a, ll b)
+{
+    cout << "? " << a << " " << b << endl;
+    ll r;
+    cin >> r;
+    return (r == 0);
+}
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        ll n, p;
-        cin >> n >> p;
-        cout << "Case " << tno++ << ": ";
-        if (n <= 4)
+        ll n;
+        cin >> n;
+        vector<ll> ans(n, 0);
+        ans[1] = 0;
+        ll r = 2;
+        ll last = 1;
+        vector<ll> tmp;
+        vector<vl> vec;
+        while (r < n)
         {
-            if (n == 1)
+            ll ret = query(1, r);
+            if (ret)
             {
-                if (p == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
+                ans[r] = last;
+                last = r;
+                r++;
+                if (tmp.size())
+                {
+                    vec.push_back(tmp);
+                    tmp.clear();
+                }
             }
-            else if (n == 2 || n == 3 || n == 4)
-            {
-                cout << "Oddius" << nn;
-            }
-            continue;
-        }
-        if (n % 2 == 0)
-            cout << "Oddius" << nn;
-        else
-        {
-            if (p == 1)
-                cout << "Oddius" << nn;
             else
             {
-                if (n % 4 == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
+                tmp.push_back(r);
+                r++;
             }
         }
+        if (tmp.size())
+        {
+            vec.push_back(tmp);
+            tmp.clear();
+        }
+        ll curp = 0;
+        vector<ll> pars;
+        ll cursz = 0;
+        ll prev,prevpar;
+        for (ll i = 0; i < vec.size(); i++)
+        {
+            // deb(vec[i]);
+            if (i == 0)
+            {
+                for (auto it : vec[i])
+                {
+                    ans[it] = 0;
+                    pars.push_back(it);
+                    prev=it;
+                }
+                cursz = pars.size();
+            }
+            else
+            {
+                ll c = 0;
+                for (auto it : vec[i])
+                {
+                    while(1){
+                        if(ans[prev]>pars[c]){c = (c + 1) % cursz;}
+                        else if(query(pars[c],it)==0) c = (c + 1) % cursz;
+                        else break;
+                    }
+                    ans[it] = pars[c];
+                    pars[c] = it;
+                    c = (c + 1) % cursz;
+                    prev=it;
+                }
+            }
+        }
+        ans.erase(ans.begin());
+        cout << "! " << ans << endl;
     }
 
     return 0;

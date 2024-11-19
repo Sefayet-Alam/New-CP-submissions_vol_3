@@ -199,51 +199,75 @@ namespace io
     }
 }
 using namespace io;
+
+vector<ll> g[N];
+vector<vl> ans;
+vector<ll>tmp;
 ll n;
+void dfs(ll vertex, ll par = -1)
+{
+    bool f = 0;
+    // deb(vertex);
+    tmp.push_back(vertex);
+    for (int child : g[vertex])
+    {
+        if (child == par)
+            continue;
+        dfs(child, vertex);
+        f = 1;
+    }
+    if (f == 0)
+    {
+        ans.push_back(tmp);
+        tmp.clear();
+    }
+}
+
+void reset(ll n)
+{
+    ans.clear();
+    for (ll i = 0; i <= n; i++)
+    {
+        g[i].clear();
+    }
+}
+
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        ll n, p;
-        cin >> n >> p;
-        cout << "Case " << tno++ << ": ";
-        if (n <= 4)
+        cin >> n;
+        reset(n);
+        // deb(n);
+        ll src=1;
+        for (ll i = 1; i <= n; i++)
         {
-            if (n == 1)
-            {
-                if (p == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
+            ll x;
+            cin >> x;
+            // deb2(i,x);
+            if(i==x){
+                src=i;
+                continue;
             }
-            else if (n == 2 || n == 3 || n == 4)
-            {
-                cout << "Oddius" << nn;
-            }
-            continue;
+            g[x].push_back(i);
+            g[i].push_back(x);
         }
-        if (n % 2 == 0)
-            cout << "Oddius" << nn;
-        else
+        dfs(src);
+        cout << ans.size() << nn;
+        for (auto it : ans)
         {
-            if (p == 1)
-                cout << "Oddius" << nn;
-            else
-            {
-                if (n % 4 == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
-            }
+            cout << it.size() << nn;
+            cout << it << nn;
+            // cout<<nn;
         }
+        cout<<nn;
     }
 
     return 0;

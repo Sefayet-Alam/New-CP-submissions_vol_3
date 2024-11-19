@@ -29,7 +29,7 @@ using namespace __gnu_pbds;
 #define PI acos(-1)
 const double EPS = 1e-9;
 const ll N = 2e5 + 10;
-const ll M = 1e9 + 7;
+const ll M = 998244353;
 
 /// INLINE FUNCTIONS
 inline ll GCD(ll a, ll b) { return b == 0 ? a : GCD(b, a % b); }
@@ -199,51 +199,96 @@ namespace io
     }
 }
 using namespace io;
+
+vector<ll> g[N];
+
+ll dist[N];
+ll ans[N];
+
 ll n;
+
+ll powerMod(ll x, ll y, ll p)
+{
+    ll res = 1 % p;
+    x = x % p;
+    while (y > 0)
+    {
+        if (y & 1)
+            res = (res * x) % p;
+        y = y >> 1;
+        x = (x * x) % p;
+    }
+    return res;
+}
+
+ll inverseMod(ll a, ll x)
+{
+    return powerMod(a, x - 2, x);
+}
+
+ll depths(ll curr, ll par)
+{
+    for (auto v : g[curr])
+    {
+        if (v == par)
+            continue;
+        dist[curr] = min(dist[curr], 1 + depths(v, curr));
+    }
+    if (dist[curr] > n)
+        dist[curr] = 0;
+    return dist[curr];
+}
+
+void dfs(ll vertex, ll par, ll val)
+{
+    ans[vertex] = val;
+    for (ll child : g[vertex])
+    {
+        if (child == par)
+            continue;
+        ll d = dist[child];
+        ll now = (d * inverseMod(d + 1, M)) % M;
+        now = (now * val) % M;
+        dfs(child, vertex, now);
+    }
+}
+
+void reset(ll n)
+{
+    for (ll i = 0; i <= n; i++)
+    {
+        g[i].clear();
+        dist[i] = M;
+        ans[i] = 0;
+    }
+}
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll tno = 1;
-    ;
+    // ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        ll n, p;
-        cin >> n >> p;
-        cout << "Case " << tno++ << ": ";
-        if (n <= 4)
+        cin >> n;
+        reset(n);
+        for (ll i = 0; i < n - 1; i++)
         {
-            if (n == 1)
-            {
-                if (p == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
-            }
-            else if (n == 2 || n == 3 || n == 4)
-            {
-                cout << "Oddius" << nn;
-            }
-            continue;
+            ll x, y;
+            cin >> x >> y;
+            g[x].push_back(y);
+            g[y].push_back(x);
         }
-        if (n % 2 == 0)
-            cout << "Oddius" << nn;
-        else
+        depths(1,-1);
+        dfs(1, -1, (1 % M));
+        for (ll i = 1; i <= n; i++)
         {
-            if (p == 1)
-                cout << "Oddius" << nn;
-            else
-            {
-                if (n % 4 == 1)
-                    cout << "Evenius" << nn;
-                else
-                    cout << "Oddius" << nn;
-            }
+            cout << ans[i] << " ";
         }
+        cout << nn;
     }
 
     return 0;

@@ -82,12 +82,6 @@ namespace io{
 } using namespace io;
 
 
-ll query(ll l,ll r){
-    cout<<"? "<<l<<" "<<r<<endl;
-    ll x;
-    cin>>x;
-    return x;
-}
 
 int main()
 {
@@ -102,31 +96,18 @@ int main()
     {
       ll n;
       cin>>n;
-      string s(n+1,'0');
-      ll last=0;
-      vector<ll>pref(n+1,0);
-      ll curz=0;
-      bool f=0;
-      for(ll i=2;i<=n;i++){
-        ll now=query(1,i);
-        pref[i]=now;
-        if(f==0){
-            if(now<i-1){
-                for(ll j=1;j<=(i-1)-now;j++) s[j]='1';
-            }
-            f=1;
-        }
-        if(now>last){
-            s[i]='1';
-            last=now;
-        }
-      }
-      if(last==0){
-        cout<<"! IMPOSSIBLE"<<endl;
-      }
+      if(n<=4) cout<<-1<<nn;
       else{
-        s.erase(s.begin());
-        cout<<s<<endl;
+        vector<ll>ans;
+        for(ll i=1;i<=n;i+=2){
+            if(i!=5) ans.push_back(i);
+        }
+        ans.push_back(5);
+        ans.push_back(4);
+        for(ll i=2;i<=n;i+=2){
+            if(i!=4) ans.push_back(i);
+        }
+        cout<<ans<<nn;
       }
     }
 
