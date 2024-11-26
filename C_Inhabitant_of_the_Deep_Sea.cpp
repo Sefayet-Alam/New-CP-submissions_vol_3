@@ -211,33 +211,33 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<pll> ans;
-        for (ll i = 1; i <= n-2; i++)
+        ll n, k;
+        cin >> n >> k;
+        vector<ll> vec(n);
+        cin >> vec;
+        ll l = 0, r = n - 1;
+        while (l < r && k)
         {
-            ans.push_back({i,i});
+            if (k == 1)
+            {
+                vec[l]--;
+                break;
+            }
+            ll tomin = min({vec[l], vec[r], k / 2});
+            vec[l] -= tomin;
+            vec[r] -= tomin;
+            k -= 2 * tomin;
+            if (vec[l] == 0)
+                l++;
+            if (vec[r] == 0)
+                r--;
         }
-        ll nw=n;
-        ll i=0;
-        while(ans.size()<nw){
-            ans.push_back({n-i,n});
-            i++;
+        if(l==r && vec[l]){
+            vec[l]=max(0LL,vec[l]-k);
         }
-        n=nw;
-        set<ll>stt;
-        // for(ll i=0;i<n;i++){
-        //     for(ll j=i+1;j<n;j++){
-        //         ll now=abs(ans[i].first-ans[j].first)+abs(ans[i].second-ans[j].second);
-        //         stt.insert(now);
-        //     }
-        // }
-        // deb(stt.size());
-        for (auto it : ans)
-        {
-            cout << it << nn;
-        }
-        cout << nn;
+        ll ans=0;
+        for(auto it:vec) if(it==0) ans++;
+        cout<<ans<<nn;
     }
 
     return 0;

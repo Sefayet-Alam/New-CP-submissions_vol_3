@@ -82,15 +82,16 @@ namespace io{
 } using namespace io;
 
 
+/// BIT MANIPULATION
 
+#define Set(x, k) (x |= (1LL << k))
+#define Unset(x, k) (x &= ~(1LL << k))
+#define Check(x, k) (x & (1LL << k))
+#define Toggle(x, k) (x ^ (1LL << k))
 
-// problem tag: priority queue, greedy
-// observation: u can change order, 
-// when this kind of constraints are given and u cant think of a dp solution
-// think of a greedy solution! think of priority queues
-// observation 02: sum of a <= L - sum of (b[r]-b[l]) ***
-// so in a range from l to r we need to find the size of pq where
-// sum of a <= L - sum of (b[r]-b[l])
+int popcount(ll x) { return __builtin_popcountll(x); };
+int poplow(ll x) { return __builtin_ctzll(x); };
+int pophigh(ll x) { return 63 - __builtin_clzll(x); };
 int main()
 {
     fast;
@@ -102,32 +103,16 @@ int main()
 
     while (t--)
     {
-      ll n,l;
-      cin>>n>>l;
-      vector<pll>vec;
-      for(ll i=0;i<n;i++){
-        ll x,y;
-        cin>>x>>y;
-        vec.push_back({y,x});
-      }
-      sort(all(vec));
-      ll ans=0;
-      for(ll i=0;i<n;i++){
-        PQ<ll>pq;
-        ll cur=0;
-        for(ll j=i;j<n;j++){
-            cur+=vec[j].second;
-            pq.push(vec[j].second);
-            //start at j,finish at i 
-            while (pq.size() && vec[j].first-vec[i].first+cur>l)
-            {
-                ll tp=pq.top();
-                cur-=pq.top();
-                pq.pop();
-            }
-            ans=max(ans,(ll)pq.size());
+      ll n,k;
+      cin>>n>>k;
+      ll pos=pophigh(k);
+      vector<ll>ans={k-(1LL<<pos),k+1,k+1+(1LL<<pos)};
+      for(ll i=0;i<=20;i++){
+        if(i!=pos){
+            ans.push_back(1LL<<i);
         }
       }
+      cout<<ans.size()<<nn;
       cout<<ans<<nn;
     }
 

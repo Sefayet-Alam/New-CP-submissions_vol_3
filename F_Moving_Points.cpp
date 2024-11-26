@@ -200,6 +200,21 @@ namespace io
 }
 using namespace io;
 
+void check(stack<ll> &s)
+{
+    vector<ll> vec;
+    while (s.size())
+    {
+        deb(s.top());
+        vec.push_back(s.top());
+        s.pop();
+    }
+    reverse(all(vec));
+    for (auto it : vec)
+    {
+        s.push(it);
+    }
+}
 int main()
 {
     fast;
@@ -207,41 +222,60 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
         ll n;
         cin >> n;
-        vector<pll> ans;
-        for (ll i = 1; i <= n-2; i++)
+        vector<ll> a(n), b(n);
+        cin >> a >> b;
+        vector<pll> vec;
+        for (ll i = 0; i < n; i++)
         {
-            ans.push_back({i,i});
+            vec.push_back({a[i], b[i]});
         }
-        ll nw=n;
-        ll i=0;
-        while(ans.size()<nw){
-            ans.push_back({n-i,n});
-            i++;
-        }
-        n=nw;
-        set<ll>stt;
-        // for(ll i=0;i<n;i++){
-        //     for(ll j=i+1;j<n;j++){
-        //         ll now=abs(ans[i].first-ans[j].first)+abs(ans[i].second-ans[j].second);
-        //         stt.insert(now);
+        sort(all(vec));
+        // for (ll i = 0; i <n; i++)
+        // {
+        //     for (ll j = i+1 ; j <n; j++)
+        //     {
+        //         if (vec[j].second >= vec[i].second)
+        //         {
+        //             ans += (vec[i].first - vec[j].first);
+        //         }
         //     }
         // }
-        // deb(stt.size());
-        for (auto it : ans)
+
+        // in other words
+        // for a value i, we need to find j<i
+        // such that vec[j].second <= vec[i].second, for such elements
+        // ans+= count*vec[i].first - sum of vec[j].first
+        // we'll first add all count*vec[i].first
+        // then we'll dedeuct sum of vec[j].first
+        // to do this, we'll use contribution
+
+        ll ans = 0;
+        ordered_set<pll> os;
+        for (ll i = 0; i < n; i++)
         {
-            cout << it << nn;
+            ll cnt = os.order_of_key({vec[i].second + 1, -1}); // to search  vec[j].second<=vec[i].second
+            ans += cnt * 1ll * vec[i].first;
+            os.insert(make_pair(vec[i].second, i));
         }
-        cout << nn;
+        os.clear();
+        for (ll i = n - 1; i >= 0; i--)
+        {
+            ll cnt = (os.size()) - os.order_of_key({vec[i].second - 1, n});
+            ans -= cnt * 1ll * vec[i].first; // total contribution of negative ones
+            os.insert(make_pair(vec[i].second, i));
+        }
+        cout<<ans<<nn;
     }
 
     return 0;
 }
+
 
 /* Points tO CONSIDER
     # RTE? -> check array bounds and constraints

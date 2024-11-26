@@ -83,14 +83,6 @@ namespace io{
 
 
 
-
-// problem tag: priority queue, greedy
-// observation: u can change order, 
-// when this kind of constraints are given and u cant think of a dp solution
-// think of a greedy solution! think of priority queues
-// observation 02: sum of a <= L - sum of (b[r]-b[l]) ***
-// so in a range from l to r we need to find the size of pq where
-// sum of a <= L - sum of (b[r]-b[l])
 int main()
 {
     fast;
@@ -98,37 +90,29 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
-      ll n,l;
-      cin>>n>>l;
-      vector<pll>vec;
-      for(ll i=0;i<n;i++){
-        ll x,y;
-        cin>>x>>y;
-        vec.push_back({y,x});
+      string s;
+      cin>>s;
+      ll n=s.size();
+      if(n%2){
+        cout<<"No"<<nn;
+        continue;
       }
-      sort(all(vec));
-      ll ans=0;
-      for(ll i=0;i<n;i++){
-        PQ<ll>pq;
-        ll cur=0;
-        for(ll j=i;j<n;j++){
-            cur+=vec[j].second;
-            pq.push(vec[j].second);
-            //start at j,finish at i 
-            while (pq.size() && vec[j].first-vec[i].first+cur>l)
-            {
-                ll tp=pq.top();
-                cur-=pq.top();
-                pq.pop();
-            }
-            ans=max(ans,(ll)pq.size());
-        }
+      s='$'+s;
+      bool f=0;
+      map<char,ll>freq;
+      for(ll i=1;i<=n;i++) freq[s[i]]++;
+      for(auto it:freq){
+        if(it.second!=0 && it.second!=2) f=1;
       }
-      cout<<ans<<nn;
+      for(ll i=1;i<=n/2;i++){
+        if(s[2*i-1]!=s[2*i]) f=1;
+      }
+      if(f) cout<<"No"<<nn;
+      else cout<<"Yes"<<nn;
     }
 
     return 0;

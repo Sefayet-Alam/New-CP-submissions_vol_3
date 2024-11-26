@@ -207,37 +207,90 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
         ll n;
         cin >> n;
-        vector<pll> ans;
-        for (ll i = 1; i <= n-2; i++)
+        vector<ll> vec(n);
+        cin >> vec;
+        vector<pll> pars;
+        ll cur = vec[0];
+        ll cnt = 1;
+        for (ll i = 1; i < n; i++)
         {
-            ans.push_back({i,i});
+            if (vec[i] == cur)
+            {
+                cnt++;
+            }
+            else
+            {
+                pars.push_back({cur, cnt});
+                cur = vec[i];
+                cnt = 1;
+            }
         }
-        ll nw=n;
-        ll i=0;
-        while(ans.size()<nw){
-            ans.push_back({n-i,n});
-            i++;
-        }
-        n=nw;
-        set<ll>stt;
-        // for(ll i=0;i<n;i++){
-        //     for(ll j=i+1;j<n;j++){
-        //         ll now=abs(ans[i].first-ans[j].first)+abs(ans[i].second-ans[j].second);
-        //         stt.insert(now);
-        //     }
-        // }
-        // deb(stt.size());
-        for (auto it : ans)
+        if (cnt)
+            pars.push_back({cur, cnt});
+
+        ll l = 0;
+        ll st = -1, en = -1;
+        ll m = pars.size();
+        ll ans = 0;
+        set<ll> stt;
+        while (l < m)
         {
-            cout << it << nn;
+            if (pars[l].second == 1)
+            {
+                st = -1;
+                en = -1;
+                if (stt.size())
+                    stt.clear();
+            }
+            else if (st == -1 && pars[l].second >= 2)
+            {
+                st = l;
+                en = l;
+                // deb2(st,en);
+                if (stt.size())
+                    stt.clear();
+                stt.insert(pars[l].first);
+                ans = max(ans, (en - st + 1) * 2);
+            }
+            else if (st != -1 && pars[l].second == 2)
+            {
+                en = l;
+                while (stt.find(pars[l].first) != stt.end())
+                {
+                    stt.erase(pars[st].first);
+                    st++;
+                    // deb2(st,en);
+                }
+                stt.insert(pars[l].first);
+                
+                // deb2(st,en);
+                ans = max(ans, (en - st + 1) * 2);
+            }
+            else if (st != -1 && pars[l].second > 2)
+            {
+                // deb2(st,en);
+                while (stt.find(pars[l].first) != stt.end())
+                {
+                    stt.erase(pars[st].first);
+                    st++;
+                }
+                en = l;
+                ans = max(ans, (en - st + 1) * 2);
+                if (stt.size())
+                    stt.clear();
+                stt.insert(pars[l].first);
+                st = l;
+            }
+            
+            l++;
         }
-        cout << nn;
+        cout << ans << nn;
     }
 
     return 0;

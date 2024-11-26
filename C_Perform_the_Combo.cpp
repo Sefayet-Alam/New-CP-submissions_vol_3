@@ -211,31 +211,41 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<pll> ans;
-        for (ll i = 1; i <= n-2; i++)
+        ll n, m;
+        cin >> n >> m;
+        string s;
+        cin >> s;
+        ll pref[n][30];
+        mem(pref, 0);
+        for (ll i = 0; i < n; i++)
         {
-            ans.push_back({i,i});
+            pref[i][s[i] - 'a']++;
+            if (i == 0)
+                continue;
+            for (ll j = 'a'; j <= 'z'; j++)
+            {
+                pref[i][j - 'a'] += pref[i - 1][j - 'a'];
+            }
         }
-        ll nw=n;
-        ll i=0;
-        while(ans.size()<nw){
-            ans.push_back({n-i,n});
-            i++;
-        }
-        n=nw;
-        set<ll>stt;
-        // for(ll i=0;i<n;i++){
-        //     for(ll j=i+1;j<n;j++){
-        //         ll now=abs(ans[i].first-ans[j].first)+abs(ans[i].second-ans[j].second);
-        //         stt.insert(now);
-        //     }
-        // }
-        // deb(stt.size());
-        for (auto it : ans)
+        // ll ans = 0;
+        map<ll, ll> ans;
+        for (ll i = 0; i < m; i++)
         {
-            cout << it << nn;
+            ll pi;
+            cin >> pi;
+            pi--;
+            // deb(pi);
+            for (ll j = 'a'; j <= 'z'; j++)
+            {
+                ans[j - 'a'] += pref[pi][j - 'a'];
+            }
+        }
+        for(ll i=0;i<n;i++){
+            ans[s[i]-'a']++;
+        }
+        for (ll i = 'a'; i <= 'z'; i++)
+        {
+            cout << ans[i - 'a'] << " ";
         }
         cout << nn;
     }

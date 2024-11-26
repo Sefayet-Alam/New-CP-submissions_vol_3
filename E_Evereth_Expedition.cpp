@@ -207,37 +207,99 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
         ll n;
         cin >> n;
-        vector<pll> ans;
-        for (ll i = 1; i <= n-2; i++)
+        vector<ll> vec(n);
+        cin >> vec;
+        ll zr = 0;
+        for (ll i = 0; i < n; i++)
+            if (vec[i] == 0)
+                zr++;
+        if (zr == n)
         {
-            ans.push_back({i,i});
+            for (ll i = n; i >= 1; i--)
+                cout << i << " ";
+            cout << nn;
+            continue;
         }
-        ll nw=n;
-        ll i=0;
-        while(ans.size()<nw){
-            ans.push_back({n-i,n});
-            i++;
-        }
-        n=nw;
-        set<ll>stt;
-        // for(ll i=0;i<n;i++){
-        //     for(ll j=i+1;j<n;j++){
-        //         ll now=abs(ans[i].first-ans[j].first)+abs(ans[i].second-ans[j].second);
-        //         stt.insert(now);
-        //     }
-        // }
-        // deb(stt.size());
-        for (auto it : ans)
+        if (zr == 0)
         {
-            cout << it << nn;
+            cout << vec << nn;
+            continue;
         }
-        cout << nn;
+        ll l = 0, r = n - 1;
+        ll x = 0, y = n - 1;
+        ll now = 1;
+        bool f = 0;
+        while (l <= r)
+        {
+            if (vec[x] == 0 || x <= l)
+                x++;
+            else if (vec[y] == 0 || y >= r)
+                y--;
+            else
+            {
+                if (vec[l]==now)
+                {
+                    l++;
+                    now++;
+                }
+                else if(vec[r]==now){
+                    r--;
+                    now++;
+                }
+                else if(vec[l] && vec[r]==0){
+                    vec[r]=now;
+                    r--;
+                    now++;
+                }
+                else if(vec[r] && vec[l]==0){
+                    vec[l]=now;
+                    l++;
+                    now++;
+                }
+                else if(vec[r]==0 && vec[l]==0){
+                    if(vec[x]<vec[y] || (vec[x]==vec[y] && (x-l)<(r-y))){
+                        vec[l]=now;
+                        l++;
+                        now++;
+                    }
+                    else{
+                        vec[r]=now;
+                        r--;
+                        now++;
+                    }
+                }
+                else{
+                    f=1;
+                    break;
+                }
+            }
+        }
+        // deb(vec);
+        for (ll i = 0; i < n; i++)
+        {
+            if (vec[i] == 0)
+                f = 1;
+        }
+        ll maxpos = 0;
+        for (ll i = 0; i < n; i++)
+            if (vec[i] == n)
+                maxpos = i;
+        for (ll i = 1; i <= maxpos; i++)
+            if (vec[i - 1] > vec[i])
+                f = 1;
+        for (ll i = maxpos; i < n - 1; i++)
+            if (vec[i] < vec[i + 1])
+                f = 1;
+        if (f)
+            cout << "*" << nn;
+        else
+            cout << vec << nn;
     }
 
     return 0;

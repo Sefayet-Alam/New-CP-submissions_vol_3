@@ -200,6 +200,12 @@ namespace io
 }
 using namespace io;
 
+ll n;
+vector<ll> vec(N);
+ll w, f;
+bool dp[1000105];
+ll tot;
+
 int main()
 {
     fast;
@@ -211,33 +217,34 @@ int main()
 
     while (t--)
     {
-        ll n;
+        cin >> w >> f;
         cin >> n;
-        vector<pll> ans;
-        for (ll i = 1; i <= n-2; i++)
-        {
-            ans.push_back({i,i});
+        vec.resize(n);
+        cin >> vec;
+        tot=accumulate(all(vec),0LL);
+        for(ll j=0;j<=tot+10;j++) dp[j]=0;
+        // deb2(vec,tot);
+        dp[0]=1; //knapsack dp
+        // dp[i] indicates if it is possible to make i 
+        // from the given weights
+        // dp[sum] -> we take some of the weights/ healths of aliens
+        // then try to kill them with water spell
+        // need time = (sum+w-1)/w .. rest will be handled by fire
+        for(ll i=0;i<n;i++){
+            for(ll j=tot;j-vec[i]>=0;j--){
+                dp[j] = dp[j]|(dp[j-vec[i]]);
+            }
         }
-        ll nw=n;
-        ll i=0;
-        while(ans.size()<nw){
-            ans.push_back({n-i,n});
-            i++;
+        ll ans=M*M;
+        for(ll i=0;i<=tot;i++){
+            if(dp[i]){
+                // deb(i);
+                ll now=max((i+w-1)/w,(tot-i+f-1)/f);
+                // deb2(i,now);
+                ans=min(ans,now);
+            }
         }
-        n=nw;
-        set<ll>stt;
-        // for(ll i=0;i<n;i++){
-        //     for(ll j=i+1;j<n;j++){
-        //         ll now=abs(ans[i].first-ans[j].first)+abs(ans[i].second-ans[j].second);
-        //         stt.insert(now);
-        //     }
-        // }
-        // deb(stt.size());
-        for (auto it : ans)
-        {
-            cout << it << nn;
-        }
-        cout << nn;
+        cout<<ans<<nn;
     }
 
     return 0;

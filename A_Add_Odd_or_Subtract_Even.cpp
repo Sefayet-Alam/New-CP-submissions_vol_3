@@ -211,33 +211,24 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<pll> ans;
-        for (ll i = 1; i <= n-2; i++)
+        ll a, b;
+        cin >> a >> b;
+        if (a == b)
+            cout << 0 << nn;
+        else if (a > b)
         {
-            ans.push_back({i,i});
+            if (a % 2 == b % 2)
+                cout << 1 << nn;
+            else
+                cout << 2 << nn;
         }
-        ll nw=n;
-        ll i=0;
-        while(ans.size()<nw){
-            ans.push_back({n-i,n});
-            i++;
-        }
-        n=nw;
-        set<ll>stt;
-        // for(ll i=0;i<n;i++){
-        //     for(ll j=i+1;j<n;j++){
-        //         ll now=abs(ans[i].first-ans[j].first)+abs(ans[i].second-ans[j].second);
-        //         stt.insert(now);
-        //     }
-        // }
-        // deb(stt.size());
-        for (auto it : ans)
+        else
         {
-            cout << it << nn;
+            if (a % 2 != b % 2)
+                cout << 1 << nn;
+            else
+                cout << 2 << nn;
         }
-        cout << nn;
     }
 
     return 0;

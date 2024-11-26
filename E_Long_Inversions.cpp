@@ -200,6 +200,54 @@ namespace io
 }
 using namespace io;
 
+string p;
+ll n;
+bool func(ll pos)
+{
+    ll k = pos;
+    string s=p;
+    // deb2(k,s);
+    for (ll i = 0; i <= n - k; i++)
+    {
+        if (s[i] == '0')
+        {
+            for (ll j = i; j < i + k; j++)
+            {
+                if (s[j] == '0')
+                    s[j] = '1';
+                else if(s[j]=='1')
+                    s[j] = '0';
+            }
+        }
+        // deb2(pos,s);
+    }
+    // deb2(pos,s);
+    for (ll i = 0; i < n; i++)
+        if (s[i] == '0')
+            return false;
+    return true;
+}
+ll bs(ll low, ll high)
+{
+    ll mid;
+    ll ans = 0;
+    while (low <= high)
+    {
+        mid = low + (high - low) / 2;
+        // cout<<mid<<" "<<func(mid)<<endl;
+        if (func(mid))
+        {
+            ans = mid;
+            low = mid + 1;
+        }
+        else
+        {
+            high = mid - 1;
+        }
+    }
+    return ans;
+}
+ll pref[N];
 int main()
 {
     fast;
@@ -209,35 +257,31 @@ int main()
     t = 1;
     cin >> t;
 
-    while (t--)
-    {
+    while(t--){
         ll n;
-        cin >> n;
-        vector<pll> ans;
-        for (ll i = 1; i <= n-2; i++)
-        {
-            ans.push_back({i,i});
+        cin>>n;
+        string s;
+        cin>>s;
+        ll ans=1;
+        for(int k=n; k>1; k--){
+            for(int i=0; i<n+2; i++) pref[i]=0;
+            int f=1;
+            for(int i=0; i<n; i++){
+                if(i) pref[i]+=pref[i-1];
+                ll nw=((pref[i]%2)+(s[i]-'0'))%2;
+                if(!nw){
+                    if(i+k-1>=n){
+                        f=0; break;
+                    }
+                    pref[i+1]+=1;
+                    pref[i+k]-=1;
+                }
+            }
+            if(f){
+                ans=k; break;
+            }
         }
-        ll nw=n;
-        ll i=0;
-        while(ans.size()<nw){
-            ans.push_back({n-i,n});
-            i++;
-        }
-        n=nw;
-        set<ll>stt;
-        // for(ll i=0;i<n;i++){
-        //     for(ll j=i+1;j<n;j++){
-        //         ll now=abs(ans[i].first-ans[j].first)+abs(ans[i].second-ans[j].second);
-        //         stt.insert(now);
-        //     }
-        // }
-        // deb(stt.size());
-        for (auto it : ans)
-        {
-            cout << it << nn;
-        }
-        cout << nn;
+        cout<<ans<<nn;
     }
 
     return 0;

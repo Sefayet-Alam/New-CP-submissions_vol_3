@@ -211,33 +211,67 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<pll> ans;
-        for (ll i = 1; i <= n-2; i++)
+        ll m, n;
+        cin >> m >> n;
+        vector<ll> vec(n);
+        cin >> vec;
+        // reverse(all(vec));
+        vector<ll> ans(m + 1, 0);
+        ll r = n - 1;
+        bool f = 0;
+        unordered_map<ll, ll> rs;
+        for (ll i = 1; i <= m; i++)
         {
-            ans.push_back({i,i});
+            if (ans[i] == 0)
+            {
+                rs[i] = r;
+                ans[i] = vec[r];
+            }
+            r = rs[i];
+            for (ll j = 2 * i; j <= m; j += i)
+            {
+                if (ans[j] == 0)
+                {
+                    if (vec[r] == ans[i])
+                    {
+                        if (r)
+                            r--;
+                        else
+                        {
+                            f = 1;
+                            break;
+                        }
+                    }
+                    rs[j] = r;
+                    ans[j] = vec[r];
+                }
+                else if (ans[j] == ans[i])
+                {
+                    if (vec[r] == ans[i])
+                    {
+                        if (r)
+                        {
+                            r--;
+                        }
+                        else
+                        {
+                            f = 1;
+                            break;
+                        }
+                    }
+                    rs[j] = r;
+                    ans[j] = vec[r];
+                }
+            }
+            // deb(ans);
         }
-        ll nw=n;
-        ll i=0;
-        while(ans.size()<nw){
-            ans.push_back({n-i,n});
-            i++;
-        }
-        n=nw;
-        set<ll>stt;
-        // for(ll i=0;i<n;i++){
-        //     for(ll j=i+1;j<n;j++){
-        //         ll now=abs(ans[i].first-ans[j].first)+abs(ans[i].second-ans[j].second);
-        //         stt.insert(now);
-        //     }
-        // }
-        // deb(stt.size());
-        for (auto it : ans)
+        if (f)
+            cout << -1 << nn;
+        else
         {
-            cout << it << nn;
+            ans.erase(ans.begin());
+            cout << ans << nn;
         }
-        cout << nn;
     }
 
     return 0;

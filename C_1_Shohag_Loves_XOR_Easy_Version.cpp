@@ -200,6 +200,18 @@ namespace io
 }
 using namespace io;
 
+
+/// BIT MANIPULATION
+
+#define Set(x, k) (x |= (1LL << k))
+#define Unset(x, k) (x &= ~(1LL << k))
+#define Check(x, k) (x & (1LL << k))
+#define Toggle(x, k) (x ^ (1LL << k))
+
+int popcount(ll x) { return __builtin_popcountll(x); };
+int poplow(ll x) { return __builtin_ctzll(x); };
+int pophigh(ll x) { return 63 - __builtin_clzll(x); };
+
 int main()
 {
     fast;
@@ -208,36 +220,24 @@ int main()
     // ll tno=1;;
     t = 1;
     cin >> t;
-
+    // ll y=13;
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<pll> ans;
-        for (ll i = 1; i <= n-2; i++)
-        {
-            ans.push_back({i,i});
+        ll x,m;
+        cin>>x>>m;
+        ll ans=0;
+        ll ph=pophigh(x);
+        ph++;
+        ll lim=max(0LL,(1LL<<ph)-1);
+        // deb(lim);
+        for(ll y=1;y<=min(m,lim);y++){
+            ll z=(x^y);
+            if(x==y) continue;
+            if(x%z==0 || y%z==0){
+                ans++;
+            }
         }
-        ll nw=n;
-        ll i=0;
-        while(ans.size()<nw){
-            ans.push_back({n-i,n});
-            i++;
-        }
-        n=nw;
-        set<ll>stt;
-        // for(ll i=0;i<n;i++){
-        //     for(ll j=i+1;j<n;j++){
-        //         ll now=abs(ans[i].first-ans[j].first)+abs(ans[i].second-ans[j].second);
-        //         stt.insert(now);
-        //     }
-        // }
-        // deb(stt.size());
-        for (auto it : ans)
-        {
-            cout << it << nn;
-        }
-        cout << nn;
+        cout<<ans<<nn;
     }
 
     return 0;

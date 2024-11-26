@@ -163,18 +163,25 @@ int main()
     cin>>t;
 
     while(t--){
-      ll n,k,d;
-      cin>>n>>k>>d;
-      vector<ll>a(n),b(k);
-      cin>>a>>b;
-      ll curr=0;
-      ll ans=0;
-      for(ll i=0;i<n;i++){
-        if(a[i]==i+1) ans++;
-      }
-      if(ans) d--;
-      ans+=(d+1)/2;
-      cout<<ans<<nn;
+      ll n, k, d;
+        cin>>n>>k>>d;
+        vector<ll> arr(n), arr2(n),v(k);
+        cin>>arr;
+        cin>>v;
+        ll ans=-M*M;
+        for(ll j=0; j<min(10*n,d); j++){
+            ll j2=j%k;
+            ll upto=v[j2], now=0;
+            for(int i=0; i<n; i++){
+                if(arr[i]==i+1) now++;
+            }
+            now+=(d-(j+1))/2;
+            ans=max(ans,now);
+            for(ll i=0;i<n;i++){
+                if(i<upto) arr[i]++;
+            }
+        }
+        cout<<ans<<nn;
 
     }
 

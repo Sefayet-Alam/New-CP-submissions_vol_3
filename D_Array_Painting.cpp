@@ -29,7 +29,7 @@ using namespace __gnu_pbds;
 #define PI acos(-1)
 const double EPS = 1e-9;
 const ll N = 2e5 + 10;
-const ll M = 1e9 + 7;
+const ll M = 1e16 + 7;
 
 /// INLINE FUNCTIONS
 inline ll GCD(ll a, ll b) { return b == 0 ? a : GCD(b, a % b); }
@@ -81,16 +81,48 @@ namespace io{
     template <typename First, typename... Other> void print( First first, Other... other ) { if( sep ) cerr << " | "; sep = true; cerr << to_string( first ); print( other... ); }
 } using namespace io;
 
+ll n;
+vector<ll>vec(N);
+ll dp[N][2][2];
+ll func(ll i,ll cary,ll boro){
+    if(i==n){
+        if(!boro) return 0;
+        else return M;
+    }
+    ll ret=M;
+    if(dp[i][cary][boro]!=-1) return dp[i][cary][boro];
+    if(vec[i]==0){
+        if(cary) ret=min(ret,func(i+1,0,0)); //someone just gave me carry(made me red)
+        if(boro==0){
+            ret=min(ret,1+func(i+1,0,0)); //no one gave me carry (become red by myself)
+            ret=min(ret,func(i+1,0,1)); // i depend on my neighbours (will be red by next)
+        }
+    }
+    else if(vec[i]==1){
+        if(cary) ret=min(ret,func(i+1,1,0)); //someone carried me(made me red)
+        if(boro){
+            ret=min(ret,1+func(i+1,0,0)); //someone borrowed my 1(i made someone red)
+            ret=min(ret,func(i+1,0,1)); //will boro
+        }
+        else{
+            ret=min(ret,1+func(i+1,1,0));//i can carry my neighbour(will make someone red)
+            ret=min(ret,func(i+1,0,1)); //will boro
+        }
+    }
+    else{
+        if(cary) ret=min(ret,func(i+1,1,0)); //someone carried me,can also carry right
+        if(boro){
+            ret=min(ret,1+func(i+1,1,0)); //someone borrowed my 1 but can also carry right
+            ret=min(ret,func(i+1,0,1)); //will boro
+        }
+        else{
+            ret=min(ret,1+func(i+1,1,0));//i can carry my neighbour
+            ret=min(ret,func(i+1,0,1)); //will boro
+        }
+    }
+    return dp[i][cary][boro]=ret;
+}
 
-
-
-// problem tag: priority queue, greedy
-// observation: u can change order, 
-// when this kind of constraints are given and u cant think of a dp solution
-// think of a greedy solution! think of priority queues
-// observation 02: sum of a <= L - sum of (b[r]-b[l]) ***
-// so in a range from l to r we need to find the size of pq where
-// sum of a <= L - sum of (b[r]-b[l])
 int main()
 {
     fast;
@@ -98,36 +130,16 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
-      ll n,l;
-      cin>>n>>l;
-      vector<pll>vec;
-      for(ll i=0;i<n;i++){
-        ll x,y;
-        cin>>x>>y;
-        vec.push_back({y,x});
-      }
-      sort(all(vec));
-      ll ans=0;
-      for(ll i=0;i<n;i++){
-        PQ<ll>pq;
-        ll cur=0;
-        for(ll j=i;j<n;j++){
-            cur+=vec[j].second;
-            pq.push(vec[j].second);
-            //start at j,finish at i 
-            while (pq.size() && vec[j].first-vec[i].first+cur>l)
-            {
-                ll tp=pq.top();
-                cur-=pq.top();
-                pq.pop();
-            }
-            ans=max(ans,(ll)pq.size());
-        }
-      }
+      cin>>n;
+      vec.resize(n);
+      cin>>vec;
+      mem(dp,-1);
+    //   deb(vec);
+      ll ans=func(0,0,0);
       cout<<ans<<nn;
     }
 

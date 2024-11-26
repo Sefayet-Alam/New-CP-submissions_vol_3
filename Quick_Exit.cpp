@@ -200,6 +200,34 @@ namespace io
 }
 using namespace io;
 
+vector<ll> g[N];
+
+ll parent[N];
+ll subtree[N];
+void dfs(ll vertex, ll par =0)
+{
+   
+    subtree[vertex]=1;
+    for (int child : g[vertex])
+    {
+        
+        if (child == par) continue;
+        // deb2(vertex,child);
+        parent[child] = vertex;
+        dfs(child, vertex);
+        subtree[vertex]+=subtree[child];
+    }
+   
+}
+void reset(ll n)
+{
+    for (ll i = 0; i <= n; i++)
+    {
+        g[i].clear();
+        subtree[i]=0;
+        parent[i] = 0;
+    }
+}
 int main()
 {
     fast;
@@ -211,33 +239,47 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<pll> ans;
-        for (ll i = 1; i <= n-2; i++)
+        ll n, k;
+        
+        cin >> n >> k;
+        reset(n);
+        for (ll i = 0; i < n - 1; i++)
         {
-            ans.push_back({i,i});
+            ll x, y;
+            cin >> x >> y;
+            // deb2(x,y);
+            g[x].push_back(y);
+            g[y].push_back(x);
         }
-        ll nw=n;
-        ll i=0;
-        while(ans.size()<nw){
-            ans.push_back({n-i,n});
-            i++;
-        }
-        n=nw;
-        set<ll>stt;
-        // for(ll i=0;i<n;i++){
-        //     for(ll j=i+1;j<n;j++){
-        //         ll now=abs(ans[i].first-ans[j].first)+abs(ans[i].second-ans[j].second);
-        //         stt.insert(now);
-        //     }
-        // }
-        // deb(stt.size());
-        for (auto it : ans)
+        dfs(1);
+    
+        ll now = n;
+        
+        vector<ll>paths;
+        while (now != 1)
         {
-            cout << it << nn;
+            paths.push_back(now);
+            ll par = parent[now];           
+            now = par;
         }
-        cout << nn;
+        paths.push_back(1);
+        vector<ll>powrs;
+        for(ll i=1;i<paths.size();i++){
+            for(auto it:g[paths[i]]){
+                if(it==paths[i-1] || it==parent[paths[i]])  continue;
+                // deb2(it,subtree[it]);
+                powrs.push_back(subtree[it]);
+            }
+        }
+        sort(all(powrs),greater<ll>());
+        
+        ll ans=paths.size();
+        for(ll i=k-1;i<powrs.size();i++){
+           ans+=powrs[i];
+        }
+        cout<<ans<<nn;
+       
+        
     }
 
     return 0;

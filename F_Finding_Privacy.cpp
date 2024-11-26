@@ -200,6 +200,38 @@ namespace io
 }
 using namespace io;
 
+ll k, n;
+
+bool func(ll pos)
+{
+    ll rem = k - pos;
+    ll ocu = pos * 2;
+    ll oth = rem * 3;
+    // deb2(pos,k-pos);
+    // deb2(ocu,oth);
+    return ocu + oth >=n;
+}
+ll bs(ll low, ll high)
+{
+    ll mid;
+    ll ans = -1;
+    while (low <= high)
+    {
+        mid = low + (high - low) / 2;
+        // cout<<mid<<" "<<func(mid)<<endl;
+        if (func(mid))
+        {
+            ans = mid;
+            low = mid + 1;
+        }
+        else
+        {
+            high = mid - 1;
+        }
+    }
+    return ans;
+}
+
 int main()
 {
     fast;
@@ -207,35 +239,36 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<pll> ans;
-        for (ll i = 1; i <= n-2; i++)
+        cin >> k >> n;
+        if (k > (n + 1) / 2)
         {
-            ans.push_back({i,i});
+            cout << "*" << nn;
+            continue;
         }
-        ll nw=n;
-        ll i=0;
-        while(ans.size()<nw){
-            ans.push_back({n-i,n});
-            i++;
-        }
-        n=nw;
-        set<ll>stt;
-        // for(ll i=0;i<n;i++){
-        //     for(ll j=i+1;j<n;j++){
-        //         ll now=abs(ans[i].first-ans[j].first)+abs(ans[i].second-ans[j].second);
-        //         stt.insert(now);
-        //     }
-        // }
-        // deb(stt.size());
-        for (auto it : ans)
+        else if (k < (n + 2) / 3)
         {
-            cout << it << nn;
+            cout << "*" << nn;
+            continue;
+        }
+        ll l = 0, r = k;
+        ll ans = bs(l, r);
+        //   deb(ans);
+        string s = "";
+        for (ll i = 0; i < ans; i++)
+        {
+            s += "X-";
+        }
+        for (ll i = ans; i < k; i++)
+        {
+            s += "-X-";
+        }
+        for (ll i = 0; i < n; i++)
+        {
+            cout << s[i];
         }
         cout << nn;
     }

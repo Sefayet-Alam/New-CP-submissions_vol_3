@@ -211,33 +211,36 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<pll> ans;
-        for (ll i = 1; i <= n-2; i++)
+        ll n, c;
+        cin >> n >> c;
+        vector<ll> vec(n);
+        cin >> vec;
+        vector<ll> tmp;
+        ll sum = 0;
+        ll od = 0;
+        ll ev = 0;
+        for (ll i = 0; i < n; i++)
         {
-            ans.push_back({i,i});
+            tmp.push_back(vec[i]);
+            if (vec[i] % 2)
+                od++;
+            else
+                ev++;
         }
-        ll nw=n;
-        ll i=0;
-        while(ans.size()<nw){
-            ans.push_back({n-i,n});
-            i++;
-        }
-        n=nw;
-        set<ll>stt;
-        // for(ll i=0;i<n;i++){
-        //     for(ll j=i+1;j<n;j++){
-        //         ll now=abs(ans[i].first-ans[j].first)+abs(ans[i].second-ans[j].second);
-        //         stt.insert(now);
-        //     }
-        // }
-        // deb(stt.size());
-        for (auto it : ans)
+
+        sum = accumulate(all(tmp), 0LL);
+        ll m = tmp.size();
+        ll totpairs = ((c + 1) * (c + 2)) / 2;
+        ll xmy = m * (c) + m - sum;
+        ll xpy = 0;
+        for (ll i = 0; i < m; i++)
         {
-            cout << it << nn;
+            xpy += vec[i]/2+1;
         }
-        cout << nn;
+        // deb2(xpy,xmy);
+        ll ans = totpairs - xpy - xmy + (ev * (ev + 1)) / 2 + (od * (od + 1)) / 2;
+        // deb(ans);
+        cout<<ans<<nn;
     }
 
     return 0;

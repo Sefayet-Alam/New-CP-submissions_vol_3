@@ -200,6 +200,7 @@ namespace io
 }
 using namespace io;
 
+
 int main()
 {
     fast;
@@ -208,36 +209,33 @@ int main()
     // ll tno=1;;
     t = 1;
     cin >> t;
-
+    
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<pll> ans;
-        for (ll i = 1; i <= n-2; i++)
+        ll x,m;
+        cin >> x >> m;
+       
+        ll ans = 0;
+        for (ll i = 1; i <= min(x-1, m); i++)
         {
-            ans.push_back({i,i});
+            ll y = i;
+            ll z = (x ^ y);
+            if (z % y == 0)
+                ans++;
         }
-        ll nw=n;
-        ll i=0;
-        while(ans.size()<nw){
-            ans.push_back({n-i,n});
-            i++;
-        }
-        n=nw;
-        set<ll>stt;
-        // for(ll i=0;i<n;i++){
-        //     for(ll j=i+1;j<n;j++){
-        //         ll now=abs(ans[i].first-ans[j].first)+abs(ans[i].second-ans[j].second);
-        //         stt.insert(now);
-        //     }
-        // }
-        // deb(stt.size());
-        for (auto it : ans)
+        // deb(ans);
+        if (m >= x)
         {
-            cout << it << nn;
+            ans+=(m-x)/x;
+            // deb(ans);
+            for(ll i=m-x+1;i<=m+x;i++){
+                ll z=i;
+                ll y=(x^i);
+
+                if(z%x==0 && y<=m) ans++;
+            }
         }
-        cout << nn;
+        cout << ans << nn;
     }
 
     return 0;

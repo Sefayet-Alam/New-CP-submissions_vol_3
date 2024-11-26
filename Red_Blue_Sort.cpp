@@ -213,31 +213,45 @@ int main()
     {
         ll n;
         cin >> n;
-        vector<pll> ans;
-        for (ll i = 1; i <= n-2; i++)
+        vector<ll> vec(n);
+        cin >> vec;
+
+        // deb(vec);
+        ll ans = 0;
+        for (ll i = 0; i < n; i++)
         {
-            ans.push_back({i,i});
+            if (vec[i] == i + 1)
+                ans++;
         }
-        ll nw=n;
-        ll i=0;
-        while(ans.size()<nw){
-            ans.push_back({n-i,n});
-            i++;
-        }
-        n=nw;
-        set<ll>stt;
-        // for(ll i=0;i<n;i++){
-        //     for(ll j=i+1;j<n;j++){
-        //         ll now=abs(ans[i].first-ans[j].first)+abs(ans[i].second-ans[j].second);
-        //         stt.insert(now);
-        //     }
-        // }
-        // deb(stt.size());
-        for (auto it : ans)
+        if (is_sorted(all(vec)))
+            cout << n << nn;
+        else if (vec[0] == 1 || vec[n - 1] == n)
+            cout << max(ans, n - 1) << nn;
+        else if (n == 2)
         {
-            cout << it << nn;
+            cout << 0 << nn;
         }
-        cout << nn;
+        else
+        {
+            bool f = 0;
+            for (ll i = 0; i < n; i++)
+            {
+                if (vec[i] == i + 1)
+                {
+                    f = 1;
+                    break;
+                }
+            }
+            if (f)
+            {
+                ans = max(ans, n - 1);
+            }
+            else
+            {
+                ans=max(ans,n-2);
+            }
+            cout << ans << nn;
+        }
     }
 
     return 0;

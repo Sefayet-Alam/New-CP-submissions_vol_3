@@ -199,6 +199,13 @@ namespace io
     }
 }
 using namespace io;
+char query(ll a, ll b, ll c, ll d)
+{
+    cout << "? " << a << " " << b << " " << c << " " << d << endl;
+    char ch;
+    cin >> ch;
+    return ch;
+}
 
 int main()
 {
@@ -213,31 +220,35 @@ int main()
     {
         ll n;
         cin >> n;
-        vector<pll> ans;
-        for (ll i = 1; i <= n-2; i++)
+        int mx = 0, ans1 = 0, ans2;
+        vector<int> v;
+        for (int i = 1; i < n; i++)
         {
-            ans.push_back({i,i});
+            int c = query(ans1, ans1, i, i);
+            if (c == '<')
+                ans1 = i;
         }
-        ll nw=n;
-        ll i=0;
-        while(ans.size()<nw){
-            ans.push_back({n-i,n});
-            i++;
-        }
-        n=nw;
-        set<ll>stt;
-        // for(ll i=0;i<n;i++){
-        //     for(ll j=i+1;j<n;j++){
-        //         ll now=abs(ans[i].first-ans[j].first)+abs(ans[i].second-ans[j].second);
-        //         stt.insert(now);
-        //     }
-        // }
-        // deb(stt.size());
-        for (auto it : ans)
+        v.push_back(0);
+        for (int i = 1; i < n; i++)
         {
-            cout << it << nn;
+            int c = query(mx, ans1, i, ans1);
+            if (c == '<')
+            {
+                mx = i;
+                v.clear();
+                v.push_back(i);
+            }
+            else if (c == '=')
+                v.push_back(i);
         }
-        cout << nn;
+        ans2 = v[0];
+        for (int i = 1; i < v.size(); i++)
+        {
+            int c = query(ans2, ans2, v[i], v[i]);
+            if (c == '>')
+                ans2 = v[i];
+        }
+        cout << "!" << " " << ans1 << " " << ans2 << endl;
     }
 
     return 0;

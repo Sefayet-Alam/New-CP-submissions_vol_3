@@ -1,3 +1,5 @@
+
+
 #include <bits/stdc++.h>
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>
@@ -28,7 +30,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI acos(-1)
 const double EPS = 1e-9;
-const ll N = 2e5 + 10;
+const ll N = 1e6 + 10;
 const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
@@ -200,6 +202,37 @@ namespace io
 }
 using namespace io;
 
+ll n, m;
+ll grid[102][102];
+ll dp[102][102];
+bool func(ll i, ll j, ll g)
+{
+    if (i == n - 1 && j == m - 1)
+    {
+        return 1;
+    }
+    if(dp[i][j]!=-1) return dp[i][j];
+    ll ret = 0;
+    if (i + 1 < n && grid[i + 1][j] % g == 0)
+    {
+        ret |=func(i + 1, j, g);
+    }
+    if (j + 1 < m && grid[i][j + 1] % g == 0)
+    {
+        ret |= func(i, j + 1, g);
+    }
+    return dp[i][j]=ret;
+}
+
+vl divisors[N];
+
+void divisor_store(){
+    for(int i=1;i<N;i++){
+        for(int j=i;j<N;j+=i) {
+            divisors[j].push_back(i);
+        }  
+    }
+}
 int main()
 {
     fast;
@@ -208,36 +241,30 @@ int main()
     // ll tno=1;;
     t = 1;
     cin >> t;
-
+    divisor_store();
+    
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<pll> ans;
-        for (ll i = 1; i <= n-2; i++)
+        cin >> n >> m;
+        for (ll i = 0; i < n; i++)
         {
-            ans.push_back({i,i});
+            for (ll j = 0; j < m; j++)
+            {
+                
+                cin >> grid[i][j];
+            }
         }
-        ll nw=n;
-        ll i=0;
-        while(ans.size()<nw){
-            ans.push_back({n-i,n});
-            i++;
-        }
-        n=nw;
-        set<ll>stt;
-        // for(ll i=0;i<n;i++){
-        //     for(ll j=i+1;j<n;j++){
-        //         ll now=abs(ans[i].first-ans[j].first)+abs(ans[i].second-ans[j].second);
-        //         stt.insert(now);
-        //     }
-        // }
-        // deb(stt.size());
-        for (auto it : ans)
+        ll curg = GCD(grid[0][0], grid[n - 1][m - 1]);
+        ll ans = 1;
+        // deb2(curg,divisors[curg]);
+        for(auto it:divisors[curg])
         {
-            cout << it << nn;
+            for(ll i=0;i<n;i++) for(ll j=0;j<m;j++) dp[i][j]=-1;
+            ll now=func(0,0,it);
+            if(now) ans=max(ans,it);
         }
-        cout << nn;
+        
+        cout << ans << nn;
     }
 
     return 0;

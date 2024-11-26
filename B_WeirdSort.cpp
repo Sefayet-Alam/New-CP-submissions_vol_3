@@ -211,33 +211,33 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<pll> ans;
-        for (ll i = 1; i <= n-2; i++)
+        ll n, m;
+        cin >> n >> m;
+        vector<ll> vec(n + 1);
+        for (ll i = 1; i <= n; i++)
         {
-            ans.push_back({i,i});
+            cin >> vec[i];
         }
-        ll nw=n;
-        ll i=0;
-        while(ans.size()<nw){
-            ans.push_back({n-i,n});
-            i++;
-        }
-        n=nw;
-        set<ll>stt;
-        // for(ll i=0;i<n;i++){
-        //     for(ll j=i+1;j<n;j++){
-        //         ll now=abs(ans[i].first-ans[j].first)+abs(ans[i].second-ans[j].second);
-        //         stt.insert(now);
-        //     }
-        // }
-        // deb(stt.size());
-        for (auto it : ans)
+        vector<ll> p(m + 1);
+        for (ll i = 1; i <= m; i++)
+            cin >> p[i];
+
+        for (ll j = 0; j < 1000; j++)
         {
-            cout << it << nn;
+            for (ll i = 1; i <= m; i++)
+            {
+                // deb2(p[i],p[i+1]);
+                // deb2(vec[p[i]],vec[p[i+1]]);
+                if(p[i]<p[i]+1 && vec[p[i]]>vec[p[i]+1]) swap(vec[p[i]],vec[p[i]+1]);
+                // if(p[i]>p[i]+1 && vec[p[i]]<vec[p[i]+1]) swap(vec[p[i]],vec[p[i]+1]);
+            }
+            // deb2(vec,p);
         }
-        cout << nn;
+        // deb(vec);
+        vec.erase(vec.begin());
+        // deb(vec);
+        if(is_sorted(all(vec))) cout<<"YES"<<nn;
+        else cout<<"NO"<<nn;
     }
 
     return 0;

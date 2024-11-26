@@ -200,6 +200,19 @@ namespace io
 }
 using namespace io;
 
+ll n;
+vector<ll> vec(N);
+
+/// BIT MANIPULATION
+
+#define Set(x, k) (x |= (1LL << k))
+#define Unset(x, k) (x &= ~(1LL << k))
+#define Check(x, k) (x & (1LL << k))
+#define Toggle(x, k) (x ^ (1LL << k))
+
+int popcount(ll x) { return __builtin_popcountll(x); };
+int poplow(ll x) { return __builtin_ctzll(x); };
+int pophigh(ll x) { return 63 - __builtin_clzll(x); };
 int main()
 {
     fast;
@@ -207,40 +220,56 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
-        ll n;
         cin >> n;
-        vector<pll> ans;
-        for (ll i = 1; i <= n-2; i++)
+        vec.resize(n);
+        cin >> vec;
+        for (ll i = 0; i < n; i++)
+            vec[i]--;
+        vector<ll> poses[20];
+        for (ll i = 0; i < n; i++)
         {
-            ans.push_back({i,i});
+            poses[vec[i]].push_back(i);
         }
-        ll nw=n;
-        ll i=0;
-        while(ans.size()<nw){
-            ans.push_back({n-i,n});
-            i++;
-        }
-        n=nw;
-        set<ll>stt;
-        // for(ll i=0;i<n;i++){
-        //     for(ll j=i+1;j<n;j++){
-        //         ll now=abs(ans[i].first-ans[j].first)+abs(ans[i].second-ans[j].second);
-        //         stt.insert(now);
-        //     }
-        // }
-        // deb(stt.size());
-        for (auto it : ans)
+        // deb(vec);
+        ll lim=(1LL<<20);
+        vector<ll>dp(lim,n+1);
+        for (ll i = 0; i < 20; i++)
         {
-            cout << it << nn;
+            if (poses[i].size() >= 2)
+            {
+                dp[(1 << i)] = poses[i][1];
+            }
         }
-        cout << nn;
+        
+        // dp[msk] stores the last position if we take
+        // elements of the active bits of the mask
+        for (ll msk = 0; msk < (1 << 20); msk++)
+        {
+            if (dp[msk] > n)
+                continue;
+            ll st = dp[msk];
+            // deb2(msk,st);
+            for (ll i = 0; i < 20; i++)
+            {
+                if (msk>>i&1)
+                    continue;
+                ll id = upper_bound(all(poses[i]), st) - poses[i].begin();
+                ll nmsk = (msk | (1 << i));
+                if (id + 1 < poses[i].size())
+                    dp[nmsk] = min(dp[nmsk], poses[i][id + 1]);
+            }
+        }
+        ll ans=0;
+        for(ll msk=0;msk<(1<<20);msk++){
+            ll bits=popcount(msk);
+            if(dp[msk]<n) ans=max(ans,bits*2);
+        }
+        cout<<ans<<nn;
     }
-
-    return 0;
 }
 
 /* Points tO CONSIDER

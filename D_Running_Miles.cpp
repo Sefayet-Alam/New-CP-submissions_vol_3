@@ -29,7 +29,7 @@ using namespace __gnu_pbds;
 #define PI acos(-1)
 const double EPS = 1e-9;
 const ll N = 2e5 + 10;
-const ll M = 1e9 + 7;
+const ll M = 1e16 + 7;
 
 /// INLINE FUNCTIONS
 inline ll GCD(ll a, ll b) { return b == 0 ? a : GCD(b, a % b); }
@@ -81,16 +81,29 @@ namespace io{
     template <typename First, typename... Other> void print( First first, Other... other ) { if( sep ) cerr << " | "; sep = true; cerr << to_string( first ); print( other... ); }
 } using namespace io;
 
+vector<ll>vec(N);
+ll n;
+ll dp[N][4][2];
+ll func(ll i,ll tek,bool st){
+    if(i==n){
+        if(tek==3) return 0;
+        else return -M;
+    }
+    if(dp[i][tek][st]!=-1) return dp[i][tek][st];
+    ll ret=0;
 
+    if(!st){
+        ret=max(ret,func(i+1,tek,st));
+        ret=max(ret,vec[i]-1+func(i+1,tek+1,1));
+    }
+    else{
+        ret=max(ret,-1+func(i+1,tek,1));
+        if(tek<2) ret=max(ret,-1+vec[i]+func(i+1,tek+1,1));
+        else if(tek<3) ret=max(ret,vec[i]+func(i+1,tek+1,1));
+    }
+    return dp[i][tek][st]=ret;
+}
 
-
-// problem tag: priority queue, greedy
-// observation: u can change order, 
-// when this kind of constraints are given and u cant think of a dp solution
-// think of a greedy solution! think of priority queues
-// observation 02: sum of a <= L - sum of (b[r]-b[l]) ***
-// so in a range from l to r we need to find the size of pq where
-// sum of a <= L - sum of (b[r]-b[l])
 int main()
 {
     fast;
@@ -102,32 +115,15 @@ int main()
 
     while (t--)
     {
-      ll n,l;
-      cin>>n>>l;
-      vector<pll>vec;
-      for(ll i=0;i<n;i++){
-        ll x,y;
-        cin>>x>>y;
-        vec.push_back({y,x});
-      }
-      sort(all(vec));
-      ll ans=0;
-      for(ll i=0;i<n;i++){
-        PQ<ll>pq;
-        ll cur=0;
-        for(ll j=i;j<n;j++){
-            cur+=vec[j].second;
-            pq.push(vec[j].second);
-            //start at j,finish at i 
-            while (pq.size() && vec[j].first-vec[i].first+cur>l)
-            {
-                ll tp=pq.top();
-                cur-=pq.top();
-                pq.pop();
-            }
-            ans=max(ans,(ll)pq.size());
+      cin>>n;
+      vec.resize(n);
+      cin>>vec;
+      for(ll i=0;i<=n;i++){
+        for(ll j=0;j<=3;j++){
+            dp[i][j][0]=dp[i][j][1]=-1;
         }
       }
+      ll ans=func(0,0,0);
       cout<<ans<<nn;
     }
 

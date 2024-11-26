@@ -207,37 +207,73 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<pll> ans;
-        for (ll i = 1; i <= n-2; i++)
+        ll k;
+        cin >> k;
+        string s;
+        cin >> s;
+        ll n = s.size();
+        if (k == 2)
         {
-            ans.push_back({i,i});
+            string ans(n,'0'),ans2(n,'0');
+            for(ll i=0;i<n;i++){
+                if(i%2) ans[i]='1';
+                else ans2[i]='1';
+            }
+            ll cur=0,cur2=0;
+            for(ll i=0;i<n;i++){
+                if(ans[i]!=s[i]) cur++;
+                if(ans2[i]!=s[i]) cur2++;
+            }
+            if(cur<cur2) cout<<cur<<" "<<ans<<nn;
+            else cout<<cur2<<" "<<ans2<<nn;
+            continue;
         }
-        ll nw=n;
-        ll i=0;
-        while(ans.size()<nw){
-            ans.push_back({n-i,n});
-            i++;
-        }
-        n=nw;
-        set<ll>stt;
-        // for(ll i=0;i<n;i++){
-        //     for(ll j=i+1;j<n;j++){
-        //         ll now=abs(ans[i].first-ans[j].first)+abs(ans[i].second-ans[j].second);
-        //         stt.insert(now);
-        //     }
-        // }
-        // deb(stt.size());
-        for (auto it : ans)
+        ll cur = 1;
+        ll st = 0, en = 0;
+        ll ans = 0;
+        for (ll i = 1; i < n; i++)
         {
-            cout << it << nn;
+            if (s[i] == s[i - 1])
+            {
+                cur++;
+                en = i;
+            }
+            else
+            {
+                if (cur >= k)
+                {
+                    // deb(cur);
+                    // deb2(st,en);
+                    for (ll j = st + k - 1; j <= en; j += k)
+                    {
+                        s[j] = (s[j] == '0' ? '1' : '0');
+                        ans++;
+                    }
+                    if (cur % k == 0)
+                        swap(s[en], s[en - 1]);
+                }
+                cur = 1;
+                st = i;
+                en = i;
+            }
         }
-        cout << nn;
+        if (cur >= k)
+        {
+            // deb(cur);
+            // deb2(st,en);
+            for (ll j = st + k - 1; j <= en; j += k)
+            {
+                s[j] = (s[j] == '0' ? '1' : '0');
+                ans++;
+            }
+            if (cur % k == 0)
+                swap(s[en], s[en - 1]);
+        }
+        cout << ans << " " << s << nn;
     }
 
     return 0;

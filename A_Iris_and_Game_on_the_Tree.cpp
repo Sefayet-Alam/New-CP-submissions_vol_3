@@ -213,31 +213,70 @@ int main()
     {
         ll n;
         cin >> n;
-        vector<pll> ans;
-        for (ll i = 1; i <= n-2; i++)
+        map<ll, ll> freq;
+        for (ll i = 0; i < n - 1; i++)
         {
-            ans.push_back({i,i});
+            ll x, y;
+            cin >> x >> y;
+            x--, y--;
+            freq[x]++;
+            freq[y]++;
         }
-        ll nw=n;
-        ll i=0;
-        while(ans.size()<nw){
-            ans.push_back({n-i,n});
-            i++;
+        string s;
+        cin >> s;
+
+        ll leaves=0;
+        ll unlev=0;
+        ll l0=0,l1=0;
+        for(ll i=1;i<n;i++){
+            if(freq[i]==1){
+                leaves++;
+                if(s[i]=='?') unlev++;
+                else if(s[i]=='0') l0++;
+                else l1++;
+            }
         }
-        n=nw;
-        set<ll>stt;
-        // for(ll i=0;i<n;i++){
-        //     for(ll j=i+1;j<n;j++){
-        //         ll now=abs(ans[i].first-ans[j].first)+abs(ans[i].second-ans[j].second);
-        //         stt.insert(now);
-        //     }
-        // }
-        // deb(stt.size());
-        for (auto it : ans)
+
+        ll k = 0;
+        for (ll i = 1; i < n; i++)
         {
-            cout << it << nn;
+            if (s[i] == '?')
+                k++;
         }
-        cout << nn;
+        ll rem=k-unlev;
+        rem%=2;
+        if (s[0] == '?')
+        {
+            if(rem){
+                //ore diye korai
+                ll ans1=l0+(unlev+1)/2;
+                //else
+                ll ans2=l1+(unlev+1)/2;
+                ll ans=min(ans1,ans2);
+                // ami kori
+                ll answ1=l0+(unlev)/2;
+                ll answ2=l1+(unlev)/2;
+                ll answ=max(answ1,answ2);
+                ans=max(ans,answ);
+                cout<<ans<<nn;
+            }
+            else{
+                //s[0] is 1
+                ll ans1=l0+(unlev)/2;
+                //else
+                ll ans2=l1+(unlev)/2;
+                ll ans=max(ans1,ans2);
+                cout<<ans<<nn;
+            }
+        }
+        else if(s[0]=='1'){
+            ll ans=l0+(unlev+1)/2;
+            cout<<ans<<nn;
+        }
+        else{
+            ll ans=l1+(unlev+1)/2;
+            cout<<ans<<nn;
+        }
     }
 
     return 0;

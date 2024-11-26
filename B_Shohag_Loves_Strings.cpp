@@ -208,36 +208,40 @@ int main()
     // ll tno=1;;
     t = 1;
     cin >> t;
+    // vector<ll> szs;
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<pll> ans;
-        for (ll i = 1; i <= n-2; i++)
+        string s;
+        cin >> s;
+        ll n = s.size();
+        string ans = "";
+        for (ll i = 0; i < n - 1; i++)
         {
-            ans.push_back({i,i});
+            if (s[i] == s[i + 1])
+            {
+                ans += s[i];
+                ans += s[i + 1];
+                break;
+            }
         }
-        ll nw=n;
-        ll i=0;
-        while(ans.size()<nw){
-            ans.push_back({n-i,n});
-            i++;
-        }
-        n=nw;
-        set<ll>stt;
-        // for(ll i=0;i<n;i++){
-        //     for(ll j=i+1;j<n;j++){
-        //         ll now=abs(ans[i].first-ans[j].first)+abs(ans[i].second-ans[j].second);
-        //         stt.insert(now);
-        //     }
-        // }
-        // deb(stt.size());
-        for (auto it : ans)
+        if (ans.size() == 0)
         {
-            cout << it << nn;
+            for (ll i = 0; i < n - 2; i++)
+            {
+                if (s[i] != s[i + 1] && s[i + 1] != s[i + 2] && s[i + 2] != s[i])
+                {
+                    ans += s[i];
+                    ans += s[i + 1];
+                    ans += s[i + 2];
+                    break;
+                }
+            }
         }
-        cout << nn;
+        if (ans.size())
+            cout << ans << nn;
+        else
+            cout << -1 << nn;
     }
 
     return 0;

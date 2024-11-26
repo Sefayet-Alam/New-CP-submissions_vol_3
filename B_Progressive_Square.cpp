@@ -211,33 +211,43 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<pll> ans;
-        for (ll i = 1; i <= n-2; i++)
+        ll n, c, d;
+        cin >> n >> c >> d;
+        vector<ll> vec(n * n);
+        cin >> vec;
+        // deb(vec);
+        ll st = *min_element(all(vec));
+        ll ar[n][n];
+        ar[0][0] = st;
+        for (ll i = 0; i < n ; i++)
         {
-            ans.push_back({i,i});
+            for (ll j = 0; j < n ; j++)
+            {
+                if(i+1<n) ar[i + 1][j] = ar[i][j] + c;
+                if(j+1<n) ar[i][j + 1] = ar[i][j] + d;
+            }
         }
-        ll nw=n;
-        ll i=0;
-        while(ans.size()<nw){
-            ans.push_back({n-i,n});
-            i++;
-        }
-        n=nw;
-        set<ll>stt;
-        // for(ll i=0;i<n;i++){
-        //     for(ll j=i+1;j<n;j++){
-        //         ll now=abs(ans[i].first-ans[j].first)+abs(ans[i].second-ans[j].second);
-        //         stt.insert(now);
-        //     }
-        // }
-        // deb(stt.size());
-        for (auto it : ans)
+        map<ll, ll> vis;
+        for (auto it : vec)
+            vis[it]++;
+        bool f = 0;
+        for (ll i = 0; i < n; i++)
         {
-            cout << it << nn;
+            for (ll j = 0; j < n; j++)
+            {
+                // cout<<ar[i][j]<<" ";
+                if (vis[ar[i][j]] <= 0){
+                    // deb(ar[i][j]);
+                    f = 1;
+                }
+                vis[ar[i][j]]--;
+            }
+            // cout<<nn;
         }
-        cout << nn;
+        if (f)
+            cout << "NO" << nn;
+        else
+            cout << "YES" << nn;
     }
 
     return 0;

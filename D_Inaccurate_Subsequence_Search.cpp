@@ -211,33 +211,39 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<pll> ans;
-        for (ll i = 1; i <= n-2; i++)
+        ll n, m, k;
+        cin >> n >> m >> k;
+        vector<ll> a(n), b(m);
+        cin >> a >> b;
+
+        map<ll, ll> mpp, mp2, vis;
+        for (auto it : b)
+            mpp[it]++;
+
+        ll ans = 0;
+        ll match = 0;
+        for (ll i = 0; i < m; i++)
         {
-            ans.push_back({i,i});
+            mp2[a[i]]++;
+            if (mpp[a[i]] >= mp2[a[i]])
+                match++;
         }
-        ll nw=n;
-        ll i=0;
-        while(ans.size()<nw){
-            ans.push_back({n-i,n});
-            i++;
-        }
-        n=nw;
-        set<ll>stt;
-        // for(ll i=0;i<n;i++){
-        //     for(ll j=i+1;j<n;j++){
-        //         ll now=abs(ans[i].first-ans[j].first)+abs(ans[i].second-ans[j].second);
-        //         stt.insert(now);
-        //     }
-        // }
-        // deb(stt.size());
-        for (auto it : ans)
+        if (match >= k)
+            ans++;
+
+        ll l = 0;
+        for (ll i = m; i < n; i++)
         {
-            cout << it << nn;
+            if(mp2[a[l]]<=mpp[a[l]]) match--;
+            mp2[a[l]]--;
+            l++;
+            mp2[a[i]]++;
+            if (mpp[a[i]] >= mp2[a[i]])
+                match++;
+            if (match >= k)
+                ans++;
         }
-        cout << nn;
+        cout << ans << nn;
     }
 
     return 0;

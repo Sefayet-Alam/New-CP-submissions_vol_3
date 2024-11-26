@@ -83,14 +83,6 @@ namespace io{
 
 
 
-
-// problem tag: priority queue, greedy
-// observation: u can change order, 
-// when this kind of constraints are given and u cant think of a dp solution
-// think of a greedy solution! think of priority queues
-// observation 02: sum of a <= L - sum of (b[r]-b[l]) ***
-// so in a range from l to r we need to find the size of pq where
-// sum of a <= L - sum of (b[r]-b[l])
 int main()
 {
     fast;
@@ -98,37 +90,22 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
-      ll n,l;
-      cin>>n>>l;
-      vector<pll>vec;
+      string s;
+      cin>>s;
+      ll n=s.size();
+      ll m=0;
+      reverse(all(s));
+      map<char,ll>vis;
       for(ll i=0;i<n;i++){
-        ll x,y;
-        cin>>x>>y;
-        vec.push_back({y,x});
+        if(vis[s[i]]) break;
+        m++;
+        vis[s[i]]=1;
       }
-      sort(all(vec));
-      ll ans=0;
-      for(ll i=0;i<n;i++){
-        PQ<ll>pq;
-        ll cur=0;
-        for(ll j=i;j<n;j++){
-            cur+=vec[j].second;
-            pq.push(vec[j].second);
-            //start at j,finish at i 
-            while (pq.size() && vec[j].first-vec[i].first+cur>l)
-            {
-                ll tp=pq.top();
-                cur-=pq.top();
-                pq.pop();
-            }
-            ans=max(ans,(ll)pq.size());
-        }
-      }
-      cout<<ans<<nn;
+      cout<<n-m<<nn;
     }
 
     return 0;

@@ -83,14 +83,6 @@ namespace io{
 
 
 
-
-// problem tag: priority queue, greedy
-// observation: u can change order, 
-// when this kind of constraints are given and u cant think of a dp solution
-// think of a greedy solution! think of priority queues
-// observation 02: sum of a <= L - sum of (b[r]-b[l]) ***
-// so in a range from l to r we need to find the size of pq where
-// sum of a <= L - sum of (b[r]-b[l])
 int main()
 {
     fast;
@@ -102,33 +94,22 @@ int main()
 
     while (t--)
     {
-      ll n,l;
-      cin>>n>>l;
+      ll n;
+      cin>>n;
+      vector<ll>a(n),b(n);
+      cin>>a>>b;
+      ll maxno=0;
+      for(auto it:a) maxno=max(it,maxno);
+      for(auto it:b) maxno=max(it,maxno);
+      
       vector<pll>vec;
-      for(ll i=0;i<n;i++){
-        ll x,y;
-        cin>>x>>y;
-        vec.push_back({y,x});
-      }
+      for(ll i=0;i<n;i++) vec.push_back({a[i],b[i]});
       sort(all(vec));
-      ll ans=0;
-      for(ll i=0;i<n;i++){
-        PQ<ll>pq;
-        ll cur=0;
-        for(ll j=i;j<n;j++){
-            cur+=vec[j].second;
-            pq.push(vec[j].second);
-            //start at j,finish at i 
-            while (pq.size() && vec[j].first-vec[i].first+cur>l)
-            {
-                ll tp=pq.top();
-                cur-=pq.top();
-                pq.pop();
-            }
-            ans=max(ans,(ll)pq.size());
-        }
-      }
-      cout<<ans<<nn;
+      reverse(all(vec));
+      bool f=0;
+      ll cnt=0;
+      if(max(vec[0].first,vec[0].second)==maxno && max(vec[1].first,vec[1].second)==maxno) cout<<"No"<<nn;
+      else cout<<"Yes"<<nn;
     }
 
     return 0;

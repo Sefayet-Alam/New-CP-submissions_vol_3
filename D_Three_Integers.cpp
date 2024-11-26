@@ -200,6 +200,42 @@ namespace io
 }
 using namespace io;
 
+vl divisors[N];
+
+void divisor_store()
+{
+    for (int i = 1; i < N; i++)
+    {
+        for (int j = i; j < N; j += i)
+        {
+            divisors[j].push_back(i);
+        }
+    }
+}
+
+void func(ll a, ll b, ll c)
+{
+    ll af, bf, cf;
+    ll now = M;
+    for (ll c2 = 1; c2 <= 2 * c; c2++)
+    {
+        for (auto b2 : divisors[c2])
+        {
+            for (auto a2 : divisors[b2])
+            {
+                ll cur = abs(a2 - a) + abs(b2 - b) + abs(c2 - c);
+                if (cur < now)
+                {
+                    now = cur;
+                    af = a2, bf = b2, cf = c2;
+                }
+            }
+        }
+    }
+    cout << now << nn;
+    cout << af << " " << bf << " " << cf << nn;
+}
+
 int main()
 {
     fast;
@@ -208,36 +244,12 @@ int main()
     // ll tno=1;;
     t = 1;
     cin >> t;
-
+    divisor_store();
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<pll> ans;
-        for (ll i = 1; i <= n-2; i++)
-        {
-            ans.push_back({i,i});
-        }
-        ll nw=n;
-        ll i=0;
-        while(ans.size()<nw){
-            ans.push_back({n-i,n});
-            i++;
-        }
-        n=nw;
-        set<ll>stt;
-        // for(ll i=0;i<n;i++){
-        //     for(ll j=i+1;j<n;j++){
-        //         ll now=abs(ans[i].first-ans[j].first)+abs(ans[i].second-ans[j].second);
-        //         stt.insert(now);
-        //     }
-        // }
-        // deb(stt.size());
-        for (auto it : ans)
-        {
-            cout << it << nn;
-        }
-        cout << nn;
+        ll a, b, c;
+        cin >> a >> b >> c;
+        func(a, b, c);
     }
 
     return 0;

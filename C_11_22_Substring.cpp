@@ -200,6 +200,16 @@ namespace io
 }
 using namespace io;
 
+/***
+ *
+ * 64-bit hashing for vectors or strings
+ * Get the forward and reverse hash of any segment
+ * Base is chosen randomly to prevent anti-hash cases from being constructed
+ *
+ * Complexity - O(n) to build, O(1) for each hash query
+ *
+ ***/
+
 int main()
 {
     fast;
@@ -207,37 +217,36 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
-    cin >> t;
+    // cin >> t;
 
     while (t--)
     {
         ll n;
         cin >> n;
-        vector<pll> ans;
-        for (ll i = 1; i <= n-2; i++)
-        {
-            ans.push_back({i,i});
+        string s;
+        cin>>s;
+        vector<ll>pref(n,0),suff(n,0);
+        if(s[0]=='1') pref[0]=1;
+        for(ll i=1;i<n;i++){
+            if(s[i]=='1') pref[i]=pref[i-1]+1;
+            else pref[i]=0;
         }
-        ll nw=n;
-        ll i=0;
-        while(ans.size()<nw){
-            ans.push_back({n-i,n});
-            i++;
+        if(s[n-1]=='2') suff[n-1]=1;
+        for(ll i=n-2;i>0;i--){
+            if(s[i]=='2') suff[i]=suff[i+1]+1;
+            else suff[i]=0;
         }
-        n=nw;
-        set<ll>stt;
-        // for(ll i=0;i<n;i++){
-        //     for(ll j=i+1;j<n;j++){
-        //         ll now=abs(ans[i].first-ans[j].first)+abs(ans[i].second-ans[j].second);
-        //         stt.insert(now);
-        //     }
-        // }
-        // deb(stt.size());
-        for (auto it : ans)
-        {
-            cout << it << nn;
+        // deb(pref);
+        // deb(suff);
+        ll ans=0;
+        for(ll i=0;i<n;i++){
+            if(s[i]=='/'){
+                ll now=0;
+                if(i && i<n-1) now=min(pref[i-1],suff[i+1]);
+                ans=max(ans,now*2+1);
+            }
         }
-        cout << nn;
+        cout<<ans<<nn;
     }
 
     return 0;

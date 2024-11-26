@@ -28,7 +28,7 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI acos(-1)
 const double EPS = 1e-9;
-const ll N = 2e5 + 10;
+const ll N = 1e5 + 10;
 const ll M = 1e9 + 7;
 
 /// INLINE FUNCTIONS
@@ -200,44 +200,110 @@ namespace io
 }
 using namespace io;
 
+const ll B = 440;
+
+struct query
+{
+    int l, r, id;
+    bool operator<(const query &x) const
+    {
+        if (l / B == x.l / B)
+            return ((l / B) & 1) ? r > x.r : r < x.r;
+        return l / B < x.l / B;
+    }
+} Q[N];
+ll cnt[N], a[N];
+long long sum;
+inline void add_left(int i)
+{
+    ll x = a[i];
+    if (cnt[x] == 0)
+        sum++;
+    ++cnt[x];
+}
+inline void add_right(int i)
+{
+    int x = a[i];
+    if (cnt[x] == 0)
+        sum++;
+    ++cnt[x];
+}
+inline void rem_left(int i)
+{
+    int x = a[i];
+    if (cnt[x] == 1)
+        sum--;
+    --cnt[x];
+}
+inline void rem_right(int i)
+{
+    int x = a[i];
+    if (cnt[x] == 1)
+        sum--;
+    --cnt[x];
+}
+long long ans[N];
+
 int main()
 {
     fast;
     ll t;
     // setIO();
-    // ll tno=1;;
+    ll tno=1;;
     t = 1;
     cin >> t;
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<pll> ans;
-        for (ll i = 1; i <= n-2; i++)
+        cout<<"Case "<<tno++<<": "<<nn;;
+        int n, q;
+        cin >> n >> q;
+        for(ll i=0;i<=n;i++){
+            a[i]=0;
+        }
+        for(ll i=0;i<=q;i++){
+            ans[i]=0;
+        }
+        mem(cnt,0);
+        sum=0;
+        for (int i = 1; i <= n; i++)
+            cin >> a[i];
+        for (int i = 1; i <= q; i++)
         {
-            ans.push_back({i,i});
+            cin >> Q[i].l >> Q[i].r;
+            Q[i].id = i;
         }
-        ll nw=n;
-        ll i=0;
-        while(ans.size()<nw){
-            ans.push_back({n-i,n});
-            i++;
-        }
-        n=nw;
-        set<ll>stt;
-        // for(ll i=0;i<n;i++){
-        //     for(ll j=i+1;j<n;j++){
-        //         ll now=abs(ans[i].first-ans[j].first)+abs(ans[i].second-ans[j].second);
-        //         stt.insert(now);
-        //     }
-        // }
-        // deb(stt.size());
-        for (auto it : ans)
+        sort(Q + 1, Q + q + 1);
+        int l = 1, r = 0;
+        for (int i = 1; i <= q; i++)
         {
-            cout << it << nn;
+            int L = Q[i].l, R = Q[i].r;
+            if (R < l)
+            {
+                while (l > L)
+                    add_left(--l);
+                while (l < L)
+                    rem_left(l++);
+                while (r < R)
+                    add_right(++r);
+                while (r > R)
+                    rem_right(r--);
+            }
+            else
+            {
+                while (r < R)
+                    add_right(++r);
+                while (r > R)
+                    rem_right(r--);
+                while (l > L)
+                    add_left(--l);
+                while (l < L)
+                    rem_left(l++);
+            }
+            ans[Q[i].id] = sum;
         }
-        cout << nn;
+        for (int i = 1; i <= q; i++)
+            cout << ans[i] << '\n';
     }
 
     return 0;

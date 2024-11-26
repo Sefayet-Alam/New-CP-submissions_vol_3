@@ -200,6 +200,46 @@ namespace io
 }
 using namespace io;
 
+ll n, k;
+vector<ll> vec(N);
+ll func(ll pos)
+{
+
+    ll curmax = vec[0];
+    ll curmin = vec[0];
+    ll cur = 0;
+    for (ll i = 1; i < n; i++)
+    {
+        curmax = max(curmax, vec[i]);
+        curmin = min(curmin, vec[i]);
+        ll mid = (curmax + curmin+1) / 2;
+        if (max(curmax - mid, mid - curmin) > pos)
+        {
+            cur++;
+            curmax = curmin = vec[i];
+        }
+    }
+    return cur <= k;
+}
+
+
+ll bs(ll low,ll high){
+    ll mid;
+    ll ans=0;
+    while(low<=high){
+        mid=low+(high-low)/2;
+        //cout<<mid<<" "<<func(mid)<<endl;
+        if(func(mid)){
+            ans=mid;
+            high=mid-1;
+        }
+        else{
+            low=mid+1;
+        }
+    }
+    return ans;
+}
+
 int main()
 {
     fast;
@@ -211,33 +251,12 @@ int main()
 
     while (t--)
     {
-        ll n;
-        cin >> n;
-        vector<pll> ans;
-        for (ll i = 1; i <= n-2; i++)
-        {
-            ans.push_back({i,i});
-        }
-        ll nw=n;
-        ll i=0;
-        while(ans.size()<nw){
-            ans.push_back({n-i,n});
-            i++;
-        }
-        n=nw;
-        set<ll>stt;
-        // for(ll i=0;i<n;i++){
-        //     for(ll j=i+1;j<n;j++){
-        //         ll now=abs(ans[i].first-ans[j].first)+abs(ans[i].second-ans[j].second);
-        //         stt.insert(now);
-        //     }
-        // }
-        // deb(stt.size());
-        for (auto it : ans)
-        {
-            cout << it << nn;
-        }
-        cout << nn;
+        cin >> n >> k;
+        vec.resize(n);
+        cin >> vec;
+        // sort(all(vec));
+        ll ans = bs(0, 1e18 + 5);
+        cout << ans << nn;
     }
 
     return 0;

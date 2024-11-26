@@ -213,31 +213,20 @@ int main()
     {
         ll n;
         cin >> n;
-        vector<pll> ans;
-        for (ll i = 1; i <= n-2; i++)
+        vector<ll> vec(n);
+        cin >> vec;
+        for (ll j = 0; j < 30; j++)
         {
-            ans.push_back({i,i});
+            for (ll i = 1; i < n - 1; i++)
+            {
+                if (vec[i] == 3 && vec[i - 1] + vec[i + 1] == 4)
+                {
+                    vec[i] = 1;
+                }
+            }
         }
-        ll nw=n;
-        ll i=0;
-        while(ans.size()<nw){
-            ans.push_back({n-i,n});
-            i++;
-        }
-        n=nw;
-        set<ll>stt;
-        // for(ll i=0;i<n;i++){
-        //     for(ll j=i+1;j<n;j++){
-        //         ll now=abs(ans[i].first-ans[j].first)+abs(ans[i].second-ans[j].second);
-        //         stt.insert(now);
-        //     }
-        // }
-        // deb(stt.size());
-        for (auto it : ans)
-        {
-            cout << it << nn;
-        }
-        cout << nn;
+        ll ans = accumulate(all(vec), 0LL);
+        cout << ans << nn;
     }
 
     return 0;

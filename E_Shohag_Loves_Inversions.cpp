@@ -28,8 +28,8 @@ using namespace __gnu_pbds;
 #define md 10000007
 #define PI acos(-1)
 const double EPS = 1e-9;
-const ll N = 2e5 + 10;
-const ll M = 1e9 + 7;
+const ll N = 1e6 + 10;
+const ll M = 998244353;
 
 /// INLINE FUNCTIONS
 inline ll GCD(ll a, ll b) { return b == 0 ? a : GCD(b, a % b); }
@@ -83,14 +83,6 @@ namespace io{
 
 
 
-
-// problem tag: priority queue, greedy
-// observation: u can change order, 
-// when this kind of constraints are given and u cant think of a dp solution
-// think of a greedy solution! think of priority queues
-// observation 02: sum of a <= L - sum of (b[r]-b[l]) ***
-// so in a range from l to r we need to find the size of pq where
-// sum of a <= L - sum of (b[r]-b[l])
 int main()
 {
     fast;
@@ -98,37 +90,21 @@ int main()
     // setIO();
     // ll tno=1;;
     t = 1;
+
+    vector<ll> ans = { 0, 0, 1, 2 };
+    for(ll i=1;i<N;i++){
+        ll sz=ans.size();
+        ll x=((sz+1)*(ans[sz-1]))%M-((sz)*(ans[sz-2]))%M-1;
+        x=(x+M)%M;
+        ans.push_back(x);
+    }
     cin >> t;
 
     while (t--)
     {
-      ll n,l;
-      cin>>n>>l;
-      vector<pll>vec;
-      for(ll i=0;i<n;i++){
-        ll x,y;
-        cin>>x>>y;
-        vec.push_back({y,x});
-      }
-      sort(all(vec));
-      ll ans=0;
-      for(ll i=0;i<n;i++){
-        PQ<ll>pq;
-        ll cur=0;
-        for(ll j=i;j<n;j++){
-            cur+=vec[j].second;
-            pq.push(vec[j].second);
-            //start at j,finish at i 
-            while (pq.size() && vec[j].first-vec[i].first+cur>l)
-            {
-                ll tp=pq.top();
-                cur-=pq.top();
-                pq.pop();
-            }
-            ans=max(ans,(ll)pq.size());
-        }
-      }
-      cout<<ans<<nn;
+      ll n;
+      cin>>n;
+      cout<<ans[n]<<nn;
     }
 
     return 0;
