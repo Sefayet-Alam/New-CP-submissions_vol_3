@@ -81,24 +81,52 @@ namespace io{
     template <typename First, typename... Other> void print( First first, Other... other ) { if( sep ) cerr << " | "; sep = true; cerr << to_string( first ); print( other... ); }
 } using namespace io;
 
-ll ask(ll c,ll r){
-    cout<<"?"<<" "<<c<<" "<<r<<endl;
-    ll x;
-    cin>>x;
-    return x;
-}
+
 
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll n;
-    cin>>n;
-    ll node=ask(n,1);
-    ll c=ask(n,node);
-    ll r=ask(n-c,node);
-    cout<<"! "<<c<<" "<<r<<endl;
+    // ll tno=1;;
+    t = 1;
+    // cin >> t;
+
+    while (t--)
+    {
+      ll n,m;
+      cin>>n>>m;
+      vector<ll>vec(n);
+      cin>>vec;
+      ll  zr=0;
+      for(ll i=0;i<n;i++){
+        if(vec[i]==0) zr++;
+      }
+      vector<ll>g[n];
+      bool f1=1,f2=0,f3=0;
+      for(ll i=0;i<m;i++){
+        ll x,y;
+        cin>>x>>y;
+        x--;
+        y--;
+        if(vec[x]==vec[y] && vec[x]==0) f1=1;
+        else if(vec[x]==vec[y] && vec[x]==1) f2=1;
+        else if(vec[x]!=vec[y]) f3=1;
+        g[x].push_back(y);
+        g[y].push_back(x);
+      }
+      if(zr==n || zr==0) cout<<1<<nn;
+      else{
+        // deb(zr);
+        // deb2(f1,f2);
+        // deb(f3);
+        ll ans=2;
+        if(f1 & f2 & f3) ans=4;
+        bool f=0;
+        if(f) cout<<"infinity"<<nn;
+        else cout<<ans<<nn;
+      } 
+    }
 
     return 0;
 }

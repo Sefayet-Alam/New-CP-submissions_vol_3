@@ -81,24 +81,44 @@ namespace io{
     template <typename First, typename... Other> void print( First first, Other... other ) { if( sep ) cerr << " | "; sep = true; cerr << to_string( first ); print( other... ); }
 } using namespace io;
 
-ll ask(ll c,ll r){
-    cout<<"?"<<" "<<c<<" "<<r<<endl;
-    ll x;
-    cin>>x;
-    return x;
+
+ll powerMod(ll x, ll y, ll p){
+    ll res = 1 % p;
+    x = x % p;
+    while (y > 0){
+        if (y & 1) res = (res * x) % p;
+        y = y >> 1;
+        x = (x * x) % p;
+    }
+    return res;
 }
+
+
 
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll n;
-    cin>>n;
-    ll node=ask(n,1);
-    ll c=ask(n,node);
-    ll r=ask(n-c,node);
-    cout<<"! "<<c<<" "<<r<<endl;
+    // ll tno=1;;
+    t = 1;
+    // cin >> t;
+
+    while (t--)
+    {
+      ll n,k;
+      cin>>n>>k;
+      string s;
+      cin>>s;
+      ll st=0;
+      ll inc=powerMod(2LL,k,n);
+      string ans="";
+      for(ll i=0;i<n;i++){
+        ans+=s[st];
+        st=(st+inc)%n;
+      }
+      cout<<ans<<nn;
+    }
 
     return 0;
 }

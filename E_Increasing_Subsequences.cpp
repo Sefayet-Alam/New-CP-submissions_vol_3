@@ -81,24 +81,71 @@ namespace io{
     template <typename First, typename... Other> void print( First first, Other... other ) { if( sep ) cerr << " | "; sep = true; cerr << to_string( first ); print( other... ); }
 } using namespace io;
 
-ll ask(ll c,ll r){
-    cout<<"?"<<" "<<c<<" "<<r<<endl;
-    ll x;
-    cin>>x;
-    return x;
-}
+
+/// BIT MANIPULATION
+
+#define Set(x, k) (x |= (1LL << k))
+#define Unset(x, k) (x &= ~(1LL << k))
+#define Check(x, k) (x & (1LL << k))
+#define Toggle(x, k) (x ^ (1LL << k))
+
+int popcount(ll x) { return __builtin_popcountll(x); };
+int poplow(ll x) { return __builtin_ctzll(x); };
+int pophigh(ll x) { return 63 - __builtin_clzll(x); };
 
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll n;
-    cin>>n;
-    ll node=ask(n,1);
-    ll c=ask(n,node);
-    ll r=ask(n-c,node);
-    cout<<"! "<<c<<" "<<r<<endl;
+    // ll tno=1;;
+    t = 1;
+    cin >> t;
+
+    while (t--)
+    {
+      ll n;
+      cin>>n;
+      if(n==2){
+        cout<<1<<nn<<0<<nn;
+        continue;
+      }
+      else if(n==3){
+        cout<<2<<nn<<0<<" "<<-1<<nn;
+        continue;
+      }
+      vector<ll>ans={1,2};
+      map<ll,ll>mpp;
+      mpp[1]=1;
+      mpp[2]=2;
+      ll curval=3;
+      ll now=4;
+      ll mult=4;
+      while (now+mult<=n)
+      {
+        ans.push_back(curval);
+        mpp[mult]=curval;
+        now+=mult;
+        curval++;
+        mult*=2;
+      }
+    //   deb(ans);
+    //   deb(now);
+      ll rem=n-now;
+    //   deb(rem);
+      for(ll bit=61;bit>=0;bit--){
+        if(Check(rem,bit)){
+            ll her=(1LL<<bit);
+            curval=mpp[her];
+            // deb2(bit,curval);
+            ans.push_back(curval);
+        }
+      }
+    //   deb(ans);
+    cout<<ans.size()<<nn;
+    cout<<ans<<nn;
+      
+    }
 
     return 0;
 }

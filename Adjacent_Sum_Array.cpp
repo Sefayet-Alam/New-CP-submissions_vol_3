@@ -81,24 +81,38 @@ namespace io{
     template <typename First, typename... Other> void print( First first, Other... other ) { if( sep ) cerr << " | "; sep = true; cerr << to_string( first ); print( other... ); }
 } using namespace io;
 
-ll ask(ll c,ll r){
-    cout<<"?"<<" "<<c<<" "<<r<<endl;
-    ll x;
-    cin>>x;
-    return x;
-}
+
 
 int main()
 {
     fast;
     ll t;
     // setIO();
-    ll n;
-    cin>>n;
-    ll node=ask(n,1);
-    ll c=ask(n,node);
-    ll r=ask(n-c,node);
-    cout<<"! "<<c<<" "<<r<<endl;
+    // ll tno=1;;
+    t = 1;
+    cin >> t;
+
+    while (t--)
+    {
+      ll n;
+      cin>>n;
+      vector<ll>vec(n-1);
+      cin>>vec;
+      sort(all(vec));
+    //   reverse(all(vec));
+      ll st=vec[0]-1;
+    //   vec[0]--;
+      vector<ll>ans;
+      ans.push_back(st);
+      ll last=st;
+      for(ll i=0;i<n-1;i++){
+        ll now=(vec[i]-last);
+        ans.push_back(now);
+        last=now;
+      }
+      cout<<ans<<nn;
+      
+    }
 
     return 0;
 }
