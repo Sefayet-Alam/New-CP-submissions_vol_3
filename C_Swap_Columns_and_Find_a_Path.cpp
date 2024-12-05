@@ -29,7 +29,7 @@ using namespace __gnu_pbds;
 #define PI acos(-1)
 const double EPS = 1e-9;
 const ll N = 2e5 + 10;
-const ll M = 1e9 + 7;
+const ll M = 1e18 + 7;
 
 /// INLINE FUNCTIONS
 inline ll GCD(ll a, ll b) { return b == 0 ? a : GCD(b, a % b); }
@@ -200,36 +200,47 @@ namespace io
 }
 using namespace io;
 
-int n;
-int par[N];
-ll a[N];
-ll sz[N];
-ll ans = 0;
- 
 int main()
 {
+    fast;
+    ll t;
+    // setIO();
+    // ll tno=1;;
+    t = 1;
+    cin >> t;
 
-	scanf("%d", &n);
-	for (int i = 1; i < n; i++) {
-		scanf("%d", &par[i]);
-		par[i]--;
-	}
-	for (int i = 0; i < n; i++) {
-		scanf("%lld", &a[i]);
-		sz[i] = 1;
-	}
-	for (int i = 1; i < n; i++)
-		sz[par[i]] = 0;
-	for (int i = n - 1; i > 0; i--) {
-		a[par[i]] += a[i];
-		sz[par[i]] += sz[i];
-	}
-	for (int i = 0; i < n; i++)
-		ans = max(ans, (a[i] + sz[i] - 1) / sz[i]);
-	printf("%lld\n", ans);
- 
-	return 0;
+    while (t--)
+    {
+        ll n;
+        cin >> n;
+        vector<pll> vec;
+        vector<ll>a(n),b(n);
+        cin>>a>>b;
+        for (ll i = 0; i < n; i++)
+        {
+            ll x=a[i],y=b[i];
+            vec.push_back({x, y});
+        }
+        vector<ll>down,up;
+        ll ans=0;
+        ll ex=LLONG_MIN;
+        for(ll i=0;i<n;i++){
+            if(vec[i].first>vec[i].second){
+                ans+=vec[i].first;
+                ex=max(ex,vec[i].second);
+            }
+            else{
+                ans+=vec[i].second;
+                ex=max(ex,vec[i].first);
+            }
+        }
+        ans+=ex;
+        cout << ans << nn;
+    }
+
+    return 0;
 }
+
 /* Points tO CONSIDER
     # RTE? -> check array bounds and constraints
     #TLE? -> thinks about binary search/ dp / optimization techniques

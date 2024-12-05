@@ -200,36 +200,84 @@ namespace io
 }
 using namespace io;
 
-int n;
-int par[N];
-ll a[N];
-ll sz[N];
-ll ans = 0;
- 
+char grid[1005][1005];
+ll n, m;
+ll vis[1005][1005];
+bool bad[1005][1005];
+ll dfs(ll i, ll j)
+{
+    if (i < 0 || j < 0 || i == n || j == m)
+    {
+        return 1;
+    }
+    if (vis[i][j])
+        return bad[i][j];
+    vis[i][j] = 1;
+    ll ret = 0;
+    if (grid[i][j] == '?')
+    {
+        bool a = 0;
+        if (dfs(i + 1, j) && dfs(i, j + 1) && dfs(i - 1, j) && dfs(i, j - 1))
+            ret |= 1;
+    }
+    else if (grid[i][j] == 'U')
+    {
+        ret |= dfs(i - 1, j);
+    }
+    else if (grid[i][j] == 'D')
+    {
+        ret |= dfs(i + 1, j);
+    }
+    else if (grid[i][j] == 'R')
+    {
+        ret |= dfs(i, j + 1);
+    }
+    else if (grid[i][j] == 'L')
+    {
+        ret |= dfs(i, j - 1);
+    }
+    return bad[i][j] = ret;
+}
 int main()
 {
+    fast;
+    ll t;
+    // setIO();
+    // ll tno=1;;
+    t = 1;
+    cin >> t;
+    while (t--)
+    {
+        cin >> n >> m;
+        for (ll i = 0; i < n; i++)
+        {
+            for (ll j = 0; j < m; j++)
+            {
+                cin >> grid[i][j];
+            }
+        }
 
-	scanf("%d", &n);
-	for (int i = 1; i < n; i++) {
-		scanf("%d", &par[i]);
-		par[i]--;
-	}
-	for (int i = 0; i < n; i++) {
-		scanf("%lld", &a[i]);
-		sz[i] = 1;
-	}
-	for (int i = 1; i < n; i++)
-		sz[par[i]] = 0;
-	for (int i = n - 1; i > 0; i--) {
-		a[par[i]] += a[i];
-		sz[par[i]] += sz[i];
-	}
-	for (int i = 0; i < n; i++)
-		ans = max(ans, (a[i] + sz[i] - 1) / sz[i]);
-	printf("%lld\n", ans);
- 
-	return 0;
+        // mem(vis,-1);
+        for (ll i = 0; i <= n; i++)
+            for (ll j = 0; j <= m; j++)
+            {
+                vis[i][j] = 0, bad[i][j] = 0;
+            }
+        for (ll i = 0; i < n; i++)
+            for (ll j = 0; j < m; j++)
+                if (!vis[i][j])
+                    ll o = dfs(i, j);
+        ll ans = 0;
+        for (ll i = 0; i < n; i++)
+            for (ll j = 0; j < m; j++)
+                if (bad[i][j] == 0)
+                    ans++;
+        cout << ans << nn;
+    }
+
+    return 0;
 }
+
 /* Points tO CONSIDER
     # RTE? -> check array bounds and constraints
     #TLE? -> thinks about binary search/ dp / optimization techniques

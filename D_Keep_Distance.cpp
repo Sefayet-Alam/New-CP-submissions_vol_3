@@ -1,3 +1,13 @@
+#pragma GCC optimize(2)
+#pragma GCC optimize("Ofast")
+#pragma GCC optimize("inline","fast-math","unroll-loops","no-stack-protector")
+#pragma GCC diagnostic error "-fwhole-program"
+#pragma GCC diagnostic error "-fcse-skip-blocks"
+#pragma GCC diagnostic error "-funsafe-loop-optimizations"
+#pragma GCC optimize("O3")
+
+//use before include
+
 #include <bits/stdc++.h>
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>
@@ -200,36 +210,49 @@ namespace io
 }
 using namespace io;
 
-int n;
-int par[N];
-ll a[N];
-ll sz[N];
-ll ans = 0;
- 
+ll n, m;
+vector<vl> ans;
+
+void func(ll i, ll cur, vl tmp)
+{
+    if (i == n)
+    {
+        // deb(tmp);
+        ans.push_back(tmp);
+        return;
+    }
+    ll rem = n - (i + 1);
+    if (cur <= m)
+    {
+        tmp.push_back(cur);
+        func(i + 1, cur + 10, tmp);
+    }
+    if (tmp.size())
+        tmp.pop_back();
+    if (cur + 1 + 10 * (rem) <= m)
+        func(i, cur + 1, tmp);
+}
+
 int main()
 {
+    fast;
+    ll t;
+    // setIO();
+    // ll tno=1;;
 
-	scanf("%d", &n);
-	for (int i = 1; i < n; i++) {
-		scanf("%d", &par[i]);
-		par[i]--;
-	}
-	for (int i = 0; i < n; i++) {
-		scanf("%lld", &a[i]);
-		sz[i] = 1;
-	}
-	for (int i = 1; i < n; i++)
-		sz[par[i]] = 0;
-	for (int i = n - 1; i > 0; i--) {
-		a[par[i]] += a[i];
-		sz[par[i]] += sz[i];
-	}
-	for (int i = 0; i < n; i++)
-		ans = max(ans, (a[i] + sz[i] - 1) / sz[i]);
-	printf("%lld\n", ans);
- 
-	return 0;
+    cin >> n >> m;
+    //   deb2(n,m);
+    func(0, 1, {});
+    sort(all(ans));
+    cout << ans.size() << nn;
+    for (auto it : ans)
+    {
+        cout << it << nn;
+    }
+
+    return 0;
 }
+
 /* Points tO CONSIDER
     # RTE? -> check array bounds and constraints
     #TLE? -> thinks about binary search/ dp / optimization techniques

@@ -200,36 +200,76 @@ namespace io
 }
 using namespace io;
 
-int n;
-int par[N];
-ll a[N];
-ll sz[N];
-ll ans = 0;
- 
-int main()
+int a[N], f[N];
+vector<int> g[N];
+int cnt, x;
+void dfs(int u, int p = 0)
 {
-
-	scanf("%d", &n);
-	for (int i = 1; i < n; i++) {
-		scanf("%d", &par[i]);
-		par[i]--;
-	}
-	for (int i = 0; i < n; i++) {
-		scanf("%lld", &a[i]);
-		sz[i] = 1;
-	}
-	for (int i = 1; i < n; i++)
-		sz[par[i]] = 0;
-	for (int i = n - 1; i > 0; i--) {
-		a[par[i]] += a[i];
-		sz[par[i]] += sz[i];
-	}
-	for (int i = 0; i < n; i++)
-		ans = max(ans, (a[i] + sz[i] - 1) / sz[i]);
-	printf("%lld\n", ans);
- 
-	return 0;
+    f[u] = a[u];
+    for (auto v : g[u])
+    {
+        if (v ^ p)
+        {
+            dfs(v, u);
+            f[u] ^= f[v];
+        }
+    }
+    if (f[u] == x)
+    {
+        ++cnt;
+        f[u] = 0;
+    }
 }
+int32_t main()
+{
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+    int t;
+    cin >> t;
+    while (t--)
+    {
+        int n, k;
+        cin >> n >> k;
+        x = 0;
+        for (int i = 1; i <= n; i++)
+        {
+            cin >> a[i];
+            x ^= a[i];
+        }
+        for (int i = 1; i < n; i++)
+        {
+            int u, v;
+            cin >> u >> v;
+            g[u].push_back(v);
+            g[v].push_back(u);
+        }
+        cnt = 0;
+        dfs(1);
+        bool ok = false;
+        if (x == 0)
+        {
+            ok = true;
+        }
+        else if (k > 2 and cnt >= 3)
+        {
+            ok = true;
+        }
+        if (ok)
+        {
+            cout << "YES\n";
+        }
+        else
+        {
+            cout << "NO\n";
+        }
+        for (int i = 1; i <= n; i++)
+        {
+            g[i].clear();
+        }
+    }
+    return 0;
+}
+
 /* Points tO CONSIDER
     # RTE? -> check array bounds and constraints
     #TLE? -> thinks about binary search/ dp / optimization techniques

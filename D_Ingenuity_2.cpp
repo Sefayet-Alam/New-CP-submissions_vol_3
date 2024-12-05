@@ -200,36 +200,82 @@ namespace io
 }
 using namespace io;
 
-int n;
-int par[N];
-ll a[N];
-ll sz[N];
-ll ans = 0;
- 
 int main()
 {
+    fast;
+    ll t;
+    // setIO();
+    // ll tno=1;;
+    t = 1;
+    cin >> t;
 
-	scanf("%d", &n);
-	for (int i = 1; i < n; i++) {
-		scanf("%d", &par[i]);
-		par[i]--;
-	}
-	for (int i = 0; i < n; i++) {
-		scanf("%lld", &a[i]);
-		sz[i] = 1;
-	}
-	for (int i = 1; i < n; i++)
-		sz[par[i]] = 0;
-	for (int i = n - 1; i > 0; i--) {
-		a[par[i]] += a[i];
-		sz[par[i]] += sz[i];
-	}
-	for (int i = 0; i < n; i++)
-		ans = max(ans, (a[i] + sz[i] - 1) / sz[i]);
-	printf("%lld\n", ans);
- 
-	return 0;
+    while (t--)
+    {
+        ll n;
+        cin >> n;
+        map<char, ll> mpp;
+        string s;
+        cin >> s;
+        for (auto it : s)
+            mpp[it]++;
+        string ans(n, 'O');
+        bool f = 0;
+        map<char, ll> half;
+        map<char, char> alt;
+        if (mpp['N'] % 2 && mpp['S'] % 2)
+        {
+            mpp['N']--;
+            mpp['S']--;
+            if (mpp['N'] == 0 && mpp['S'] == 0)
+                alt['N'] = alt['S'] = 'R';
+        }
+        if (mpp['E'] % 2 && mpp['W'] % 2)
+        {
+            mpp['E']--;
+            mpp['W']--;
+            if (mpp['W'] == 0 && mpp['E'] == 0)
+                alt['E'] = alt['W'] = 'H';
+        }
+        for (auto it : mpp)
+        {
+            if (it.second % 2)
+            {
+                f = 1;
+            }
+            else
+            {
+                half[it.first] = it.second / 2;
+            }
+        }
+
+        for (ll i = 0; i < n; i++)
+        {
+            if (half[s[i]])
+            {
+                ans[i] = 'R';
+                half[s[i]]--;
+            }
+            else
+            {
+                if (alt.find(s[i]) != alt.end())
+                    ans[i] = alt[s[i]];
+                else
+                    ans[i] = 'H';
+            }
+        }
+        if (count(all(ans), 'R') == 0 || count(all(ans), 'H') == 0)
+            f = 1;
+        if (f)
+        {
+            cout << "NO" << nn;
+        }
+        else
+            cout << ans << nn;
+    }
+
+    return 0;
 }
+
 /* Points tO CONSIDER
     # RTE? -> check array bounds and constraints
     #TLE? -> thinks about binary search/ dp / optimization techniques

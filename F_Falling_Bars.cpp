@@ -200,36 +200,140 @@ namespace io
 }
 using namespace io;
 
-int n;
-int par[N];
-ll a[N];
-ll sz[N];
-ll ans = 0;
- 
+struct segment_tree
+{
+    int size;
+    vector<ll> segment_tree;
+    vector<ll> lazy;
+
+    void push(ll node, ll st, ll ed)
+    {
+        if (lazy[node] != 0)
+        {
+            segment_tree[node] = lazy[node];
+            if (st != ed)
+            {
+                lazy[2 * node] = lazy[node];
+                lazy[2 * node + 1] = lazy[node];
+            }
+            lazy[node] = 0;
+        }
+    }
+    void init(ll n, vector<ll> &arr)
+    {
+        size = n;
+        segment_tree.assign(n * 4, 0);
+        lazy.assign(4 * n, 0);
+        // built(1, 0, n-1, arr);
+    }
+
+    void update(int node, ll st, ll ed, ll l, ll r, ll val)
+    {
+        push(node, st, ed);
+        if (st > r || ed < l)
+        {
+            return;
+        }
+        if (st >= l && ed <= r)
+        {
+            segment_tree[node] = val;
+            if (st != ed)
+            {
+                lazy[2 * node] = val;
+                lazy[2 * node + 1] = val;
+            }
+
+            return;
+        }
+        int mid = (st + ed) / 2;
+        update(2 * node, st, mid, l, r, val);
+        update(2 * node + 1, mid + 1, ed, l, r, val);
+        segment_tree[node] = max(segment_tree[2 * node], segment_tree[2 * node + 1]);
+    }
+    //basically assigns value when max seg tree 
+    void update(int l, int r, int val)
+    {
+        update(1, 0, size - 1, l, r, val);
+    }
+
+    ll query(ll node, ll st, ll ed, ll l, ll r)
+    {
+        push(node, st, ed);
+        if (st > r || ed < l)
+        {
+            return 0;
+        }
+        if (st >= l && ed <= r)
+        {
+            return segment_tree[node];
+        }
+
+        int mid = (st + ed) / 2;
+        ll leftSum = query(2 * node, st, mid, l, r);
+        ll rightSum = query(2 * node + 1, mid + 1, ed, l, r);
+        return max(leftSum, rightSum);
+    }
+    ll query(int l, int r)
+    {
+        return query(1, 0, size - 1, l, r);
+    }
+    //queries from l to r
+};
+
+bool cmp(pair<pll, pll> a, pair<pll, pll> b)
+{
+    return a.first.first > b.first.first;
+}
+
 int main()
 {
+    fast;
+    ll t;
+    // setIO();
+    // ll tno=1;;
+    t = 1;
+    // cin >> t;
 
-	scanf("%d", &n);
-	for (int i = 1; i < n; i++) {
-		scanf("%d", &par[i]);
-		par[i]--;
-	}
-	for (int i = 0; i < n; i++) {
-		scanf("%lld", &a[i]);
-		sz[i] = 1;
-	}
-	for (int i = 1; i < n; i++)
-		sz[par[i]] = 0;
-	for (int i = n - 1; i > 0; i--) {
-		a[par[i]] += a[i];
-		sz[par[i]] += sz[i];
-	}
-	for (int i = 0; i < n; i++)
-		ans = max(ans, (a[i] + sz[i] - 1) / sz[i]);
-	printf("%lld\n", ans);
- 
-	return 0;
+    while (t--)
+    {
+        ll h, w, n;
+        cin >> h >> w >> n;
+        vector<pair<pll, pll>> vec;
+
+        for (ll i = 0; i < n; i++)
+        {
+            ll r, c, l;
+            cin >> r >> c >> l;
+            vec.push_back({{r, c}, {l, i + 1}});
+        }
+        sort(all(vec), cmp);
+        ll curh = h;
+        map<ll, ll> ans;
+        //   map<ll,ll>col;
+        vector<ll> lines(N, 0);
+        segment_tree sg;
+        sg.init(N,lines);
+        for (auto it : vec)
+        {
+            ll st = it.first.second;
+            ll en = it.first.second + it.second.first - 1;
+            ll f = sg.query(st,en);
+            // for(ll i=st;i<=en;i++){
+            //     f=max(f,col[i]);
+            //     // col[i]++;
+            // }
+            ans[it.second.second] = h - f;
+            sg.update(st, en,f+1);
+        }
+        for (auto it : ans)
+        {
+            cout << it.second << nn;
+        }
+    }
+
+    return 0;
 }
+
 /* Points tO CONSIDER
     # RTE? -> check array bounds and constraints
     #TLE? -> thinks about binary search/ dp / optimization techniques

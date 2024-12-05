@@ -200,36 +200,80 @@ namespace io
 }
 using namespace io;
 
-int n;
-int par[N];
-ll a[N];
-ll sz[N];
-ll ans = 0;
- 
+vector<pll> pars;
+ll n, m;
+ll cur;
+bool func(ll pos)
+{
+    return pars[pos].first >= cur;
+}
+ll bs(ll low, ll high)
+{
+    ll mid;
+    ll ans = -1;
+    while (low <= high)
+    {
+        mid = low + (high - low) / 2;
+        // cout<<mid<<" "<<func(mid)<<endl;
+        if (func(mid))
+        {
+            ans = mid;
+            high = mid - 1;
+        }
+        else
+        {
+            low = mid + 1;
+        }
+    }
+    return ans;
+}
+
 int main()
 {
+    fast;
+    ll t;
+    // setIO();
+    // ll tno=1;;
+    t = 1;
+    // cin >> t;
 
-	scanf("%d", &n);
-	for (int i = 1; i < n; i++) {
-		scanf("%d", &par[i]);
-		par[i]--;
-	}
-	for (int i = 0; i < n; i++) {
-		scanf("%lld", &a[i]);
-		sz[i] = 1;
-	}
-	for (int i = 1; i < n; i++)
-		sz[par[i]] = 0;
-	for (int i = n - 1; i > 0; i--) {
-		a[par[i]] += a[i];
-		sz[par[i]] += sz[i];
-	}
-	for (int i = 0; i < n; i++)
-		ans = max(ans, (a[i] + sz[i] - 1) / sz[i]);
-	printf("%lld\n", ans);
- 
-	return 0;
+    while (t--)
+    {
+
+        cin >> n >> m;
+        ll l = 0, r = 0;
+        vector<ll> a(n), b(m);
+        cin >> a >> b;
+
+        for (ll i = 0; i < m; i++)
+        {
+            pars.push_back({b[i], i + 1});
+        }
+        sort(all(pars));
+        ll last = m - 1;
+        map<ll, ll> ans;
+        for (ll i = 0; i < n; i++)
+        {
+            cur = a[i];
+            ll pos = bs(0, last);
+            if (pos == -1)
+                continue;
+            for (ll j = pos; j <= last; j++)
+                ans[pars[j].second] = i + 1;
+            last = pos - 1;
+        }
+        for (ll i = 1; i <= m; i++)
+        {
+            if (ans.find(i) != ans.end())
+                cout << ans[i] << nn;
+            else
+                cout << -1 << nn;
+        }
+    }
+
+    return 0;
 }
+
 /* Points tO CONSIDER
     # RTE? -> check array bounds and constraints
     #TLE? -> thinks about binary search/ dp / optimization techniques

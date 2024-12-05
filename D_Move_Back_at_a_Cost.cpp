@@ -29,7 +29,7 @@ using namespace __gnu_pbds;
 #define PI acos(-1)
 const double EPS = 1e-9;
 const ll N = 2e5 + 10;
-const ll M = 1e9 + 7;
+const ll M = 1e16 + 7;
 
 /// INLINE FUNCTIONS
 inline ll GCD(ll a, ll b) { return b == 0 ? a : GCD(b, a % b); }
@@ -200,36 +200,54 @@ namespace io
 }
 using namespace io;
 
-int n;
-int par[N];
-ll a[N];
-ll sz[N];
-ll ans = 0;
- 
+
+
+
 int main()
 {
+    fast;
+    ll t;
+    // setIO();
+    // ll tno=1;;
+    t = 1;
+    cin >> t;
 
-	scanf("%d", &n);
-	for (int i = 1; i < n; i++) {
-		scanf("%d", &par[i]);
-		par[i]--;
-	}
-	for (int i = 0; i < n; i++) {
-		scanf("%lld", &a[i]);
-		sz[i] = 1;
-	}
-	for (int i = 1; i < n; i++)
-		sz[par[i]] = 0;
-	for (int i = n - 1; i > 0; i--) {
-		a[par[i]] += a[i];
-		sz[par[i]] += sz[i];
-	}
-	for (int i = 0; i < n; i++)
-		ans = max(ans, (a[i] + sz[i] - 1) / sz[i]);
-	printf("%lld\n", ans);
- 
-	return 0;
+    while (t--)
+    {
+        ll n;
+        cin >> n;
+        vector<ll> vec(n);
+        cin >> vec;
+        ordered_multiset<ll> os;
+        vector<ll> vec2=vec;
+        ll minm=M;
+        map<ll,ll>vis;
+        for (ll i = n - 1; i >= 0; i--)
+        {
+            ll bigger = os.order_of_key(vec[i]);
+            // deb2(i,bigger);
+            if(bigger){
+                vec2[i]++;
+                vis[i]=1;
+                minm=min(minm,vec2[i]);
+            }
+            os.insert(vec2[i]);
+        }
+        // deb(minm);
+        for(ll i=n-1;i>=0;i--){
+            if(vis[i]) continue;
+            if(vec2[i]>minm){
+                vec2[i]++;
+            }
+        }
+        // deb(vec2);
+        sort(all(vec2));
+        cout << vec2 << nn;
+    }
+
+    return 0;
 }
+
 /* Points tO CONSIDER
     # RTE? -> check array bounds and constraints
     #TLE? -> thinks about binary search/ dp / optimization techniques

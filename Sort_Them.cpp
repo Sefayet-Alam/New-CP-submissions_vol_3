@@ -29,7 +29,7 @@ using namespace __gnu_pbds;
 #define PI acos(-1)
 const double EPS = 1e-9;
 const ll N = 2e5 + 10;
-const ll M = 1e9 + 7;
+const ll M = 1e16 + 7;
 
 /// INLINE FUNCTIONS
 inline ll GCD(ll a, ll b) { return b == 0 ? a : GCD(b, a % b); }
@@ -200,36 +200,109 @@ namespace io
 }
 using namespace io;
 
-int n;
-int par[N];
-ll a[N];
-ll sz[N];
-ll ans = 0;
- 
+vector<ll> g[30];
+ll n;
+string s, p;
+
+bool vis[30];
+ll level[30];
+
+// bfs=breadth first search
+// according to level traversal
+
+void bfs(ll source)
+{
+    mem(level, M);
+    mem(vis, 0);
+    queue<ll> q;
+    q.push(source);
+    vis[source] = 1;
+    level[source] = 0;
+    while (!q.empty())
+    {
+        ll curr_v = q.front();
+        q.pop();
+        // cout<<curr_v<<" ";
+        for (ll child : g[curr_v])
+        {
+            if (!vis[child])
+            {
+                q.push(child);
+                vis[child] = 1;
+                level[child] = level[curr_v] + 1;
+            }
+        }
+    }
+    // cout<<endl;
+}
+
 int main()
 {
+    fast;
+    ll t;
+    // setIO();
+    // ll tno=1;;
+    t = 1;
+    cin >> t;
 
-	scanf("%d", &n);
-	for (int i = 1; i < n; i++) {
-		scanf("%d", &par[i]);
-		par[i]--;
-	}
-	for (int i = 0; i < n; i++) {
-		scanf("%lld", &a[i]);
-		sz[i] = 1;
-	}
-	for (int i = 1; i < n; i++)
-		sz[par[i]] = 0;
-	for (int i = n - 1; i > 0; i--) {
-		a[par[i]] += a[i];
-		sz[par[i]] += sz[i];
-	}
-	for (int i = 0; i < n; i++)
-		ans = max(ans, (a[i] + sz[i] - 1) / sz[i]);
-	printf("%lld\n", ans);
- 
-	return 0;
+    while (t--)
+    {
+        cin >> n;
+        cin >> s >> p;
+        for (ll i = 0; i <= 30; i++)
+            g[i].clear();
+        string s2 = s;
+        sort(all(s2));
+        map<char, ll> pos;
+        for (ll i = 0; i < 26; i++)
+        {
+            pos[p[i]] = i + 1;
+        }
+        map<char, char> mpp;
+        for (ll i = 0; i < n; i++)
+        {
+            // deb2(s[i],p[26 - pos[s[i]] - 1]);
+            ll u = s[i] - 'a';
+            ll v = p[27 - pos[s[i]]] - 'a';
+            deb2(char(u + 'a'), char(v + 'a'));
+            g[u].push_back(v);
+            g[v].push_back(u);
+            // mpp[char(u+'a')]=char(v+'a');
+        }
+        ll ans = 0;
+        bool ok = 1;
+        deb2(s, s2);
+        for (ll i = 0; i < n; i++)
+        {
+            if (i && s[i] >= s[i-1])
+                continue;
+            if(i==0) continue;
+            ll src = s[i] - 'a';
+            bfs(src);
+            // deb(level[dest]);
+            bool f = 0;
+            ll dest = s[i-1] - 'a';
+            for (ll j = dest; j <= 'z' - 'a'; j++)
+            {
+                if (level[j] < M / 2)
+                {
+                    ans += level[j];
+                    f = 1;
+                    break;
+                }
+            }
+            ok = f;
+        }
+        deb(ans);
+        if (ok)
+            cout << ans << nn;
+        else
+            cout << -1 << nn;
+    }
+
+    return 0;
 }
+
 /* Points tO CONSIDER
     # RTE? -> check array bounds and constraints
     #TLE? -> thinks about binary search/ dp / optimization techniques

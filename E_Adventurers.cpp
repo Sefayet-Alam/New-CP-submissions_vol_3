@@ -1,3 +1,13 @@
+#pragma GCC optimize(2)
+#pragma GCC optimize("Ofast")
+#pragma GCC optimize("inline", "fast-math", "unroll-loops", "no-stack-protector")
+#pragma GCC diagnostic error "-fwhole-program"
+#pragma GCC diagnostic error "-fcse-skip-blocks"
+#pragma GCC diagnostic error "-funsafe-loop-optimizations"
+#pragma GCC optimize("O3")
+
+// use before include
+
 #include <bits/stdc++.h>
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>
@@ -200,36 +210,117 @@ namespace io
 }
 using namespace io;
 
-int n;
-int par[N];
-ll a[N];
-ll sz[N];
-ll ans = 0;
- 
+bool func(ll pos)
+{
+}
+ll bs(ll low, ll high)
+{
+    ll mid;
+    ll ans = 0;
+    while (low <= high)
+    {
+        mid = low + (high - low) / 2;
+        // cout<<mid<<" "<<func(mid)<<endl;
+        if (func(mid))
+        {
+            ans = mid;
+            high = mid - 1;
+        }
+        else
+        {
+            low = mid + 1;
+        }
+    }
+    return ans;
+}
+
 int main()
 {
+    fast;
+    ll t;
+    // setIO();
+    // ll tno=1;;
+    t = 1;
+    cin >> t;
 
-	scanf("%d", &n);
-	for (int i = 1; i < n; i++) {
-		scanf("%d", &par[i]);
-		par[i]--;
-	}
-	for (int i = 0; i < n; i++) {
-		scanf("%lld", &a[i]);
-		sz[i] = 1;
-	}
-	for (int i = 1; i < n; i++)
-		sz[par[i]] = 0;
-	for (int i = n - 1; i > 0; i--) {
-		a[par[i]] += a[i];
-		sz[par[i]] += sz[i];
-	}
-	for (int i = 0; i < n; i++)
-		ans = max(ans, (a[i] + sz[i] - 1) / sz[i]);
-	printf("%lld\n", ans);
- 
-	return 0;
+    while (t--)
+    {
+        ll n;
+        cin >> n;
+        vector<pll> vec;
+        vector<ll> xs, ys;
+        for (ll i = 0; i < n; i++)
+        {
+            ll x, y;
+            cin >> x >> y;
+            vec.push_back({x, y});
+            xs.push_back(x);
+            ys.push_back(y);
+        }
+        sort(all(vec));
+        sort(all(xs));
+        sort(all(ys));
+        UNIQUE(xs);
+        UNIQUE(ys);
+        n = xs.size();
+        ll mid = n / 2;
+        ll l = 0, r = n - 1;
+        while (l <= r)
+        {
+            ll mid2= l + (r - l) / 2;
+            // cout<<mid<<" "<<func(mid)<<endl;
+            ll cnt=0;
+            for(ll i=0;i<n;i++){
+                if (vec[i].first >= vec[mid].first && vec[i].second >= vec[mid].second) cnt++;
+            }
+            if (cnt<=(n-cnt))
+            {
+                mid = mid2;
+                l = mid2 + 1;
+            }
+            else
+            {
+                r = mid2 - 1;
+            }
+        }
+        vector<ll> validxs, validys;
+        for (ll i = max(0LL, mid - 10); i < min(n, mid + 10); i++)
+        {
+            validxs.push_back({xs[i]});
+            validys.push_back({ys[i]});
+        }
+        ll ansk = 0;
+        pll ansp;
+        for (auto x0 : validxs)
+        {
+            for (auto y0 : validys)
+            {
+                vector<ll> regions(4, 0);
+                for (auto [x, y] : vec)
+                {
+                    if (x >= x0 && y >= y0)
+                        regions[0]++;
+                    else if (x < x0 && y >= y0)
+                        regions[1]++;
+                    else if (x >= x0 && y < y0)
+                        regions[2]++;
+                    else
+                        regions[3]++;
+                }
+                ll k = *min_element(regions.begin(), regions.end());
+                if (k > ansk)
+                {
+                    ansk = k;
+                    ansp = {x0, y0};
+                }
+            }
+        }
+        cout << ansk << nn << ansp << nn;
+    }
+
+    return 0;
 }
+
 /* Points tO CONSIDER
     # RTE? -> check array bounds and constraints
     #TLE? -> thinks about binary search/ dp / optimization techniques

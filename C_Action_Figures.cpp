@@ -199,37 +199,49 @@ namespace io
     }
 }
 using namespace io;
-
-int n;
-int par[N];
-ll a[N];
-ll sz[N];
-ll ans = 0;
- 
+ll n;
+string s;
 int main()
 {
+    fast;
+    ll t;
+    // setIO();
+    // ll tno=1;;
+    t = 1;
+    cin >> t;
 
-	scanf("%d", &n);
-	for (int i = 1; i < n; i++) {
-		scanf("%d", &par[i]);
-		par[i]--;
-	}
-	for (int i = 0; i < n; i++) {
-		scanf("%lld", &a[i]);
-		sz[i] = 1;
-	}
-	for (int i = 1; i < n; i++)
-		sz[par[i]] = 0;
-	for (int i = n - 1; i > 0; i--) {
-		a[par[i]] += a[i];
-		sz[par[i]] += sz[i];
-	}
-	for (int i = 0; i < n; i++)
-		ans = max(ans, (a[i] + sz[i] - 1) / sz[i]);
-	printf("%lld\n", ans);
- 
-	return 0;
+    while (t--)
+    {
+
+        cin >> n;
+
+        cin >> s;
+        ll r=n-1;
+        ll ans=0;
+        ll on=0;
+        for(ll i=n-1;i>=0;i--){
+            if(s[i]=='0'){
+                if(on) on--;
+                ans+=i+1;
+            }
+            else{
+                on++;
+            }
+            // deb2(on,ans);
+        }
+        // deb2(on,ans);
+        for(ll i=0;i<n;i++){
+            if(s[i]=='1' && on>0){
+                ans+=i+1;
+                on-=2;
+            }
+        }
+        cout<<ans<<nn;
+    }
+
+    return 0;
 }
+
 /* Points tO CONSIDER
     # RTE? -> check array bounds and constraints
     #TLE? -> thinks about binary search/ dp / optimization techniques

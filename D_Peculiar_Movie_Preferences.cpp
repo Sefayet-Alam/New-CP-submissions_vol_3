@@ -200,36 +200,47 @@ namespace io
 }
 using namespace io;
 
-int n;
-int par[N];
-ll a[N];
-ll sz[N];
-ll ans = 0;
- 
 int main()
 {
+    fast;
+    ll t;
+    // setIO();
+    // ll tno=1;;
+    t = 1;
+    cin >> t;
 
-	scanf("%d", &n);
-	for (int i = 1; i < n; i++) {
-		scanf("%d", &par[i]);
-		par[i]--;
-	}
-	for (int i = 0; i < n; i++) {
-		scanf("%lld", &a[i]);
-		sz[i] = 1;
-	}
-	for (int i = 1; i < n; i++)
-		sz[par[i]] = 0;
-	for (int i = n - 1; i > 0; i--) {
-		a[par[i]] += a[i];
-		sz[par[i]] += sz[i];
-	}
-	for (int i = 0; i < n; i++)
-		ans = max(ans, (a[i] + sz[i] - 1) / sz[i]);
-	printf("%lld\n", ans);
- 
-	return 0;
+    while (t--)
+    {
+        ll n;
+        cin >> n;
+        map<string, ll> mpp, mp2;
+        bool ok = 0;
+        for (ll i = 0; i < n; i++)
+        {
+            string s;
+            cin >> s;
+            string p=s;
+            ll sz = s.size();
+            reverse(all(s));
+            string s2 = s;
+            s2.pop_back();
+            if (sz==1 || s.front()==s.back() || mpp.count(s) || mp2.count(s) || mpp.count(s2)){
+                // deb2(s,s2);
+                ok = 1;
+            }
+            mpp[p]=1;
+            p.pop_back();
+            mp2[p]=1;
+        }
+        if (ok)
+            cout << "YES" << nn;
+        else
+            cout << "NO" << nn;
+    }
+
+    return 0;
 }
+
 /* Points tO CONSIDER
     # RTE? -> check array bounds and constraints
     #TLE? -> thinks about binary search/ dp / optimization techniques

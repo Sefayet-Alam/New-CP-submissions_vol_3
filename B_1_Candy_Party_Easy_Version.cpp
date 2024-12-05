@@ -200,36 +200,99 @@ namespace io
 }
 using namespace io;
 
-int n;
-int par[N];
-ll a[N];
-ll sz[N];
-ll ans = 0;
- 
+
+/// BIT MANIPULATION
+
+#define Set(x, k) (x |= (1LL << k))
+#define Unset(x, k) (x &= ~(1LL << k))
+#define Check(x, k) (x & (1LL << k))
+#define Toggle(x, k) (x ^ (1LL << k))
+
+int popcount(ll x) { return __builtin_popcountll(x); };
+int poplow(ll x) { return __builtin_ctzll(x); };
+int pophigh(ll x) { return 63 - __builtin_clzll(x); };
+
+using i64 = long long;
+
+void solve()
+{
+    int n;
+    std::cin >> n;
+
+    std::vector<int> a(n);
+    for (int i = 0; i < n; i++)
+    {
+        std::cin >> a[i];
+    }
+
+    i64 sum = std::accumulate(a.begin(), a.end(), 0LL);
+    if (sum % n != 0)
+    {
+        std::cout << "No\n";
+        return;
+    }
+
+    int ave = sum / n;
+
+    int cnt[31]{};
+    for (int i = 0; i < n; i++)
+    {
+        if (a[i] < ave)
+        {
+            int d = ave - a[i];
+            int l = __builtin_ctz(d);
+            cnt[l]++;
+            d += 1 << l;
+            if (d & (d - 1))
+            {
+                std::cout << "No\n";
+                return;
+            }
+            cnt[__builtin_ctz(d)]--;
+        }
+        else if (a[i] > ave)
+        {
+            int d = a[i] - ave;
+            int l = __builtin_ctz(d);
+            cnt[l]--;
+            d += 1 << l;
+            if (d & (d - 1))
+            {
+                std::cout << "No\n";
+                return;
+            }
+            cnt[__builtin_ctz(d)]++;
+        }
+    }
+
+    for (int i = 0; i <= 30; i++)
+    {
+        if (cnt[i])
+        {
+            std::cout << "No\n";
+            return;
+        }
+    }
+
+    std::cout << "Yes\n";
+}
 int main()
 {
+    fast;
+    ll t;
+    // setIO();
+    // ll tno=1;;
+    t = 1;
+    cin >> t;
 
-	scanf("%d", &n);
-	for (int i = 1; i < n; i++) {
-		scanf("%d", &par[i]);
-		par[i]--;
-	}
-	for (int i = 0; i < n; i++) {
-		scanf("%lld", &a[i]);
-		sz[i] = 1;
-	}
-	for (int i = 1; i < n; i++)
-		sz[par[i]] = 0;
-	for (int i = n - 1; i > 0; i--) {
-		a[par[i]] += a[i];
-		sz[par[i]] += sz[i];
-	}
-	for (int i = 0; i < n; i++)
-		ans = max(ans, (a[i] + sz[i] - 1) / sz[i]);
-	printf("%lld\n", ans);
- 
-	return 0;
+    while (t--)
+    {
+        solve();
+    }
+
+    return 0;
 }
+
 /* Points tO CONSIDER
     # RTE? -> check array bounds and constraints
     #TLE? -> thinks about binary search/ dp / optimization techniques

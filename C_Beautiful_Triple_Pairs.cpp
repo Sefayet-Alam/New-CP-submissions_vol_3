@@ -200,36 +200,42 @@ namespace io
 }
 using namespace io;
 
-int n;
-int par[N];
-ll a[N];
-ll sz[N];
-ll ans = 0;
- 
 int main()
 {
+    fast;
+    ll t;
+    // setIO();
+    // ll tno=1;;
+    t = 1;
+    cin >> t;
+    while (t--)
+    {
+        ll n;
+        cin >> n;
+        vector<ll> vec(n);
+        cin >> vec;
+        map<pll, ll> mp1, mp2, mp3;
+        map<pair<pll, ll>, ll> cnt;
+        ll ans = 0;
+        for (ll i = 0; i < n - 2; i++)
+        {
+            ll now = vec[i];
+            ll ss = vec[i + 1];
+            ll thr = vec[i + 2];
+            ans += (mp1[{now, ss}] - cnt[{{now, ss}, thr}]);
+            ans += (mp2[{now, thr}] - cnt[{{now, ss}, thr}]);
+            ans += (mp3[{ss, thr}]-cnt[{{now, ss}, thr}]);
+            mp1[{now, ss}]++;
+            mp2[{now, thr}]++;
+            mp3[{ss, thr}]++;
+            cnt[{{now, ss}, thr}]++;
+        }
+        cout << ans << nn;
+    }
 
-	scanf("%d", &n);
-	for (int i = 1; i < n; i++) {
-		scanf("%d", &par[i]);
-		par[i]--;
-	}
-	for (int i = 0; i < n; i++) {
-		scanf("%lld", &a[i]);
-		sz[i] = 1;
-	}
-	for (int i = 1; i < n; i++)
-		sz[par[i]] = 0;
-	for (int i = n - 1; i > 0; i--) {
-		a[par[i]] += a[i];
-		sz[par[i]] += sz[i];
-	}
-	for (int i = 0; i < n; i++)
-		ans = max(ans, (a[i] + sz[i] - 1) / sz[i]);
-	printf("%lld\n", ans);
- 
-	return 0;
+    return 0;
 }
+
 /* Points tO CONSIDER
     # RTE? -> check array bounds and constraints
     #TLE? -> thinks about binary search/ dp / optimization techniques

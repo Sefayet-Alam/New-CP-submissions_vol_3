@@ -200,36 +200,46 @@ namespace io
 }
 using namespace io;
 
-int n;
-int par[N];
-ll a[N];
-ll sz[N];
-ll ans = 0;
- 
 int main()
 {
+    fast;
+    ll t;
+    // setIO();
+    // ll tno=1;;
+    t = 1;
+    cin >> t;
 
-	scanf("%d", &n);
-	for (int i = 1; i < n; i++) {
-		scanf("%d", &par[i]);
-		par[i]--;
-	}
-	for (int i = 0; i < n; i++) {
-		scanf("%lld", &a[i]);
-		sz[i] = 1;
-	}
-	for (int i = 1; i < n; i++)
-		sz[par[i]] = 0;
-	for (int i = n - 1; i > 0; i--) {
-		a[par[i]] += a[i];
-		sz[par[i]] += sz[i];
-	}
-	for (int i = 0; i < n; i++)
-		ans = max(ans, (a[i] + sz[i] - 1) / sz[i]);
-	printf("%lld\n", ans);
- 
-	return 0;
+    while (t--)
+    {
+        ll n, x;
+        cin >> n >> x;
+        vector<ll> a(n), b(n);
+        cin >> a >> b;
+        vector<ll> vec;
+        for (ll i = 0; i < n; i++)
+        {
+            vec.push_back(a[i] * b[i]);
+        }
+        sort(all(vec), greater<ll>());
+        // deb(vec);
+        ll now = 0;
+        ll ans = 0;
+        for (ll i = 0; i < n; i++)
+        {
+            now += vec[i];
+            ans++;
+            if (now >= x)
+                break;
+        }
+        if (now < x)
+            cout << -1 << nn;
+        else
+            cout << ans << nn;
+    }
+
+    return 0;
 }
+
 /* Points tO CONSIDER
     # RTE? -> check array bounds and constraints
     #TLE? -> thinks about binary search/ dp / optimization techniques

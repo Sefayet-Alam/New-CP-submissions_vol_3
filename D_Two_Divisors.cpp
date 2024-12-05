@@ -199,37 +199,88 @@ namespace io
     }
 }
 using namespace io;
-
-int n;
-int par[N];
-ll a[N];
-ll sz[N];
-ll ans = 0;
+vector<int> smallest_factor;
+vector<bool> prime;
+vector<int> primes;
  
+void sieve(int maximum) {
+    maximum = max(maximum, 2);
+    smallest_factor.assign(maximum + 1, 0);
+    prime.assign(maximum + 1, true);
+    prime[0] = prime[1] = false;
+    primes = {2};
+ 
+    for (int p = 2; p <= maximum; p += 2) {
+        prime[p] = p == 2;
+        smallest_factor[p] = 2;
+    }
+ 
+    for (int p = 3; p * p <= maximum; p += 2)
+        if (prime[p])
+            for (int i = p * p; i <= maximum; i += 2 * p)
+                if (prime[i]) {
+                    prime[i] = false;
+                    smallest_factor[i] = p;
+                }
+ 
+    for (int p = 3; p <= maximum; p += 2)
+        if (prime[p]) {
+            smallest_factor[p] = p;
+            primes.push_back(p);
+        }
+}
 int main()
 {
+    fast;
+    ll t;
+    // setIO();
+    // ll tno=1;;
+    t = 1;
+    // cin >> t;
+    sieve(1e7+5);
+    while (t--)
+    {
+        ll n;
+        cin >> n;
+        vector<ll> vec(n);
+        cin >> vec;
+        // deb(vec);
+        vector<ll> ans1, ans2;
+        for (ll i=0;i<n;i++)
+        {
+            ll v = vec[i];
+            bool f = 0;
+            while (v>1)
+            {
+                ll x=smallest_factor[v];
+                ll now=1;
+                while (v%x==0)
+                {
+                    v/=x;
+                    now*=x;
+                }
+                if(vec[i]/now==1) continue;
+                else{
+                    f=1;
+                    ans1.push_back(vec[i]/now);
+                    ans2.push_back(now);
+                    break;
+                }
+            }
+            
+            if (f == 0)
+            {
+                ans1.push_back(-1);
+                ans2.push_back(-1);
+            }
+        }
+        cout << ans1 << nn;
+        cout << ans2 << nn;
+    }
 
-	scanf("%d", &n);
-	for (int i = 1; i < n; i++) {
-		scanf("%d", &par[i]);
-		par[i]--;
-	}
-	for (int i = 0; i < n; i++) {
-		scanf("%lld", &a[i]);
-		sz[i] = 1;
-	}
-	for (int i = 1; i < n; i++)
-		sz[par[i]] = 0;
-	for (int i = n - 1; i > 0; i--) {
-		a[par[i]] += a[i];
-		sz[par[i]] += sz[i];
-	}
-	for (int i = 0; i < n; i++)
-		ans = max(ans, (a[i] + sz[i] - 1) / sz[i]);
-	printf("%lld\n", ans);
- 
-	return 0;
+    return 0;
 }
+
 /* Points tO CONSIDER
     # RTE? -> check array bounds and constraints
     #TLE? -> thinks about binary search/ dp / optimization techniques

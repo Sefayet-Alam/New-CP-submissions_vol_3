@@ -200,36 +200,97 @@ namespace io
 }
 using namespace io;
 
-int n;
-int par[N];
-ll a[N];
-ll sz[N];
-ll ans = 0;
- 
 int main()
 {
+    fast;
+    ll t;
+    // setIO();
+    // ll tno=1;;
+    t = 1;
+    cin >> t;
 
-	scanf("%d", &n);
-	for (int i = 1; i < n; i++) {
-		scanf("%d", &par[i]);
-		par[i]--;
-	}
-	for (int i = 0; i < n; i++) {
-		scanf("%lld", &a[i]);
-		sz[i] = 1;
-	}
-	for (int i = 1; i < n; i++)
-		sz[par[i]] = 0;
-	for (int i = n - 1; i > 0; i--) {
-		a[par[i]] += a[i];
-		sz[par[i]] += sz[i];
-	}
-	for (int i = 0; i < n; i++)
-		ans = max(ans, (a[i] + sz[i] - 1) / sz[i]);
-	printf("%lld\n", ans);
- 
-	return 0;
+    while (t--)
+    {
+        ll n, m;
+        cin >> n >> m;
+        string s, p;
+        cin >> s >> p;
+        if (s == p)
+            cout << "YES" << nn;
+        else if (s[0] != p[0])
+            cout << "NO" << nn;
+        else
+        {
+            vector<ll> vec1, vec2;
+            ll cur1 = 1;
+            for (ll i = 1; i < n; i++)
+            {
+                if (s[i] == s[i - 1])
+                {
+                    cur1++;
+                }
+                else
+                {
+                    if (cur1)
+                        vec1.push_back(cur1);
+                    cur1 = 1;
+                }
+            }
+            vec1.push_back(cur1);
+            ll cur2 = 1;
+            for (ll i = 1; i < m; i++)
+            {
+                if (p[i] == p[i - 1])
+                {
+                    cur2++;
+                }
+                else
+                {
+                    vec2.push_back(cur2);
+                    cur2 = 1;
+                }
+            }
+            vec2.push_back(cur2);
+            // deb(vec1);
+            // deb(vec2);
+            if (vec1.size() != vec2.size())
+            {
+                cout << "NO" << nn;
+                continue;
+            }
+            else
+            {
+                ll sz = vec1.size();
+                bool ok = 1;
+                for (ll i = 0; i < sz; i++)
+                {
+                    if (vec1[i] < vec2[i])
+                    {
+                        ok = 0;
+                        break;
+                    }
+                    if ((vec1[i] - vec2[i]) % 2)
+                    {
+                        ok = 0;
+                        break;
+                    }
+                }
+                if (vec1.size() == 1 && s != p)
+                {
+                    cout << "NO\n";
+                    continue;
+                }
+                if (ok)
+                    cout << "YES" << nn;
+                else
+                    cout << "NO" << nn;
+            }
+        }
+    }
+
+    return 0;
 }
+
 /* Points tO CONSIDER
     # RTE? -> check array bounds and constraints
     #TLE? -> thinks about binary search/ dp / optimization techniques

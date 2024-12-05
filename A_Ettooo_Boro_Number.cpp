@@ -200,36 +200,117 @@ namespace io
 }
 using namespace io;
 
-int n;
-int par[N];
-ll a[N];
-ll sz[N];
-ll ans = 0;
- 
+ll func(ll cursz, ll curno)
+{
+    // deb2(cursz,curno);
+    curno = cursz * curno;
+    ll now = curno;
+    string temp = to_string(now);
+    cursz = temp.size();
+    while (cursz > 1)
+    {
+        curno = 0;
+        for (ll i = 0; i < cursz; i++)
+        {
+            curno += temp[i] - '0';
+        }
+        now = curno;
+        temp = to_string(now);
+        cursz = temp.size();
+    }
+    // deb(curno);
+    return curno;
+}
+
+ll pref(ll curno, ll cursz)
+{
+    ll ret = 0;
+    for (ll i = 1; i < cursz; i++)
+    {
+        for (ll j = 1; j <= 9; j++)
+        {
+            if (func(i, j) == j)
+                ret++;
+        }
+    }
+    // deb2(curno,cursz);
+    // deb(ret);
+    for (ll i = 1; i <= curno; i++)
+    {
+        if (func(cursz, i) == i)
+            ret++;
+    }
+    // deb(ret);
+    return ret;
+}
+
 int main()
 {
+    fast;
+    ll t;
+    // setIO();
+    // ll tno=1;;
+    t = 1;
+    cin >> t;
 
-	scanf("%d", &n);
-	for (int i = 1; i < n; i++) {
-		scanf("%d", &par[i]);
-		par[i]--;
-	}
-	for (int i = 0; i < n; i++) {
-		scanf("%lld", &a[i]);
-		sz[i] = 1;
-	}
-	for (int i = 1; i < n; i++)
-		sz[par[i]] = 0;
-	for (int i = n - 1; i > 0; i--) {
-		a[par[i]] += a[i];
-		sz[par[i]] += sz[i];
-	}
-	for (int i = 0; i < n; i++)
-		ans = max(ans, (a[i] + sz[i] - 1) / sz[i]);
-	printf("%lld\n", ans);
- 
-	return 0;
+    while (t--)
+    {
+        string l, r;
+        cin >> l >> r;
+        ll lsz = l.size();
+        ll rsz = r.size();
+        ll curno = r[0] - '0';
+        for (ll i = 0; i < rsz; i++)
+        {
+            if (r[i] - '0' > curno)
+                break;
+            if (r[i] - '0' < curno)
+            {
+                curno--;
+                if (curno == 0)
+                {
+                    curno = 9;
+                    rsz--;
+                }
+                break;
+            }
+        }
+        ll curno2 = l[0] - '0';
+        for (ll i = 0; i < lsz; i++)
+        {
+            if (l[i] - '0' > curno2)
+            {
+                break;
+            }
+            if (l[i] - '0' < curno2)
+            {
+                curno2--;
+                if (curno2 == 0)
+                {
+                    curno2 = 9;
+                    lsz--;
+                }
+                break;
+            }
+            else if(l[i] -'0'==curno2 && i==lsz-1){
+                curno2--;
+                if (curno2 == 0)
+                {
+                    curno2 = 9;
+                    lsz--;
+                }
+            }
+        }
+        deb2(curno2, lsz);
+        deb2(curno, rsz);
+        ll ans1 = pref(curno, rsz);
+        ll ans2 = pref(curno2, lsz);
+        deb2(ans1, ans2);
+        cout<<max(0LL,ans1-ans2)<<nn;
+    }
+    return 0;
 }
+
 /* Points tO CONSIDER
     # RTE? -> check array bounds and constraints
     #TLE? -> thinks about binary search/ dp / optimization techniques

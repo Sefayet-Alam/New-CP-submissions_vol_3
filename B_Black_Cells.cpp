@@ -200,36 +200,72 @@ namespace io
 }
 using namespace io;
 
-int n;
-int par[N];
-ll a[N];
-ll sz[N];
-ll ans = 0;
- 
 int main()
 {
+    fast;
+    ll t;
+    // setIO();
+    // ll tno=1;;
+    t = 1;
+    cin >> t;
 
-	scanf("%d", &n);
-	for (int i = 1; i < n; i++) {
-		scanf("%d", &par[i]);
-		par[i]--;
-	}
-	for (int i = 0; i < n; i++) {
-		scanf("%lld", &a[i]);
-		sz[i] = 1;
-	}
-	for (int i = 1; i < n; i++)
-		sz[par[i]] = 0;
-	for (int i = n - 1; i > 0; i--) {
-		a[par[i]] += a[i];
-		sz[par[i]] += sz[i];
-	}
-	for (int i = 0; i < n; i++)
-		ans = max(ans, (a[i] + sz[i] - 1) / sz[i]);
-	printf("%lld\n", ans);
- 
-	return 0;
+    while (t--)
+    {
+        ll n;
+        cin >> n;
+        vector<ll> vec(n);
+        cin >> vec;
+        // sort(all(vec));
+        UNIQUE(vec);
+        n=vec.size();
+        if (n == 1)
+        {
+            cout << 1 << nn;
+            continue;
+        }
+        if (n % 2 == 0)
+        {
+            ll scmax = 0;
+            vector<ll> diffs;
+            for (ll i = 0; i < n; i += 2)
+            {
+                diffs.push_back(vec[i + 1] - vec[i]);
+            }
+            sort(all(diffs));
+            reverse(all(diffs));
+            ll ans = max(1LL, diffs[0]);
+            cout << ans << nn;
+        }
+        else
+        {
+            // deb(vec);
+            ll ans = vec[n-1]-vec[0];
+            for (ll i = 0; i < n; i += 2)
+            {
+                vector<ll> diffs;
+                for (ll j = i - 1; j >= 0; j -= 2)
+                {
+                    // if (j - 1 >= 0)
+                        diffs.push_back(vec[j] - vec[j - 1]);
+                }
+                for (ll j = i + 1; j < n; j += 2)
+                {
+                    // if (j + 1 < n)
+                        diffs.push_back(vec[j + 1] - vec[j]);
+                }
+                // deb(i);
+                // deb(diffs);
+                sort(all(diffs));
+                reverse(all(diffs));
+                ans = min(ans, max(1LL, diffs[0]));
+            }
+            cout << ans << nn;
+        }
+    }
+
+    return 0;
 }
+
 /* Points tO CONSIDER
     # RTE? -> check array bounds and constraints
     #TLE? -> thinks about binary search/ dp / optimization techniques

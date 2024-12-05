@@ -200,36 +200,123 @@ namespace io
 }
 using namespace io;
 
-int n;
-int par[N];
-ll a[N];
-ll sz[N];
-ll ans = 0;
- 
+/// calc calculates maximum subsegment sum from l to r
+struct item
+{
+    ll val, on;
+};
+struct segment_tree
+{
+    ll size;
+    vector<item> tree;
+    void init(ll n)
+    {
+        size = 1;
+        while (size < n)
+            size *= 2;
+        tree.resize(2 * size);
+    }
+    item neutral_ele = {0LL, 0LL};
+    item merge(item a, item b)
+    {
+        return {a.val + b.val, a.on + b.on};
+    }
+
+    item single(ll val)
+    {
+        if (val > 0)
+        {
+            return {val, (val == 1)};
+        }
+        return {0LL, 0LL};
+    }
+    void build(vector<ll> &a, ll x, ll lx, ll rx)
+    {
+        // linear time
+        if (rx - lx == 1)
+        {
+            if (lx < a.size())
+            {
+                tree[x] = single(a[lx]);
+            }
+            return;
+        }
+        ll m = (lx + rx) / 2;
+        build(a, 2 * x + 1, lx, m);
+        build(a, 2 * x + 2, m, rx);
+        tree[x] = merge(tree[2 * x + 1], tree[2 * x + 2]);
+    }
+    void build(vector<ll> &a)
+    {
+        // linear time
+        build(a, 0LL, 0LL, size);
+    }
+    item calc(ll l, ll r, ll x, ll lx, ll rx)
+    {
+        if (lx >= r || l >= rx)
+        {
+            return neutral_ele;
+        }
+        if (lx >= l && rx <= r)
+        {
+            return tree[x];
+        }
+        ll m = (lx + rx) / 2;
+        item s1 = calc(l, r, 2 * x + 1, lx, m);
+        item s2 = calc(l, r, 2 * x + 2, m, rx);
+        return merge(s1, s2);
+    }
+    item calc(ll l, ll r)
+    {
+        // returns sum from l to r
+        return calc(l, r, 0LL, 0LL, size);
+    }
+};
+
 int main()
 {
+    fast;
+    ll t;
+    // setIO();
+    // ll tno=1;;
+    t = 1;
+    cin >> t;
 
-	scanf("%d", &n);
-	for (int i = 1; i < n; i++) {
-		scanf("%d", &par[i]);
-		par[i]--;
-	}
-	for (int i = 0; i < n; i++) {
-		scanf("%lld", &a[i]);
-		sz[i] = 1;
-	}
-	for (int i = 1; i < n; i++)
-		sz[par[i]] = 0;
-	for (int i = n - 1; i > 0; i--) {
-		a[par[i]] += a[i];
-		sz[par[i]] += sz[i];
-	}
-	for (int i = 0; i < n; i++)
-		ans = max(ans, (a[i] + sz[i] - 1) / sz[i]);
-	printf("%lld\n", ans);
- 
-	return 0;
+    while (t--)
+    {
+        ll n, q;
+        cin >> n >> q;
+        vector<ll> vec(n);
+        cin >> vec;
+        segment_tree sg;
+        sg.init(n);
+        sg.build(vec);
+        while (q--)
+        {
+            ll l, r;
+            cin>>l>>r;
+            l--, r--;
+            if(l==r){
+                cout<<"NO"<<nn;
+                continue;
+            }
+            auto now = sg.calc(l, r + 1);
+            ll sum = now.val;
+            ll ons = now.on;
+            ll sz = r - l + 1;
+            // deb2(sum,ons);
+            // deb2(l,r);
+            // deb(sum-ons);
+            if (sum-sz>=ons)
+                cout << "YES" << nn;
+            else
+                cout << "NO" << nn;
+        }
+    }
+
+    return 0;
 }
+
 /* Points tO CONSIDER
     # RTE? -> check array bounds and constraints
     #TLE? -> thinks about binary search/ dp / optimization techniques
